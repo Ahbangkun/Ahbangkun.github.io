@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jeremia Anak Rantai | Blender Artist & VR Developer</title>
+
+<link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:'Poppins',sans-serif;
+    background:#f5f5f5;
+    color:#222;
+}
+
+/* NAVBAR */
+.navbar{
+    background:#332947;
+    padding:15px;
+    text-align:center;
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+
+.navbar a{
+    color:white;
+    text-decoration:none;
+    margin:0 15px;
+    font-weight:600;
+}
+
+.navbar a:hover{
+    color:#ff4db8;
+}
+
+/* HERO */
+.hero{
+    background:linear-gradient(rgba(51,41,71,.85),rgba(51,41,71,.85)),
+    url("images/banner.jpg");
+    background-size:cover;
+    background-position:center;
+    color:white;
+    text-align:center;
+    padding:120px 20px;
+}
+
+.hero h1{
+    font-size:3rem;
+    margin-bottom:15px;
+}
+
+.hero p{
+    font-size:1.2rem;
+    margin-bottom:30px;
+}
+
+.btn{
+    display:inline-block;
+    background:#ff4db8;
+    color:white;
+    text-decoration:none;
+    padding:12px 25px;
+    border-radius:6px;
+    font-weight:600;
+}
+
+.btn:hover{
+    opacity:.9;
+}
+
+/* SECTION */
+.section{
+    max-width:1200px;
+    margin:auto;
+    padding:60px 20px;
+}
+
+.section h2{
+    color:#332947;
+    margin-bottom:20px;
+    border-left:5px solid #ff4db8;
+    padding-left:10px;
+}
+
+/* ABOUT */
+.about p{
+    line-height:1.8;
+}
+
+/* GALLERY */
+.gallery-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:white;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
+
+.card img{
+    width:100%;
+    height:250px;
+    object-fit:cover;
+}
+
+.card h3{
+    padding:15px;
+    text-align:center;
+}
+
+/* PROJECTS */
+.project-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:20px;
+}
+
+.project-card{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
+
+.project-card h3{
+    color:#332947;
+    margin-bottom:10px;
+}
+
+/* SKILLS */
+.skills-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:15px;
+}
+
+.skill{
+    background:white;
+    padding:15px;
+    text-align:center;
+    border-radius:8px;
+    box-shadow:0 3px 10px rgba(0,0,0,.08);
+    font-weight:600;
+}
+
+/* CONTACT */
+.contact{
+    text-align:center;
+}
+
+.contact p{
+    margin:10px 0;
+}
+
+/* FOOTER */
+footer{
+    background:#332947;
+    color:white;
+    text-align:center;
+    padding:25px;
+}
+
+/* MOBILE */
+@media(max-width:768px){
+
+.hero h1{
+    font-size:2rem;
+}
+
+.navbar a{
+    display:block;
+    margin:10px 0;
+}
+
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVIGATION -->
+<nav class="navbar">
+    <a href="#about">About</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#projects">Projects</a>
+    <a href="#skills">Skills</a>
+    <a href="#contact">Contact</a>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+
+    <h1>Jeremia Anak Rantai</h1>
+
+    <p>
+        Blender Artist • VR Developer • Multimedia Computing Graduate
+    </p>
+
+    <a href="https://sketchfab.com/Ahbangkun"
+       target="_blank"
+       class="btn">
+       View Sketchfab Portfolio
+    </a>
+
+</header>
+
+<!-- ABOUT -->
+<section class="section about" id="about">
+
+    <h2>About Me</h2>
+
+    <p>
+        Hello! I'm Jeremia Anak Rantai, a Multimedia Computing graduate with a strong passion
+        for 3D modelling, animation, virtual reality, and interactive media development.
+
+        My strongest skill is Blender, where I create environments, props, digital assets,
+        and visual experiences. I have published over 80 models on Sketchfab and continue
+        exploring new techniques in modelling, texturing, rendering, and animation.
+
+        Besides 3D creation, I have experience developing VR applications, Android apps,
+        AI chatbots, machine learning projects, and web-based systems.
+    </p>
+
+</section>
+
+<!-- GALLERY -->
+<section class="section" id="gallery">
+
+    <h2>Featured Blender Works</h2>
+
+    <div class="gallery-grid">
+
+        <div class="card">
+            <img src="images/model1.jpg" alt="3D Model">
+            <h3>Environment Design</h3>
+        </div>
+
+        <div class="card">
+            <img src="images/model2.jpg" alt="3D Model">
+            <h3>Stylized Asset</h3>
+        </div>
+
+        <div class="card">
+            <img src="images/model3.jpg" alt="3D Model">
+            <h3>3D Prop Design</h3>
+        </div>
+
+        <div class="card">
+            <img src="images/model4.jpg" alt="3D Model">
+            <h3>Animation Project</h3>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- VR PROJECT -->
+<section class="section">
+
+    <h2>Featured VR Project</h2>
+
+    <div class="project-card">
+        <h3>VR Gardening Simulation</h3>
+
+        <p>
+            Developed an immersive virtual reality gardening experience using Unity and Blender.
+            The project focused on environmental interaction, virtual immersion,
+            and interactive learning through VR technology.
+        </p>
+    </div>
+
+</section>
+
+<!-- PROJECTS -->
+<section class="section" id="projects">
+
+    <h2>Projects</h2>
+
+    <div class="project-grid">
+
+        <div class="project-card">
+            <h3>Buddy Steam</h3>
+            <p>
+                Android Studio application built using Java for managing friend information
+                and birthday reminders.
+            </p>
+        </div>
+
+        <div class="project-card">
+            <h3>Restaurant Management System</h3>
+            <p>
+                Java Servlet and SQLite web application for reservation and restaurant management.
+            </p>
+        </div>
+
+        <div class="project-card">
+            <h3>AI Fitness Chatbot</h3>
+            <p>
+                Python chatbot integrated with OpenAI API for fitness guidance and interaction.
+            </p>
+        </div>
+
+        <div class="project-card">
+            <h3>CNN Image Recognition</h3>
+            <p>
+                Machine learning project using CNN architecture and Jupyter Notebook.
+            </p>
+        </div>
+
+        <div class="project-card">
+            <h3>Internship Database System</h3>
+            <p>
+                Searchable internship database developed using WordPress customization.
+            </p>
+        </div>
+
+        <div class="project-card">
+            <h3>Unity Racing Game</h3>
+            <p>
+                3D racing game prototype developed using Unity.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- SKILLS -->
+<section class="section" id="skills">
+
+    <h2>Skills</h2>
+
+    <div class="skills-grid">
+
+        <div class="skill">Blender</div>
+        <div class="skill">Unity</div>
+        <div class="skill">VR Development</div>
+        <div class="skill">3D Animation</div>
+        <div class="skill">Java</div>
+        <div class="skill">Python</div>
+        <div class="skill">HTML</div>
+        <div class="skill">CSS</div>
+        <div class="skill">WordPress</div>
+        <div class="skill">SQLite</div>
+
+    </div>
+
+</section>
+
+<!-- CONTACT -->
+<section class="section contact" id="contact">
+
+    <h2>Contact</h2>
+
+    <p>📧 erischris119@gmail.com</p>
+    <p>📞 017-8075660</p>
+
+    <p>
+        Sketchfab:
+        <a href="https://sketchfab.com/Ahbangkun" target="_blank">
+            Ahbangkun
+        </a>
+    </p>
+
+    <p>
+        TikTok:
+        <a href="https://www.tiktok.com/@ahbangkun" target="_blank">
+            @ahbangkun
+        </a>
+    </p>
+
+</section>
+
+<footer>
+    <p>© 2026 Jeremia Anak Rantai | Blender Artist & VR Developer</p>
+</footer>
+
+</body>
+</html>
