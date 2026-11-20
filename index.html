@@ -937,6 +937,43 @@ window.CONFIG = {
   } } catch (e) {}
   document.addEventListener('visibilitychange', () => { if (document.hidden) audio.pause(); else if (musicOn) audio.play().catch(() => {}); });
 
+  /* ---------- button sounds: tiny original chimes, made live with Web Audio ---------- */
+  let actx = null;
+  const tone = (t0, freq, to, dur, vol, type = 'sine') => {
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.type = type; o.frequency.setValueAtTime(freq, t0);
+    if (to) o.frequency.exponentialRampToValueAtTime(to, t0 + dur * 0.6);
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(vol, t0 + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    o.connect(g).connect(actx.destination); o.start(t0); o.stop(t0 + dur + 0.02);
+  };
+  const SFX = {
+    pop:   t => { tone(t, 520, 880, 0.09, 0.09); tone(t, 1560, 2200, 0.05, 0.025, 'triangle'); },          // soft bubble pop
+    page:  t => { tone(t, 1319, 0, 0.12, 0.06); tone(t + 0.055, 1976, 0, 0.16, 0.05); },                 // two-note chime
+    open:  t => { [1047, 1319, 1568].forEach((f, i) => tone(t + i * 0.05, f, 0, 0.18, 0.05)); },         // little sparkle up
+    close: t => { tone(t, 1319, 0, 0.1, 0.05); tone(t + 0.05, 988, 0, 0.14, 0.045); },                   // gentle step down
+    on:    t => { tone(t, 660, 1320, 0.12, 0.07); },                                                     // chirp up
+    off:   t => { tone(t, 990, 495, 0.12, 0.06); }                                                       // chirp down
+  };
+  const play = name => {
+    try {
+      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+      if (actx.state === 'suspended') actx.resume();
+      SFX[name](actx.currentTime + 0.005);
+    } catch (e) {}
+  };
+  document.addEventListener('click', ev => {
+    const el = ev.target.closest('a, button, [role="button"]');
+    if (!el || el.disabled) return;
+    let s = 'pop';
+    if (el.matches('#musicBtn, #motionBtn')) { setTimeout(() => play(el.id === 'musicBtn' ? (musicOn ? 'on' : 'off') : (motionOn ? 'on' : 'off')), 0); return; }
+    if (el.matches('#modalClose, #rClose')) s = 'close';
+    else if (el.matches('.tab, #prev, #next, #dots *, #rPrev, #rNext, #rNextBtn')) s = 'page';
+    else if (el.matches('button.ep') || (el.closest('#tiktok') && el.target !== '_blank' && !el.matches('a[target="_blank"]'))) s = 'open';
+    play(s);
+  }, true);
+
   /* ---------- contact form ---------- */
   const form = $('#contactForm'), note = $('#formNote');
   form.addEventListener('submit', async e => {
