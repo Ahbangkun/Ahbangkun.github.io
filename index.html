@@ -944,7 +944,7 @@ window.CONFIG = {
     o.type = type; o.frequency.setValueAtTime(freq, t0);
     if (to) o.frequency.exponentialRampToValueAtTime(to, t0 + dur * 0.6);
     g.gain.setValueAtTime(0.0001, t0);
-    g.gain.exponentialRampToValueAtTime(vol, t0 + 0.008);
+    g.gain.exponentialRampToValueAtTime(vol * 0.5, t0 + 0.008);   // overall volume: 0.5 = soft
     g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
     o.connect(g).connect(actx.destination); o.start(t0); o.stop(t0 + dur + 0.02);
   };
