@@ -140,12 +140,49 @@ h2.title{font-size:clamp(28px,3.6vw,42px);font-weight:900;line-height:1.1;margin
 .shop-sign[data-status="closed"] .board{background:var(--pink)}
 .shop-sign[data-status="closed"] b{color:var(--pink-d);font-size:18px;letter-spacing:.06em;margin:4px 0 2px}
 .shop-sign.small[data-status="closed"] b{font-size:14px}
-.shop-sign:hover{animation-play-state:paused}
 .shop-sign.small{position:static;width:96px;transform-origin:50% 5px;flex:none;margin-top:-26px}
 .shop-sign.small .strings{width:96px;height:26px}
 .shop-sign.small .board{width:92px;padding:5px 6px 6px}
 .shop-sign.small b{font-size:17px}
 .dm-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+/* skill flip cards */
+.skill-flip{position:relative;display:block;perspective:900px;border-radius:var(--radius);text-align:left;min-height:164px}
+.skill-flip .face{display:block;position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;transition:transform .55s cubic-bezier(.2,.8,.2,1)}
+.skill-flip .front{position:relative;min-height:164px}
+.skill-flip .back{transform:rotateY(180deg);display:flex;flex-direction:column;justify-content:center;gap:8px;background:linear-gradient(160deg,var(--c),var(--paper) 85%)}
+.skill-flip .back p{font-size:13px;color:var(--ink);margin:0}
+.skill-flip.flipped .front{transform:rotateY(-180deg)}
+.skill-flip.flipped .back{transform:rotateY(0)}
+.skill-flip .flip-hint{position:absolute;top:14px;right:14px;color:var(--muted);opacity:.6}
+.skill-flip .flip-hint svg{width:14px;height:14px}
+.skill-flip:hover .flip-hint{opacity:1}
+.go-to{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;padding:7px 12px;border-radius:10px;background:var(--paper);font-size:12px;font-weight:700;color:var(--ink)}
+.go-to:hover{background:#fff}
+.go-to svg{width:14px;height:14px}
+/* Japanese word helper */
+[data-tip]{position:relative;cursor:help;text-decoration:underline dotted rgba(127,111,201,.45);text-underline-offset:3px}
+[data-tip]::after{content:attr(data-tip);position:absolute;left:0;bottom:calc(100% + 8px);z-index:40;white-space:nowrap;writing-mode:horizontal-tb;
+  padding:5px 10px;border-radius:9px;background:var(--ink);color:var(--paper);font-size:11.5px;font-weight:600;letter-spacing:.02em;text-transform:none;
+  opacity:0;transform:translateY(4px);pointer-events:none;transition:opacity .18s,transform .18s}
+[data-tip]:hover::after,[data-tip].tip-on::after{opacity:1;transform:none}
+.idcard .kanji[data-tip]::after{left:auto;right:auto;bottom:auto;top:0;left:calc(100% + 6px)}
+/* holo-card tilt on the profile card */
+.idwrap{perspective:1000px}
+.idcard{transition:transform .35s cubic-bezier(.2,.8,.2,1);transform-style:preserve-3d}
+.idcard::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .3s;
+  background:radial-gradient(260px circle at var(--mx,50%) var(--my,30%),rgba(255,255,255,.75),rgba(217,208,246,.25) 40%,transparent 70%);mix-blend-mode:soft-light}
+.idwrap:hover .idcard::after{opacity:1}
+.still .idcard{transform:none!important}
+/* surprise-me model button */
+.gacha{display:inline-flex;align-items:center;gap:5px;margin-left:auto;margin-right:10px;padding:5px 10px;border-radius:999px;background:var(--peach);color:var(--ink);font-size:12px;font-weight:700}
+.gacha svg{width:14px;height:14px}
+.gacha.roll svg{animation:roll .6s cubic-bezier(.2,.8,.2,1)}
+@keyframes roll{to{transform:rotate(360deg) scale(1.15)}}
+.stage.pop{animation:pop .45s cubic-bezier(.2,.8,.2,1)}
+@keyframes pop{0%{transform:scale(.97);opacity:.6}100%{transform:none;opacity:1}}
+/* the sign wiggles when you point at it */
+.shop-sign:hover{animation:jiggle .9s ease}
+@keyframes jiggle{0%{transform:rotate(0)}20%{transform:rotate(-9deg)}40%{transform:rotate(7deg)}60%{transform:rotate(-4deg)}80%{transform:rotate(2deg)}100%{transform:rotate(0)}}
 @keyframes swing{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
 .still .shop-sign{animation:none}
 .idcard .ring{width:min(220px,60%);aspect-ratio:1;margin:6px auto 18px;border-radius:50%;padding:8px;background:conic-gradient(from 210deg,var(--lav),var(--pink),var(--peach),var(--mint),var(--sky),var(--lav))}
@@ -401,8 +438,8 @@ h2.title{font-weight:300;letter-spacing:-.01em}
 .tab.active{box-shadow:0 4px 16px rgba(59,53,72,.18)}
 .dot.active{box-shadow:0 0 10px rgba(127,111,201,.45)}
 /* console-style focus: tile grows a little with a soft glowing ring */
-.clip,.sr,.art-item,.anim-card,.social,.skill,.arrow{transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s}
-.clip:hover,.sr:hover,.art-item:hover,.anim-card:hover,.social:hover,.skill:hover,
+.clip,.sr,.art-item,.anim-card,.social,.skill-flip,.arrow{transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s}
+.clip:hover,.sr:hover,.art-item:hover,.anim-card:hover,.social:hover,.skill-flip:hover,
 .clip:focus-visible,.art-item:focus-visible{transform:scale(1.035);outline:3px solid #fff;outline-offset:0;
   box-shadow:0 0 0 6px rgba(127,111,201,.22),0 16px 40px rgba(127,111,201,.25)}
 .btn:hover{transform:none;box-shadow:0 0 0 4px rgba(127,111,201,.18),0 8px 24px rgba(127,111,201,.2)}
@@ -442,7 +479,7 @@ h2.title{font-weight:300;letter-spacing:-.01em}
 <section class="page" id="home" aria-label="Home">
   <div class="page-inner home">
     <div>
-      <div class="eyebrow reveal">デジタルクリエイター <span class="jp">· Sarawak, Malaysia</span></div>
+      <div class="eyebrow reveal"><span class="jpw">デジタルクリエイター</span> <span class="jp">· Sarawak, Malaysia</span></div>
       <h1 class="reveal">Ahbangkun<span class="sub">Digital Creator &amp; <em>Anime Artist</em></span></h1>
       <p class="bio reveal"><b>I do 3D Blender stuff~ 🇲🇾</b><br>Kamen Rider, Ultraman and Super Sentai, built in Blender and shared on TikTok, YouTube and Sketchfab. DM me for commissions.</p>
       <div class="stats reveal">
@@ -546,7 +583,7 @@ h2.title{font-weight:300;letter-spacing:-.01em}
         </div>
       </article>
       <article class="card mlist">
-        <div class="mlist-head"><span>Featured models</span><a class="js-link" data-link="sketchfab" target="_blank" rel="noopener">All <span class="js-modelcount">82</span> <i data-lucide="arrow-up-right"></i></a></div>
+        <div class="mlist-head"><span>Featured models</span><button class="gacha" id="gacha" title="Pick a random model"><i data-lucide="dices"></i>Surprise me</button><a class="js-link" data-link="sketchfab" target="_blank" rel="noopener">All <span class="js-modelcount">82</span> <i data-lucide="arrow-up-right"></i></a></div>
         <ul id="modelList"></ul>
       </article>
     </div>
@@ -802,14 +839,14 @@ window.CONFIG = {
   ],
 
   skills: [
-    { name:"3D Modeling",           jp:"3Dモデリング",     icon:"box",             c:"var(--lav)",   desc:"Heroes, belts and weapons in Blender." },
-    { name:"3D Animation",          jp:"3Dアニメーション", icon:"rotate-3d",       c:"var(--sky)",   desc:"Kamen Rider, Ultraman and Sentai videos." },
-    { name:"Drawing",               jp:"イラスト",         icon:"brush",           c:"var(--pink)",  desc:"Characters, fan art and comics." },
-    { name:"2D Animation",          jp:"2Dアニメーション", icon:"film",            c:"var(--peach)", desc:"Short 2D animated pieces." },
-    { name:"Comics & Storyboarding",jp:"漫画",             icon:"panels-top-left", c:"var(--mint)",  desc:"Three WEBTOON Canvas series." },
-    { name:"Fan Art",               jp:"ファンアート",     icon:"heart",           c:"var(--lav)",   desc:"Anime, VTuber and tokusatsu fan art." },
-    { name:"Coding",                jp:"コーディング",     icon:"code-xml",        c:"var(--sky)",   desc:"Basic, still learning." },
-    { name:"Japanese",              jp:"日本語",           icon:"languages",       c:"var(--pink)",  desc:"Beginner. よろしく!" }
+    { name:"3D Modeling",           jp:"3Dモデリング",     icon:"box",             c:"var(--lav)",   desc:"Heroes, belts and weapons in Blender.", back:"Spin my models in 3D, most are free to download.", to:"models", toLabel:"See my 3D models" },
+    { name:"3D Animation",          jp:"3Dアニメーション", icon:"rotate-3d",       c:"var(--sky)",   desc:"Kamen Rider, Ultraman and Sentai videos.", back:"My Kamen Rider, Ultraman and Sentai clips.", to:"tiktok", toLabel:"Watch the clips" },
+    { name:"Drawing",               jp:"イラスト",         icon:"brush",           c:"var(--pink)",  desc:"Characters, fan art and comics.", back:"Fan art I posted on X.", to:"art", toLabel:"See my drawings" },
+    { name:"2D Animation",          jp:"2Dアニメーション", icon:"film",            c:"var(--peach)", desc:"Short 2D animated pieces.", back:"Short animations I posted on X.", to:"art", toLabel:"Watch them" },
+    { name:"Comics & Storyboarding",jp:"漫画",             icon:"panels-top-left", c:"var(--mint)",  desc:"Three WEBTOON Canvas series.", back:"Three WEBTOON series you can read right here.", to:"webtoon", toLabel:"Read my WEBTOON" },
+    { name:"Fan Art",               jp:"ファンアート",     icon:"heart",           c:"var(--lav)",   desc:"Anime, VTuber and tokusatsu fan art.", back:"Anime, VTuber and tokusatsu fan art.", to:"art", toLabel:"Open the gallery" },
+    { name:"Coding",                jp:"コーディング",     icon:"code-xml",        c:"var(--sky)",   desc:"Basic, still learning.", back:"You're looking at it! I built this site." },
+    { name:"Japanese",              jp:"日本語",           icon:"languages",       c:"var(--pink)",  desc:"Beginner. よろしく!", back:"Hover the Japanese words on this site to learn them with me ✦" }
   ],
   tools: ["Blender", "Sketchfab", "WEBTOON Canvas", "TikTok", "YouTube", "X"]
 };
@@ -959,6 +996,14 @@ window.CONFIG = {
   }
   $('#stageCover').addEventListener('click', loadModel);
   select(C.models[0], false);
+  $('#gacha').addEventListener('click', () => {
+    const g = $('#gacha'); g.classList.remove('roll'); void g.offsetWidth; g.classList.add('roll');
+    const others = C.models.filter(m => m !== current), m = others[Math.floor(Math.random() * others.length)];
+    setTimeout(() => {
+      select(m, false); stage.classList.remove('pop'); void stage.offsetWidth; stage.classList.add('pop');
+      const row = list.querySelector(`[data-uid="${m.uid}"]`); if (row) row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }, 350);
+  });
 
   const pick = imgs => (imgs || []).filter(i => i.width >= 300).sort((a, b) => a.width - b.width)[0] || (imgs || [])[0];
   Promise.all(C.models.map(m => fetch(`https://api.sketchfab.com/v3/models/${m.uid}`).then(r => r.ok ? r.json() : null).then(d => {
@@ -1007,8 +1052,17 @@ window.CONFIG = {
   modal.addEventListener('click', e => { if (e.target === modal) closeClip(); });
 
   /* ---------- skills ---------- */
-  $('#skillGrid').innerHTML = C.skills.map(s => `<article class="card skill"><div class="ic" style="--c:${s.c}"><i data-lucide="${s.icon}"></i></div>
-    <b>${esc(s.name)}</b><span class="jp">${s.jp}</span>${s.desc ? `<p>${esc(s.desc)}</p>` : ''}</article>`).join('');
+  $('#skillGrid').innerHTML = C.skills.map((s, i) => `<button class="skill-flip" data-i="${i}" aria-pressed="false" aria-label="${esc(s.name)}: flip card">
+    <span class="card skill face front"><span class="ic" style="--c:${s.c}"><i data-lucide="${s.icon}"></i></span>
+      <b>${esc(s.name)}</b><span class="jp">${s.jp}</span>${s.desc ? `<p>${esc(s.desc)}</p>` : ''}<span class="flip-hint"><i data-lucide="rotate-cw"></i></span></span>
+    <span class="card skill face back" style="--c:${s.c}"><b>${esc(s.name)}</b><p>${esc(s.back || '')}</p>
+      ${s.to ? `<span class="go-to" data-to="${s.to}">${esc(s.toLabel)} <i data-lucide="arrow-right"></i></span>` : ''}</span></button>`).join('');
+  $('#skillGrid').addEventListener('click', e => {
+    const t = e.target.closest('.go-to');
+    if (t) { e.stopPropagation(); const i = pages.findIndex(p => p.id === t.dataset.to); if (i >= 0) go(i); return; }
+    const f = e.target.closest('.skill-flip'); if (!f) return;
+    f.classList.toggle('flipped'); f.setAttribute('aria-pressed', f.classList.contains('flipped'));
+  });
   $('#tools').innerHTML = C.tools.map((t, i) => `<span class="pill ${['', 'pink', 'mint', 'peach', 'sky'][i % 5]}">${esc(t)}</span>`).join('');
 
   /* ---------- PAGER: left → right ---------- */
@@ -1096,10 +1150,43 @@ window.CONFIG = {
     $$('.js-shopword').forEach(e => e.textContent = open ? 'OPEN' : 'CLOSED');
     $$('.js-shopjp').forEach(e => e.textContent = open ? '営業中' : '準備中');
     $$('.js-shopline').forEach(e => e.textContent = open ? 'Commissions are open' : 'Commissions are closed for now');
+    try { addTips(); } catch (e) {}
   };
   setShop(C.commissions);
   fetch('status.json?t=' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.json() : null)
     .then(d => { if (d && d.commissions) setShop(d.commissions); }).catch(() => {});
+
+  /* ---------- Japanese word helper (hover or tap) ---------- */
+  const JP = {
+    'デジタルクリエイター':'dejitaru kurieitā · digital creator', 'プロフィール':'purofīru · profile', '3Dモデル':'3D moderu · 3D models',
+    '人気動画':'ninki dōga · popular videos', 'ウェブトゥーン':'webutūn · webtoon', 'イラスト':'irasuto · illustration', 'アニメ':'anime · animation',
+    'スキル':'sukiru · skills', '連絡':'renraku · contact', '造形師':'zōkeishi · sculptor, model maker', '営業中':'eigyō-chū · open for business',
+    '準備中':'junbi-chū · getting ready (closed)', '3Dモデリング':'3D moderingu · 3D modeling', '3Dアニメーション':'3D animēshon · 3D animation',
+    '2Dアニメーション':'2D animēshon · 2D animation', '漫画':'manga · comics', 'ファンアート':'fan āto · fan art', 'コーディング':'kōdingu · coding',
+    '日本語':'nihongo · Japanese', '作品':'sakuhin · works'
+  };
+  const tipFor = txt => txt.split('·').map(s => s.trim()).map(s => JP[s]).filter(Boolean).join('  /  ');
+  const addTips = () => $$('.jpw, .eyebrow .jp, .skill .jp, .idcard .kanji, .shop-sign em').forEach(el => {
+    const t = tipFor(el.textContent); if (t) el.dataset.tip = t; else delete el.dataset.tip;
+  });
+  addTips();
+  document.addEventListener('click', e => {
+    const el = e.target.closest('[data-tip]');
+    $$('.tip-on').forEach(x => { if (x !== el) x.classList.remove('tip-on'); });
+    if (el && !el.closest('a, button')) el.classList.toggle('tip-on');
+  });
+
+  /* ---------- profile card tilts toward the pointer, like a holo card ---------- */
+  const idw = $('.idwrap'), idc = $('.idcard');
+  if (idw && matchMedia('(hover: hover)').matches) {
+    idw.addEventListener('pointermove', e => {
+      if (!motionOn) return;
+      const r = idc.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+      idc.style.transform = `rotateY(${(x - .5) * 10}deg) rotateX(${(.5 - y) * 8}deg)`;
+      idc.style.setProperty('--mx', x * 100 + '%'); idc.style.setProperty('--my', y * 100 + '%');
+    });
+    idw.addEventListener('pointerleave', () => { idc.style.transform = ''; });
+  }
 
   /* ---------- console-style clock ---------- */
   const tick = () => { const d = new Date(); $('#clock').textContent = `${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`; };
