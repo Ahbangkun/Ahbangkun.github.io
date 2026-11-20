@@ -125,13 +125,35 @@ h2.title{font-size:clamp(28px,3.6vw,42px);font-weight:900;line-height:1.1;margin
 .stat span{font-size:12px;color:var(--muted);font-weight:700}
 .stat:nth-child(1) b{color:var(--pink-d)} .stat:nth-child(2) b{color:var(--lav-d)} .stat:nth-child(3) b{color:var(--mint-d)}
 .cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
-.idcard{padding:28px;text-align:center;justify-self:center;width:min(380px,100%)}
+.idwrap{position:relative;justify-self:center;width:min(380px,100%);padding-top:22px}
+.idcard{padding:28px;text-align:center;width:100%}
+/* hanging shop sign: OPEN / CLOSED for commissions */
+.shop-sign{position:absolute;top:-30px;right:-26px;z-index:3;width:120px;display:flex;flex-direction:column;align-items:center;transform-origin:50% 5px;animation:swing 5s ease-in-out infinite}
+.shop-sign .strings{width:120px;height:34px;display:block;overflow:visible}
+.shop-sign .strings path{stroke:var(--ink-2);stroke-width:1.6;fill:none;stroke-linecap:round}
+.shop-sign .strings circle{fill:var(--ink);}
+.shop-sign .board{margin-top:-2px;width:112px;padding:7px 8px 8px;border-radius:14px;text-align:center;line-height:1.1;
+  background:var(--mint);border:3px solid #fff;box-shadow:0 8px 20px rgba(59,53,72,.16);color:var(--ink)}
+.shop-sign small{display:block;font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+.shop-sign b{display:block;font-size:22px;font-weight:900;letter-spacing:.12em;margin:2px 0 1px;color:var(--mint-d)}
+.shop-sign em{display:block;font-style:normal;font-size:11px;font-weight:700;letter-spacing:.2em;color:var(--ink-2)}
+.shop-sign[data-status="closed"] .board{background:var(--pink)}
+.shop-sign[data-status="closed"] b{color:var(--pink-d);font-size:18px;letter-spacing:.06em;margin:4px 0 2px}
+.shop-sign.small[data-status="closed"] b{font-size:14px}
+.shop-sign:hover{animation-play-state:paused}
+.shop-sign.small{position:static;width:96px;transform-origin:50% 5px;flex:none;margin-top:-26px}
+.shop-sign.small .strings{width:96px;height:26px}
+.shop-sign.small .board{width:92px;padding:5px 6px 6px}
+.shop-sign.small b{font-size:17px}
+.dm-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+@keyframes swing{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+.still .shop-sign{animation:none}
 .idcard .ring{width:min(220px,60%);aspect-ratio:1;margin:6px auto 18px;border-radius:50%;padding:8px;background:conic-gradient(from 210deg,var(--lav),var(--pink),var(--peach),var(--mint),var(--sky),var(--lav))}
 .idcard .ring img{width:100%;height:100%;border-radius:50%;background:#fff;object-fit:cover;border:4px solid var(--paper)}
 .idcard h3{font-size:24px;font-weight:900}
 .idcard .handle{color:var(--muted);font-weight:700;font-size:14px}
 .idcard .quote{margin-top:14px;padding:12px 16px;border-radius:14px;background:var(--bg);font-weight:700;color:var(--ink-2)}
-.idcard .kanji{position:absolute;top:16px;right:18px;writing-mode:vertical-rl;font-size:22px;font-weight:900;color:var(--lav-d);opacity:.5;letter-spacing:.1em}
+.idcard .kanji{position:absolute;top:62px;left:22px;writing-mode:vertical-rl;font-size:22px;font-weight:900;color:var(--lav-d);opacity:.5;letter-spacing:.1em}
 .idcard .loc{position:absolute;top:16px;left:16px}
 .hint{display:flex;align-items:center;gap:8px;margin-top:30px;font-size:13px;color:var(--muted);font-weight:700}
 .hint svg{width:16px;height:16px}
@@ -437,13 +459,19 @@ h2.title{font-weight:300;letter-spacing:-.01em}
       </div>
       <div class="hint reveal"><i data-lucide="move-horizontal"></i>Use the arrows, swipe, or scroll to move between pages</div>
     </div>
-    <div class="card idcard reveal">
+    <div class="idwrap reveal">
+      <a class="shop-sign js-link" data-link="commission" target="_blank" rel="noopener" data-status="open" aria-label="Commissions: open">
+        <svg class="strings" viewBox="0 0 120 34" aria-hidden="true"><path d="M60 5 L14 33 M60 5 L106 33" /><circle cx="60" cy="5" r="4.5" /></svg>
+        <span class="board"><small>Commissions</small><b class="js-shopword">OPEN</b><em class="js-shopjp">営業中</em></span>
+      </a>
+    <div class="card idcard">
       <span class="pill mint loc"><i data-lucide="map-pin"></i>Sarawak · MY</span>
       <span class="kanji" aria-hidden="true">造形師</span>
       <div class="ring"><img class="js-avatar" alt="Ahbangkun logo" /></div>
       <h3>Ahbangkun</h3>
       <div class="handle">@ahbangkun</div>
       <div class="quote">“I do 3D Blender stuff~ 🇲🇾”</div>
+    </div>
     </div>
   </div>
 </section>
@@ -591,8 +619,11 @@ h2.title{font-weight:300;letter-spacing:-.01em}
       <div class="socials reveal" id="socials"></div>
       <div class="reveal">
         <article class="card dm" id="dmBox">
-          <h3>DM me for Commission ✦</h3>
-          <p>Commissions are open, including low poly 3D models. The quickest way to reach me is a DM on TikTok or Discord, or through Sociabuzz.</p>
+          <div class="dm-head"><h3>DM me for Commission ✦</h3><a class="shop-sign small js-link" data-link="commission" target="_blank" rel="noopener" data-status="open" aria-label="Commissions: open">
+        <svg class="strings" viewBox="0 0 120 34" aria-hidden="true"><path d="M60 5 L14 33 M60 5 L106 33" /><circle cx="60" cy="5" r="4.5" /></svg>
+        <span class="board"><small>Commissions</small><b class="js-shopword">OPEN</b><em class="js-shopjp">営業中</em></span>
+      </a></div>
+          <p><span class="js-shopline">Commissions are open</span>, including low poly 3D models. The quickest way to reach me is a DM on TikTok or Discord, or through Sociabuzz.</p>
           <div class="btns">
             <a class="btn dark js-link" data-link="tiktok" target="_blank" rel="noopener"><i data-lucide="message-circle"></i>DM on TikTok</a>
             <a class="btn sky" id="dmDiscord" target="_blank" rel="noopener"><i data-lucide="message-circle"></i>Discord</a>
@@ -700,6 +731,10 @@ window.CONFIG = {
     { thumb:"https://pbs.twimg.com/ext_tw_video_thumb/1553797764961927168/pu/img/MB1BwYgX2sa6690m.jpg", url:"https://x.com/Ahbangkun/status/1553797962807246849", date:"Jul 31, 2022", title:"Magon Deez Ball" },
     { thumb:"https://pbs.twimg.com/ext_tw_video_thumb/1552321279792795648/pu/img/1LIRZVyQcyv3gnyL.jpg", url:"https://x.com/Ahbangkun/status/1552321382125514752", date:"Jul 27, 2022", title:"Maglord getting jumpscared by Altare" }
   ],
+
+  // Commission status shown on the hanging sign: "open" or "closed".
+  // status.json in the repo overrides this, so the sign can be flipped without touching this file.
+  commissions: "open",
 
   // WEBTOON series. Episode images live in the repo's /webtoon folder as <key>-ep<no>-<page>.jpg
   // (pages = how many images). If they're missing, the reader links to WEBTOON instead.
@@ -1043,7 +1078,7 @@ window.CONFIG = {
   let motionOn = !reduced;
   try { const s = localStorage.getItem('ahb-motion'); if (s !== null) motionOn = s === '1'; } catch (e) {}
   const setMotion = on => {
-    motionOn = on;
+    motionOn = on; document.documentElement.classList.toggle('still', !on);
     $('#motionLbl').textContent = on ? 'Motion on' : 'Motion off';
     $('#motionIco').innerHTML = `<i data-lucide="${on ? 'pause' : 'play'}"></i>`;
     icons();
@@ -1053,6 +1088,18 @@ window.CONFIG = {
   window.__ahbMotion = () => motionOn;
   $('#motionBtn').addEventListener('click', () => setMotion(!motionOn));
   setMotion(motionOn);
+
+  /* ---------- commission sign (OPEN / CLOSED) ---------- */
+  const setShop = st => {
+    const open = st !== 'closed';
+    $$('.shop-sign').forEach(s => { s.dataset.status = open ? 'open' : 'closed'; s.setAttribute('aria-label', 'Commissions: ' + (open ? 'open' : 'closed')); });
+    $$('.js-shopword').forEach(e => e.textContent = open ? 'OPEN' : 'CLOSED');
+    $$('.js-shopjp').forEach(e => e.textContent = open ? '営業中' : '準備中');
+    $$('.js-shopline').forEach(e => e.textContent = open ? 'Commissions are open' : 'Commissions are closed for now');
+  };
+  setShop(C.commissions);
+  fetch('status.json?t=' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.json() : null)
+    .then(d => { if (d && d.commissions) setShop(d.commissions); }).catch(() => {});
 
   /* ---------- console-style clock ---------- */
   const tick = () => { const d = new Date(); $('#clock').textContent = `${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`; };
