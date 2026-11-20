@@ -233,7 +233,7 @@ h2.title{font-size:clamp(28px,3.6vw,42px);font-weight:900;line-height:1.1;margin
 .ep b{display:block;font-size:13px}
 .ep small{font-size:11px;color:var(--muted);font-weight:700}
 .wt-cover img{object-position:center 25%}
-.skills{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.skills{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .skill{padding:18px}
 .skill .ic{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:var(--c);margin-bottom:12px}
 .skill .ic svg{width:22px;height:22px;color:var(--ink)}
@@ -241,6 +241,36 @@ h2.title{font-size:clamp(28px,3.6vw,42px);font-weight:900;line-height:1.1;margin
 .skill .jp{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.1em}
 .skill p{font-size:12px;color:var(--ink-2);margin-top:6px;line-height:1.5}
 .tools{margin-top:16px}
+
+/* WEBTOON series + reader */
+.series{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.sr{display:flex;flex-direction:column}
+.sr .cv{position:relative;aspect-ratio:2/1;background:var(--mint);overflow:hidden}
+.sr .cv img{width:100%;height:100%;object-fit:cover;object-position:center 30%}
+.sr .cv .pill{position:absolute;top:10px;left:10px}
+.sr .bd{padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px;flex:1}
+.sr h3{font-size:18px;font-weight:900;line-height:1.2}
+.sr p{font-size:13px;color:var(--ink-2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sr .st{font-size:12px;color:var(--muted);font-weight:700;display:flex;gap:12px}
+.sr .st span{display:flex;align-items:center;gap:4px}
+.sr .st svg{width:13px;height:13px}
+.sr .eplist{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto}
+.sr .ep{padding:7px 11px;border-radius:10px;background:var(--bg);border:1px solid var(--line);font-size:12px;font-weight:700;text-align:left}
+.sr .ep:hover{background:var(--mint)}
+.reader{position:fixed;inset:0;z-index:55;background:rgba(246,241,236,.97);display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .25s}
+.reader.open{opacity:1;pointer-events:auto}
+.reader .rbar{display:flex;align-items:center;gap:12px;padding:12px 4vw;border-bottom:1px solid var(--line);background:var(--paper)}
+.reader .rbar b{font-size:15px;font-weight:900}
+.reader .rbar small{color:var(--muted);font-weight:700;font-size:12px}
+.reader .rbar .sp{flex:1}
+.reader .rbar button,.reader .rbar a{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--bg);border:1px solid var(--line)}
+.reader .rbar button:disabled{opacity:.35}
+.reader .rbar svg{width:18px;height:18px}
+.reader .rscroll{flex:1;overflow-y:auto}
+.reader .strip{max-width:720px;margin:0 auto;background:#fff}
+.reader .strip img{width:100%;display:block}
+.reader .rend{max-width:720px;margin:0 auto;padding:28px 20px 60px;text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center}
+.reader .rend p{color:var(--ink-2)}
 
 /* ================================================================
    06 CONTACT
@@ -276,7 +306,7 @@ footer.fine{margin-top:20px;text-align:center}
    RESPONSIVE
 ================================================================ */
 @media (max-width:1000px){
-  .home,.profile,.works,.contact{grid-template-columns:1fr}
+  .home,.profile,.works,.contact,.series{grid-template-columns:1fr}
   .models-wrap{grid-template-columns:1fr;height:auto}
   .viewer .stage{aspect-ratio:4/3;flex:none}
   .mlist ul{max-height:300px}
@@ -314,8 +344,9 @@ footer.fine{margin-top:20px;text-align:center}
     <a class="tab" href="#profile" data-go="1"><i data-lucide="user-round"></i><span class="lbl">Profile</span></a>
     <a class="tab" href="#models" data-go="2"><i data-lucide="box"></i><span class="lbl">3D</span></a>
     <a class="tab" href="#tiktok" data-go="3"><i data-lucide="clapperboard"></i><span class="lbl">TikTok</span></a>
-    <a class="tab" href="#works" data-go="4"><i data-lucide="book-open"></i><span class="lbl">Works</span></a>
-    <a class="tab" href="#contact" data-go="5"><i data-lucide="send"></i><span class="lbl">Contact</span></a>
+    <a class="tab" href="#webtoon" data-go="4"><i data-lucide="book-open"></i><span class="lbl">WEBTOON</span></a>
+    <a class="tab" href="#skills" data-go="5"><i data-lucide="sparkles"></i><span class="lbl">Skills</span></a>
+    <a class="tab" href="#contact" data-go="6"><i data-lucide="send"></i><span class="lbl">Contact</span></a>
   </nav>
   <button class="motion-btn" id="motionBtn" title="Turn background animation on or off"><span id="motionIco"></span><span class="lbl" id="motionLbl"></span></button>
 </header>
@@ -338,6 +369,7 @@ footer.fine{margin-top:20px;text-align:center}
         <a class="btn dark js-link" data-link="tiktok" target="_blank" rel="noopener"><i data-lucide="music-2"></i>TikTok</a>
         <a class="btn pink js-link" data-link="youtube" target="_blank" rel="noopener"><i data-lucide="youtube"></i>YouTube</a>
         <a class="btn lav js-link" data-link="instagram" target="_blank" rel="noopener"><i data-lucide="instagram"></i>Instagram</a>
+        <a class="btn sky js-link" data-link="twitter" target="_blank" rel="noopener"><i data-lucide="twitter"></i>X</a>
         <a class="btn peach js-link" data-link="commission" target="_blank" rel="noopener"><i data-lucide="sparkles"></i>Commissions</a>
       </div>
       <div class="hint reveal"><i data-lucide="move-horizontal"></i>Use the arrows, swipe, or scroll to move between pages</div>
@@ -361,7 +393,8 @@ footer.fine{margin-top:20px;text-align:center}
     <div class="profile">
       <article class="card about reveal">
         <p><b>Ahbangkun</b> is a 3D Blender artist from <b>Sarawak, Malaysia</b>. Most of the work is tokusatsu: transformation belts, devices, weapons and heroes from <b>Kamen Rider</b>, <b>Ultraman</b> and <b>Super Sentai</b>, plus anime and manga characters from series like <b>Gundam</b>, <b>One Piece</b>, <b>Kaiju No. 8</b>, <b>Kagurabachi</b> and <b>Ichi the Witch</b>.</p>
-        <p>On <b>TikTok</b> (65.8K followers, 1.7M likes) the most-watched video passes <b>1.1M views</b>. The 3D models live on <b>Sketchfab</b>, most of them free to download. Commissions are open, including original character designs. Ahbangkun also created the WEBTOON Canvas slice-of-life series <b>“I'm a good guy.”</b>, about a delinquent who meets a cowardly boy in high school.</p>
+        <p>On <b>TikTok</b> (65.8K followers, 1.7M likes) the most-watched video passes <b>1.1M views</b>. The 3D models live on <b>Sketchfab</b>, most of them free to download. Commissions are open, including original character designs. Ahbangkun also makes comics, with three WEBTOON Canvas series: <b>“I'm a good guy.”</b>, <b>“Isekai Is Amazing!!”</b> and <b>“I Was Reincarnated As a Demon”</b>.</p>
+        <p>Loves 3D modeling, drawing, and 2D and 3D animation. Also codes a little (basic), and is learning Japanese as a beginner. 頑張ります!</p>
         <h4><i data-lucide="heart"></i>Fandoms</h4>
         <div class="pills">
           <span class="pill">Kamen Rider</span><span class="pill pink">Ultraman</span><span class="pill peach">Super Sentai</span>
@@ -381,7 +414,8 @@ footer.fine{margin-top:20px;text-align:center}
             <li><span>TikTok</span><span>65.8K followers · 1.7M likes</span></li>
             <li><span>Sketchfab</span><span><span class="js-modelcount">82</span> models</span></li>
             <li><span>Commissions</span><span style="color:var(--mint-d)">Open · DM me</span></li>
-            <li><span>WEBTOON Canvas</span><span>“I'm a good guy.” · 3 episodes</span></li>
+            <li><span>WEBTOON Canvas</span><span>3 series</span></li>
+            <li><span>Learning</span><span>日本語 (beginner)</span></li>
           </ul>
         </article>
         <article class="card reveal">
@@ -443,33 +477,32 @@ footer.fine{margin-top:20px;text-align:center}
 </section>
 
 <!-- ============================ 05 WORKS ============================ -->
-<section class="page" id="works" aria-label="WEBTOON and skills">
+<section class="page" id="webtoon" aria-label="WEBTOON series">
   <div class="page-inner">
-    <div class="eyebrow reveal">05 <span class="jp">作品 · スキル</span></div>
-    <h2 class="title reveal">WEBTOON &amp; Skills</h2>
-    <div class="works">
-      <article class="card webtoon reveal">
-        <div class="wt-cover" id="webtoonCover"><div class="panels" aria-hidden="true"><div></div><div></div><div></div></div></div>
-        <div class="wt-body">
-          <div class="pills"><span class="pill mint"><i data-lucide="book-open"></i>WEBTOON Canvas</span><span class="pill pink">Slice of life</span></div>
-          <h3>I'm a good guy.</h3>
-          <p id="webtoonBlurb">A WEBTOON Canvas series by Ahbangkun.</p>
-          <div class="eps" id="webtoonEps"></div>
-          <a class="btn mint js-link" data-link="webtoon" target="_blank" rel="noopener"><i data-lucide="book-open-text"></i>Read on WEBTOON</a>
-        </div>
-      </article>
-      <div class="reveal">
-        <div class="skills" id="skills"></div>
-        <div class="pills tools" id="tools"></div>
-      </div>
+    <div class="eyebrow reveal">05 <span class="jp">ウェブトゥーン</span></div>
+    <h2 class="title reveal">WEBTOON Series</h2>
+    <div class="series reveal" id="series"></div>
+    <div class="under reveal">
+      <span class="fine">Tap an episode to read it right here.</span>
+      <a class="btn mint js-link" data-link="webtoonProfile" target="_blank" rel="noopener"><i data-lucide="book-open-text"></i>All my series on WEBTOON</a>
     </div>
+  </div>
+</section>
+
+<!-- ============================ 06 SKILLS ============================ -->
+<section class="page" id="skills" aria-label="Skills">
+  <div class="page-inner">
+    <div class="eyebrow reveal">06 <span class="jp">スキル</span></div>
+    <h2 class="title reveal">Skills &amp; Tools</h2>
+    <div class="skills reveal" id="skillGrid"></div>
+    <div class="pills tools reveal" id="tools"></div>
   </div>
 </section>
 
 <!-- ============================ 06 CONTACT ============================ -->
 <section class="page" id="contact" aria-label="Contact">
   <div class="page-inner">
-    <div class="eyebrow reveal">06 <span class="jp">連絡</span></div>
+    <div class="eyebrow reveal">07 <span class="jp">連絡</span></div>
     <h2 class="title reveal">Say hi &amp; find me</h2>
     <div class="contact">
       <div class="socials reveal" id="socials"></div>
@@ -510,6 +543,17 @@ footer.fine{margin-top:20px;text-align:center}
   <button class="close" id="modalClose" aria-label="Close"><i data-lucide="x"></i></button>
   <div class="box" id="modalBox"></div>
 </div>
+<div class="reader" id="reader" role="dialog" aria-modal="true" aria-label="WEBTOON reader">
+  <div class="rbar">
+    <button id="rPrev" aria-label="Previous episode"><i data-lucide="chevron-left"></i></button>
+    <div><b id="rTitle"></b><br><small id="rEp"></small></div>
+    <button id="rNext" aria-label="Next episode"><i data-lucide="chevron-right"></i></button>
+    <span class="sp"></span>
+    <a id="rOpen" target="_blank" rel="noopener" aria-label="Open on WEBTOON"><i data-lucide="external-link"></i></a>
+    <button id="rClose" aria-label="Close reader"><i data-lucide="x"></i></button>
+  </div>
+  <div class="rscroll" id="rScroll"><div class="strip" id="rStrip"></div><div class="rend" id="rEnd"></div></div>
+</div>
 <div class="toast" id="toast"></div>
 
 <!-- ================================================================
@@ -522,6 +566,8 @@ window.CONFIG = {
     tiktok:     "https://www.tiktok.com/@ahbangkun",
     youtube:    "https://www.youtube.com/@ahbangkun665",
     instagram:  "https://www.instagram.com/ahbangkun/",
+    twitter:    "https://x.com/Ahbangkun",
+    webtoonProfile: "https://www.webtoons.com/p/community/en/u/r87o2",
     sketchfab:  "https://sketchfab.com/Ahbangkun",
     commission: "https://sociabuzz.com/ahbangkun",
     webtoon:    "https://www.webtoons.com/en/canvas/im-a-good-guy/list?title_no=580963",
@@ -531,12 +577,26 @@ window.CONFIG = {
   discordId: "480747939212558347",   // opens discord.com/users/<id>
   email: "",          // ← your email (shows the contact form)
   formEndpoint: "",   // ← optional Formspree endpoint
-  webtoonCover: "https://webtoon-phinf.pstatic.net/20210117_144/1610887230518cvhzF_PNG/cb1077cd-5617-48af-8129-eff44c2206be.png",
-  webtoonBlurb: "A story about a delinquent met the cowardly boy in high school.",
-  webtoonEpisodes: [
-    { no:1, title:"Bread", date:"Jan 13, 2021", url:"https://www.webtoons.com/en/canvas/im-a-good-guy/bread/viewer?title_no=580963&episode_no=1" },
-    { no:2, title:"Late",  date:"Jan 17, 2021", url:"https://www.webtoons.com/en/canvas/im-a-good-guy/late/viewer?title_no=580963&episode_no=2" },
-    { no:3, title:"Cat",   date:"Jan 18, 2021", url:"https://www.webtoons.com/en/canvas/im-a-good-guy/cat/viewer?title_no=580963&episode_no=3" }
+  // WEBTOON series. Episode images live in the repo's /webtoon folder as <key>-ep<no>-<page>.jpg
+  // (pages = how many images). If they're missing, the reader links to WEBTOON instead.
+  webtoons: [
+    { key:"goodguy", title:"I'm a good guy.", genre:"Slice of life", views:"360", subs:"14",
+      summary:"A story about a delinquent met the cowardly boy in high school.",
+      cover:"https://webtoon-phinf.pstatic.net/20210117_144/1610887230518cvhzF_PNG/cb1077cd-5617-48af-8129-eff44c2206be.png",
+      url:"https://www.webtoons.com/en/canvas/im-a-good-guy/list?title_no=580963",
+      eps:[ { no:1, title:"Bread", date:"Jan 13, 2021", pages:6, url:"https://www.webtoons.com/en/canvas/im-a-good-guy/bread/viewer?title_no=580963&episode_no=1" },
+            { no:2, title:"Late",  date:"Jan 17, 2021", pages:9, url:"https://www.webtoons.com/en/canvas/im-a-good-guy/late/viewer?title_no=580963&episode_no=2" },
+            { no:3, title:"Cat",   date:"Jan 18, 2021", pages:5, url:"https://www.webtoons.com/en/canvas/im-a-good-guy/cat/viewer?title_no=580963&episode_no=3" } ] },
+    { key:"isekai", title:"Isekai Is Amazing!!", genre:"Comedy", views:"193", subs:"11",
+      summary:"A story of earthling got summoned to a other world, What adventure shall await for Them!!",
+      cover:"https://swebtoon-phinf.pstatic.net/20200524_212/1590295253826UMgyb_PNG/thumbnail.jpg",
+      url:"https://www.webtoons.com/en/canvas/isekai-is-amazing/list?title_no=445354",
+      eps:[ { no:1, title:"Alchemist!!", date:"May 24, 2020", pages:3, url:"https://www.webtoons.com/en/canvas/isekai-is-amazing/list?title_no=445354" } ] },
+    { key:"demon", title:"I Was Reincarnated As a Demon", genre:"Comedy", views:"1,089", subs:"64",
+      summary:"Mou, who died because of his own drink, has been reincarnated into another world as a demon. After five years he wants to see the humans' progress, and meets a lot of humans and monsters on his journey to defeat the \"Hero\".",
+      cover:"https://swebtoon-phinf.pstatic.net/20190606_78/1559749213009W5OCV_JPEG/thumbnail.jpg",
+      url:"https://www.webtoons.com/en/canvas/i-was-reincarnated-as-a-demon/list?title_no=305170",
+      eps:[ { no:1, title:"I Was Reincarnated As a Demon", date:"Jun 6, 2019", pages:20, url:"https://www.webtoons.com/en/canvas/i-was-reincarnated-as-a-demon/list?title_no=305170" } ] }
   ],
   modelCount: 82,
 
@@ -544,10 +604,11 @@ window.CONFIG = {
     { key:"tiktok",     name:"TikTok",     sub:"@ahbangkun · 65.8K followers",          icon:"music-2",        c:"var(--pink)" },
     { key:"youtube",    name:"YouTube",    sub:"@ahbangkun665 · I post when I'm free",  icon:"youtube",        c:"var(--peach)" },
     { key:"instagram",  name:"Instagram",  sub:"@ahbangkun · random stuff I did",       icon:"instagram",      c:"var(--lav)" },
+    { key:"twitter",    name:"X (Twitter)", sub:"@Ahbangkun",                            icon:"twitter",        c:"var(--sky)" },
     { key:"discord",    name:"Discord",    sub:"ahbangkun · open profile",               icon:"message-circle", c:"var(--sky)" },
     { key:"sketchfab",  name:"Sketchfab",  sub:"82 3D models · most free to download",  icon:"box",            c:"var(--mint)" },
     { key:"commission", name:"Commissions",sub:"sociabuzz.com/ahbangkun",               icon:"sparkles",       c:"var(--peach)" },
-    { key:"webtoon",    name:"WEBTOON",    sub:"“I'm a good guy.” · Slice of life",      icon:"book-open",      c:"var(--mint)" },
+    { key:"webtoonProfile", name:"WEBTOON", sub:"3 Canvas series",                         icon:"book-open",      c:"var(--mint)" },
     { key:"artstation", name:"ArtStation", sub:"Portfolio",                             icon:"palette",        c:"var(--lav)" }
   ],
 
@@ -583,13 +644,15 @@ window.CONFIG = {
 
   skills: [
     { name:"3D Modeling",           jp:"3Dモデリング",     icon:"box",             c:"var(--lav)",   desc:"Heroes, belts and weapons in Blender." },
-    { name:"Digital Illustration",  jp:"デジタルイラスト", icon:"brush",           c:"var(--pink)",  desc:"" },
-    { name:"Character Concept Art", jp:"キャラデザ",       icon:"user-round-pen",  c:"var(--peach)", desc:"Original character commissions." },
-    { name:"Storyboarding",         jp:"絵コンテ",         icon:"panels-top-left", c:"var(--mint)",  desc:"Panels for “I'm a good guy”." },
-    { name:"2D Animation",          jp:"アニメーション",   icon:"film",            c:"var(--sky)",   desc:"" },
-    { name:"Web Development",       jp:"ウェブ開発",       icon:"code-xml",        c:"var(--lav)",   desc:"" }
+    { name:"3D Animation",          jp:"3Dアニメーション", icon:"rotate-3d",       c:"var(--sky)",   desc:"Kamen Rider, Ultraman and Sentai videos." },
+    { name:"Drawing",               jp:"イラスト",         icon:"brush",           c:"var(--pink)",  desc:"Characters, fan art and comics." },
+    { name:"2D Animation",          jp:"2Dアニメーション", icon:"film",            c:"var(--peach)", desc:"Short 2D animated pieces." },
+    { name:"Comics & Storyboarding",jp:"漫画",             icon:"panels-top-left", c:"var(--mint)",  desc:"Three WEBTOON Canvas series." },
+    { name:"Character Design",      jp:"キャラデザ",       icon:"user-round-pen",  c:"var(--lav)",   desc:"Original character commissions." },
+    { name:"Coding",                jp:"コーディング",     icon:"code-xml",        c:"var(--sky)",   desc:"Basic, still learning." },
+    { name:"Japanese",              jp:"日本語",           icon:"languages",       c:"var(--pink)",  desc:"Beginner. よろしく!" }
   ],
-  tools: ["Blender", "Sketchfab", "TikTok", "YouTube", "WEBTOON Canvas"]
+  tools: ["Blender", "Sketchfab", "WEBTOON Canvas", "TikTok", "YouTube", "X"]
 };
 </script>
 
@@ -612,16 +675,45 @@ window.CONFIG = {
   $$('.js-link').forEach(a => { const u = C.links[a.dataset.link]; if (u) a.href = u; else a.hidden = true; });
   $$('.js-modelcount').forEach(e => e.textContent = C.modelCount);
   $('#year').textContent = new Date().getFullYear();
-  if (C.webtoonBlurb) $('#webtoonBlurb').textContent = C.webtoonBlurb;
-  if (C.webtoonCover) {
-    const cv = $('#webtoonCover'), im = new Image();
-    im.referrerPolicy = 'no-referrer'; im.alt = "I'm a good guy. cover";
-    im.onload = () => { $$('.panels', cv).forEach(p => p.remove()); };
-    im.onerror = () => im.remove();   // keep the drawn panels if WEBTOON blocks the image
-    im.src = C.webtoonCover; cv.appendChild(im);
+  /* ---------- WEBTOON series + reader ---------- */
+  const pad = n => String(n).padStart(2, '0');
+  $('#series').innerHTML = C.webtoons.map((s, si) => `
+    <article class="card sr">
+      <div class="cv"><img src="${esc(s.cover)}" alt="${esc(s.title)} cover" referrerpolicy="no-referrer" loading="lazy"><span class="pill mint">${esc(s.genre)}</span></div>
+      <div class="bd">
+        <h3>${esc(s.title)}</h3>
+        <p>${esc(s.summary)}</p>
+        <div class="st"><span><i data-lucide="eye"></i>${s.views} views</span><span><i data-lucide="heart"></i>${s.subs} subscribers</span></div>
+        <div class="eplist">${s.eps.map((e, ei) => `<button class="ep" data-s="${si}" data-e="${ei}">Ep. ${e.no}${e.title !== s.title ? ' · ' + esc(e.title) : ''}</button>`).join('')}
+          <a class="ep" href="${esc(s.url)}" target="_blank" rel="noopener">WEBTOON ↗</a></div>
+      </div>
+    </article>`).join('');
+  const reader = $('#reader'), strip = $('#rStrip'), rend = $('#rEnd');
+  let cur = null;
+  function openEp(si, ei) {
+    const s = C.webtoons[si], e = s.eps[ei]; cur = { si, ei };
+    $('#rTitle').textContent = s.title; $('#rEp').textContent = `Ep. ${e.no} · ${e.title} · ${e.date}`;
+    $('#rOpen').href = e.url;
+    $('#rPrev').disabled = ei === 0; $('#rNext').disabled = ei === s.eps.length - 1;
+    strip.innerHTML = ''; rend.innerHTML = '';
+    let failed = false;
+    for (let i = 1; i <= e.pages; i++) {
+      const im = new Image(); im.alt = `${s.title} episode ${e.no}, page ${i}`; im.loading = i < 3 ? 'eager' : 'lazy';
+      im.onerror = () => { if (!failed) { failed = true; strip.innerHTML = ''; rend.innerHTML = `<p>This episode isn't available here yet.</p><a class="btn mint" href="${esc(e.url)}" target="_blank" rel="noopener">Read it on WEBTOON</a>`; icons(); } };
+      im.src = `webtoon/${s.key}-ep${e.no}-${pad(i)}.jpg`; strip.appendChild(im);
+    }
+    const next = s.eps[ei + 1];
+    rend.innerHTML = next ? `<p>End of episode ${e.no}</p><button class="btn mint" id="rNextBtn">Next: ${esc(next.title)}</button>`
+                          : `<p>You're all caught up! Like it? Subscribe on WEBTOON 💚</p><a class="btn mint" href="${esc(s.url)}" target="_blank" rel="noopener">Subscribe on WEBTOON</a>`;
+    const nb = $('#rNextBtn'); if (nb) nb.onclick = () => openEp(si, ei + 1);
+    $('#rScroll').scrollTop = 0; reader.classList.add('open'); icons(); $('#rClose').focus();
   }
-  if (C.webtoonEpisodes) $('#webtoonEps').innerHTML = C.webtoonEpisodes.map(e =>
-    `<a class="ep" href="${esc(e.url)}" target="_blank" rel="noopener"><b>Ep. ${e.no} · ${esc(e.title)}</b><small>${esc(e.date)}</small></a>`).join('');
+  const closeReader = () => { reader.classList.remove('open'); strip.innerHTML = ''; };
+  $('#series').addEventListener('click', ev => { const b = ev.target.closest('button.ep'); if (b) openEp(+b.dataset.s, +b.dataset.e); });
+  $('#rClose').addEventListener('click', closeReader);
+  $('#rPrev').addEventListener('click', () => cur && openEp(cur.si, cur.ei - 1));
+  $('#rNext').addEventListener('click', () => cur && openEp(cur.si, cur.ei + 1));
+  addEventListener('keydown', ev => { if (ev.key === 'Escape' && reader.classList.contains('open')) closeReader(); });
   if (C.discordId) $('#dmDiscord').href = `https://discord.com/users/${C.discordId}`; else $('#dmDiscord').hidden = true;
   if (C.email || C.formEndpoint) { $('#contactForm').hidden = false; $('#dmBox').hidden = true; }
 
@@ -730,7 +822,7 @@ window.CONFIG = {
   modal.addEventListener('click', e => { if (e.target === modal) closeClip(); });
 
   /* ---------- skills ---------- */
-  $('#skills').innerHTML = C.skills.map(s => `<article class="card skill"><div class="ic" style="--c:${s.c}"><i data-lucide="${s.icon}"></i></div>
+  $('#skillGrid').innerHTML = C.skills.map(s => `<article class="card skill"><div class="ic" style="--c:${s.c}"><i data-lucide="${s.icon}"></i></div>
     <b>${esc(s.name)}</b><span class="jp">${s.jp}</span>${s.desc ? `<p>${esc(s.desc)}</p>` : ''}</article>`).join('');
   $('#tools').innerHTML = C.tools.map((t, i) => `<span class="pill ${['', 'pink', 'mint', 'peach', 'sky'][i % 5]}">${esc(t)}</span>`).join('');
 
@@ -773,7 +865,7 @@ window.CONFIG = {
     return false;
   };
   pager.addEventListener('wheel', e => {
-    if (modal.classList.contains('open')) return;
+    if (modal.classList.contains('open') || reader.classList.contains('open')) return;
     const dx = Math.abs(e.deltaX), dy = Math.abs(e.deltaY);
     if (dx > dy) return;                          // trackpad sideways swipe: native
     if (canScroll(e.target, e.deltaY)) return;    // let the page scroll vertically first
@@ -785,7 +877,7 @@ window.CONFIG = {
   }, { passive: false });
 
   addEventListener('keydown', e => {
-    if (/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
+    if (/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName) || reader.classList.contains('open')) return;
     if (e.key === 'Escape' && modal.classList.contains('open')) return closeClip();
     if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); go(idx + 1); }
     if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(idx - 1); }
