@@ -439,10 +439,8 @@ h2.title{font-weight:300;letter-spacing:-.01em}
 .dot.active{box-shadow:0 0 10px rgba(127,111,201,.45)}
 /* console-style focus: tile grows a little with a soft glowing ring */
 .clip,.sr,.art-item,.anim-card,.social,.skill-flip,.arrow{transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s}
-.clip:hover,.sr:hover,.art-item:hover,.anim-card:hover,.social:hover,.skill-flip:hover,
-.clip:focus-visible,.art-item:focus-visible{transform:scale(1.035);outline:3px solid #fff;outline-offset:0;
-  box-shadow:0 0 0 6px rgba(127,111,201,.22),0 16px 40px rgba(127,111,201,.25)}
-.btn:hover{transform:none;box-shadow:0 0 0 4px rgba(127,111,201,.18),0 8px 24px rgba(127,111,201,.2)}
+.clip:hover,.sr:hover,.art-item:hover,.anim-card:hover,.social:hover,.skill-flip:hover{transform:translateY(-4px);box-shadow:0 14px 34px rgba(127,111,201,.2)}
+.btn:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(127,111,201,.2)}
 .clock{font-size:15px;font-weight:300;letter-spacing:.04em;color:var(--ink);min-width:44px;text-align:right;font-variant-numeric:tabular-nums}
 @media (max-width:720px){.clock{display:none}}
 </style>
@@ -1362,18 +1360,71 @@ pGeo.setAttribute('iOffset', new THREE.InstancedBufferAttribute(off, 3));
 pGeo.setAttribute('iRot', new THREE.InstancedBufferAttribute(rot, 4));
 pGeo.setAttribute('iScale', new THREE.InstancedBufferAttribute(sc, 1));
 const petals = new THREE.InstancedMesh(pGeo, new THREE.ShaderMaterial({
-  uniforms, transparent: true, side: THREE.DoubleSide, depthWrite: false,
-  vertexShader: `attribute vec3 iOffset; attribute vec4 iRot; attribute float iScale; uniform float uTime; varying float vS; varying vec2 vUv;
+  uniforms: Object.assign(uniforms, { uMouse: { value: new THREE.Vector2(999, 999) }, uPush: { value: 0 } }), transparent: true, side: THREE.DoubleSide, depthWrite: false,
+  vertexShader: `attribute vec3 iOffset; attribute vec4 iRot; attribute float iScale; uniform float uTime; uniform vec2 uMouse; uniform float uPush; varying float vS; varying vec2 vUv;
     mat3 rA(vec3 a, float t){ a=normalize(a); float s=sin(t),c=cos(t),o=1.-c;
       return mat3(o*a.x*a.x+c,o*a.x*a.y+a.z*s,o*a.z*a.x-a.y*s, o*a.x*a.y-a.z*s,o*a.y*a.y+c,o*a.y*a.z+a.x*s, o*a.z*a.x+a.y*s,o*a.y*a.z-a.x*s,o*a.z*a.z+c); }
     void main(){ vUv = position.xy + .5; mat3 R = rA(iRot.xyz, uTime*(.25+iRot.w*.25) + iRot.w*10.);
       vec3 o = iOffset; o.y = mod(o.y - uTime*(.4+iRot.w*.3) + 25., 50.) - 25.; o.x += sin(uTime*.3 + iRot.w*20.)*2.;
+      vec2 dm = o.xy - uMouse; float r2 = dot(dm, dm); o.xy += dm / (sqrt(r2) + .3) * uPush * 7. * exp(-r2 / 26.);
       vS = abs((R*vec3(0,0,1)).z); gl_Position = projectionMatrix * modelViewMatrix * vec4(R*(position*iScale) + o, 1.); }`,
   fragmentShader: `varying float vS; varying vec2 vUv;
     void main(){ vec3 c = mix(vec3(.95,.72,.81), vec3(1.,.88,.92), step(.45, vS)); gl_FragColor = vec4(c, .7); }`
 }), PETALS);
 petals.frustumCulled = false;
 scene.add(petals);
+
+/* Sparkle bursts: tap an empty spot on the page */
+const SP = 160, spStart = new Float32Array(SP * 3), spVel = new Float32Array(SP * 3), spBirth = new Float32Array(SP).fill(-99), spCol = new Float32Array(SP * 3), spSize = new Float32Array(SP);
+const spCols = ['#9a8ce0', '#e58fae', '#6cc3a3', '#f2a77a', '#7fb2e0', '#ffffff'].map(c => new THREE.Color(c));
+const spGeo = new THREE.BufferGeometry();
+spGeo.setAttribute('position', new THREE.BufferAttribute(spStart, 3));
+spGeo.setAttribute('aVel', new THREE.BufferAttribute(spVel, 3));
+spGeo.setAttribute('aBirth', new THREE.BufferAttribute(spBirth, 1));
+spGeo.setAttribute('aCol', new THREE.BufferAttribute(spCol, 3));
+spGeo.setAttribute('aSize', new THREE.BufferAttribute(spSize, 1));
+const spUni = { uClock: { value: 0 }, uPixel: { value: renderer.getPixelRatio() } };
+const sparks = new THREE.Points(spGeo, new THREE.ShaderMaterial({
+  uniforms: spUni, transparent: true, depthWrite: false,
+  vertexShader: `attribute vec3 aVel; attribute float aBirth; attribute vec3 aCol; attribute float aSize; uniform float uClock, uPixel; varying vec3 vC; varying float vA;
+    void main(){ float t = uClock - aBirth; float life = 1.5; vA = (t < 0. || t > life) ? 0. : pow(1. - t / life, 1.4);
+      vec3 p = position + aVel * (1. - exp(-t * 2.2)) / 2.2 + vec3(0., -.9, 0.) * t * t; vC = aCol;
+      vec4 mv = modelViewMatrix * vec4(p, 1.); gl_Position = projectionMatrix * mv; gl_PointSize = vA > 0. ? aSize * uPixel * (30. / -mv.z) * (.6 + .4 * vA) : 0.; }`,
+  fragmentShader: `varying vec3 vC; varying float vA;
+    void main(){ vec2 p = gl_PointCoord - .5; float star = max(0., 1. - abs(p.x * p.y) * 90. - length(p) * 1.9); float core = smoothstep(.22, 0., length(p));
+      float a = max(star, core) * vA; if (a < .02) discard; gl_FragColor = vec4(mix(vC, vec3(1.), core * .5), a); }`
+}));
+sparks.frustumCulled = false;
+scene.add(sparks);
+let spNext = 0;
+const toWorld = (cx, cy) => {
+  const h = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.position.z;
+  return new THREE.Vector2(camera.position.x + (cx / innerWidth * 2 - 1) * h * camera.aspect, camera.position.y - (cy / innerHeight * 2 - 1) * h);
+};
+function burst(cx, cy) {
+  const w = toWorld(cx, cy), n = 22;
+  for (let k = 0; k < n; k++) {
+    const i = spNext; spNext = (spNext + 1) % SP;
+    const a = Math.random() * Math.PI * 2, s = 3 + Math.random() * 6;
+    spStart.set([w.x, w.y, Math.random() * 2], i * 3);
+    spVel.set([Math.cos(a) * s, Math.sin(a) * s + 2, (Math.random() - .5) * 3], i * 3);
+    spBirth[i] = spUni.uClock.value + Math.random() * .08;
+    const c = spCols[(Math.random() * spCols.length) | 0]; spCol.set([c.r, c.g, c.b], i * 3);
+    spSize[i] = 26 + Math.random() * 30;
+  }
+  ['position', 'aVel', 'aBirth', 'aCol', 'aSize'].forEach(k => spGeo.attributes[k].needsUpdate = true);
+  start();
+}
+addEventListener('pointerdown', e => {
+  if (!motionOn() || e.button > 0) return;
+  if (e.target.closest('a, button, input, textarea, select, label, iframe, video, .card, .clip, .art-item, .reader, .lightbox, .modal, .tabs, .controls, [data-tip], .shop-sign')) return;
+  burst(e.clientX, e.clientY);
+}, { passive: true });
+
+/* Breeze: petals swirl away from the pointer, more when it moves fast */
+let ptr = null, lastPtr = null, push = 0;
+addEventListener('pointermove', e => { ptr = { x: e.clientX, y: e.clientY }; }, { passive: true });
+addEventListener('pointerleave', () => { ptr = null; });
 
 /* Interaction: gentle drift to the right as pages advance */
 let page = 0, camX = 0;
@@ -1393,6 +1444,12 @@ function loop() {
   if (!visible || !motionOn()) { looping = false; renderer.render(scene, camera); return; }
   const dt = Math.min(clock.getDelta(), .05);
   uniforms.uTime.value += dt * .5;
+  spUni.uClock.value += dt;
+  if (ptr) {
+    const w = toWorld(ptr.x, ptr.y), speed = lastPtr ? Math.hypot(ptr.x - lastPtr.x, ptr.y - lastPtr.y) : 0;
+    uniforms.uMouse.value.lerp(w, .2); push += (Math.min(1, .25 + speed / 40) - push) * .08; lastPtr = { ...ptr };
+  } else push *= .95;
+  uniforms.uPush.value = push;
   mouse.lerp(target, .02);
   camX += (page * 8 - camX) * .03;
   camera.position.x = camX + mouse.x * .8;
