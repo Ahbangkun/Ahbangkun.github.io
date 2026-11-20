@@ -66,6 +66,8 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .tab.active{background:var(--ink);color:var(--paper)}
 .motion-btn{display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;font-size:12px;font-weight:700;color:var(--ink-2);border:1px solid var(--line);background:rgba(255,252,249,.75)}
 .motion-btn:hover{color:var(--ink)}
+.hdr-btns{display:flex;gap:8px;align-items:center}
+.motion-btn.on{background:var(--mint);color:var(--ink)}
 .motion-btn svg{width:15px;height:15px}
 
 /* ================================================================
@@ -348,7 +350,10 @@ footer.fine{margin-top:20px;text-align:center}
     <a class="tab" href="#skills" data-go="5"><i data-lucide="sparkles"></i><span class="lbl">Skills</span></a>
     <a class="tab" href="#contact" data-go="6"><i data-lucide="send"></i><span class="lbl">Contact</span></a>
   </nav>
-  <button class="motion-btn" id="motionBtn" title="Turn background animation on or off"><span id="motionIco"></span><span class="lbl" id="motionLbl"></span></button>
+  <div class="hdr-btns">
+    <button class="motion-btn" id="musicBtn" title="Play or pause background music" aria-pressed="false"><span id="musicIco"></span><span class="lbl" id="musicLbl"></span></button>
+    <button class="motion-btn" id="motionBtn" title="Turn background animation on or off"><span id="motionIco"></span><span class="lbl" id="motionLbl"></span></button>
+  </div>
 </header>
 
 <main class="pager" id="pager">
@@ -527,7 +532,7 @@ footer.fine{margin-top:20px;text-align:center}
         </form>
       </div>
     </div>
-    <footer class="fine">© <span id="year"></span> Ahbangkun · Fan-made models of characters and props belong to their respective franchises.</footer>
+    <footer class="fine">© <span id="year"></span> Ahbangkun · Fan-made models of characters and props belong to their respective franchises. Music: “パステルハウス” by かずち (<a href="https://opentracks.com/bgm/detail/1021" target="_blank" rel="noopener">OpenTracks</a>).</footer>
   </div>
 </section>
 </main>
@@ -903,6 +908,34 @@ window.CONFIG = {
   window.__ahbMotion = () => motionOn;
   $('#motionBtn').addEventListener('click', () => setMotion(!motionOn));
   setMotion(motionOn);
+
+  /* ---------- background music (off until the visitor turns it on) ---------- */
+  const audio = new Audio(); audio.loop = true; audio.volume = 0.3;
+  let musicOn = false, musicReady = null;
+  const KEY = new TextEncoder().encode('ahbangkun-pastel');
+  const loadMusic = () => musicReady || (musicReady = fetch('music/bgm.dat').then(r => { if (!r.ok) throw 0; return r.arrayBuffer(); })
+    .then(buf => { const b = new Uint8Array(buf); for (let i = 0; i < b.length; i++) b[i] ^= KEY[i % KEY.length];
+                   audio.src = URL.createObjectURL(new Blob([b], { type: 'audio/mpeg' })); }));
+  const showMusic = () => {
+    $('#musicLbl').textContent = musicOn ? 'Music on' : 'Music off';
+    $('#musicIco').innerHTML = `<i data-lucide="${musicOn ? 'volume-2' : 'volume-x'}"></i>`;
+    $('#musicBtn').classList.toggle('on', musicOn); $('#musicBtn').setAttribute('aria-pressed', musicOn); icons();
+  };
+  const setMusic = async on => {
+    musicOn = on; showMusic();
+    try { localStorage.setItem('ahb-music', on ? '1' : '0'); } catch (e) {}
+    if (!on) { audio.pause(); return; }
+    try { await loadMusic(); if (musicOn) await audio.play(); }
+    catch (e) { musicOn = false; showMusic(); musicReady = null; toast('Music couldn’t load right now.'); }
+  };
+  $('#musicBtn').addEventListener('click', () => setMusic(!musicOn));
+  showMusic();
+  // if the visitor turned music on last time, resume it on their first tap (browsers block autoplay)
+  try { if (localStorage.getItem('ahb-music') === '1') {
+    const resume = () => { removeEventListener('pointerdown', resume, true); removeEventListener('keydown', resume, true); if (!musicOn) setMusic(true); };
+    addEventListener('pointerdown', resume, true); addEventListener('keydown', resume, true);
+  } } catch (e) {}
+  document.addEventListener('visibilitychange', () => { if (document.hidden) audio.pause(); else if (musicOn) audio.play().catch(() => {}); });
 
   /* ---------- contact form ---------- */
   const form = $('#contactForm'), note = $('#formNote');
