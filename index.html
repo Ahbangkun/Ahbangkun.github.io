@@ -408,6 +408,7 @@ h2.title{font-weight:300;letter-spacing:-.01em}
   </nav>
   <div class="hdr-btns">
     <span class="clock" id="clock" aria-hidden="true"></span>
+    <button class="motion-btn" id="skipBtn" title="Next song" aria-label="Next song" hidden><i data-lucide="skip-forward"></i></button>
     <button class="motion-btn" id="musicBtn" title="Play or pause background music" aria-pressed="false"><span id="musicIco"></span><span class="lbl" id="musicLbl"></span></button>
     <button class="motion-btn" id="motionBtn" title="Turn background animation on or off"><span id="motionIco"></span><span class="lbl" id="motionLbl"></span></button>
   </div>
@@ -609,7 +610,7 @@ h2.title{font-weight:300;letter-spacing:-.01em}
         </form>
       </div>
     </div>
-    <footer class="fine">© <span id="year"></span> Ahbangkun · Fan-made models of characters and props belong to their respective franchises. Music: “パステルハウス” by かずち (<a href="https://opentracks.com/bgm/detail/1021" target="_blank" rel="noopener">OpenTracks</a>).</footer>
+    <footer class="fine">© <span id="year"></span> Ahbangkun · Fan-made models of characters and props belong to their respective franchises. Music: “パステルハウス” by かずち, “昼下がり気分” and “日曜の午後” by KK, “10℃” and “2:23 AM” by しゃろう (<a href="https://opentracks.com/" target="_blank" rel="noopener">DOVA-SYNDROME / OpenTracks</a>).</footer>
   </div>
 </section>
 </main>
@@ -791,7 +792,7 @@ window.CONFIG = {
   const fmt = n => n == null ? null : n >= 1000 ? (n / 1000).toFixed(n >= 10000 ? 0 : 1).replace(/\.0$/, '') + 'k' : String(n);
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
   const icons = () => window.lucide && lucide.createIcons();
-  const toast = msg => { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), 1600); };
+  const toast = (msg, ms = 1600) => { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), ms); };
 
   /* ---------- basics ---------- */
   $$('.js-avatar').forEach(i => i.src = window.AVATAR);
@@ -1057,25 +1058,50 @@ window.CONFIG = {
   const tick = () => { const d = new Date(); $('#clock').textContent = `${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`; };
   tick(); setInterval(tick, 15000);
 
-  /* ---------- background music (off until the visitor turns it on) ---------- */
-  const audio = new Audio(); audio.loop = true; audio.volume = 0.3;
-  let musicOn = false, musicReady = null;
+  /* ---------- background music playlist (off until the visitor turns it on) ---------- */
+  // Free BGM from DOVA-SYNDROME / OpenTracks. Files are stored scrambled so the raw mp3s aren't downloadable.
+  const TRACKS = [
+    { file:'music/bgm1.dat', title:'パステルハウス', by:'かずち' },
+    { file:'music/bgm2.dat', title:'昼下がり気分',   by:'KK' },
+    { file:'music/bgm3.dat', title:'日曜の午後',     by:'KK' },
+    { file:'music/bgm4.dat', title:'10℃',           by:'しゃろう' },
+    { file:'music/bgm5.dat', title:'2:23 AM',       by:'しゃろう' }
+  ];
+  const audio = new Audio(); audio.volume = 0.3;
+  let musicOn = false, track = 0, loadedTrack = -1;
+  try { track = (+localStorage.getItem('ahb-track') || 0) % TRACKS.length; } catch (e) {}
   const KEY = new TextEncoder().encode('ahbangkun-pastel');
-  const loadMusic = () => musicReady || (musicReady = fetch('music/bgm.dat').then(r => { if (!r.ok) throw 0; return r.arrayBuffer(); })
-    .then(buf => { const b = new Uint8Array(buf); for (let i = 0; i < b.length; i++) b[i] ^= KEY[i % KEY.length];
-                   audio.src = URL.createObjectURL(new Blob([b], { type: 'audio/mpeg' })); }));
+  const urls = {};
+  const loadTrack = async i => {
+    if (!urls[i]) {
+      const r = await fetch(TRACKS[i].file); if (!r.ok) throw 0;
+      const b = new Uint8Array(await r.arrayBuffer()); for (let j = 0; j < b.length; j++) b[j] ^= KEY[j % KEY.length];
+      urls[i] = URL.createObjectURL(new Blob([b], { type: 'audio/mpeg' }));
+    }
+    if (loadedTrack !== i) { audio.src = urls[i]; loadedTrack = i; }
+  };
   const showMusic = () => {
     $('#musicLbl').textContent = musicOn ? 'Music on' : 'Music off';
     $('#musicIco').innerHTML = `<i data-lucide="${musicOn ? 'volume-2' : 'volume-x'}"></i>`;
-    $('#musicBtn').classList.toggle('on', musicOn); $('#musicBtn').setAttribute('aria-pressed', musicOn); icons();
+    $('#musicBtn').classList.toggle('on', musicOn); $('#musicBtn').setAttribute('aria-pressed', musicOn);
+    $('#skipBtn').hidden = !musicOn; icons();
+  };
+  const playTrack = async (i, announce) => {
+    track = (i + TRACKS.length) % TRACKS.length;
+    try { localStorage.setItem('ahb-track', track); } catch (e) {}
+    await loadTrack(track); if (!musicOn) return;
+    await audio.play();
+    if (announce) toast(`♪ ${TRACKS[track].title} · ${TRACKS[track].by}`, 3000);
   };
   const setMusic = async on => {
     musicOn = on; showMusic();
     try { localStorage.setItem('ahb-music', on ? '1' : '0'); } catch (e) {}
     if (!on) { audio.pause(); return; }
-    try { await loadMusic(); if (musicOn) await audio.play(); }
-    catch (e) { musicOn = false; showMusic(); musicReady = null; toast('Music couldn’t load right now.'); }
+    try { await playTrack(track, true); }
+    catch (e) { musicOn = false; showMusic(); toast('Music couldn’t load right now.'); }
   };
+  audio.addEventListener('ended', () => { if (musicOn) playTrack(track + 1, true).catch(() => {}); });
+  $('#skipBtn').addEventListener('click', () => { if (musicOn) playTrack(track + 1, true).catch(() => {}); });
   $('#musicBtn').addEventListener('click', () => setMusic(!musicOn));
   showMusic();
   // if the visitor turned music on last time, resume it on their first tap (browsers block autoplay)
@@ -1115,6 +1141,7 @@ window.CONFIG = {
     const el = ev.target.closest('a, button, [role="button"]');
     if (!el || el.disabled) return;
     let s = 'pop';
+    if (el.matches('#skipBtn')) { play('page'); return; }
     if (el.matches('#musicBtn, #motionBtn')) { setTimeout(() => play(el.id === 'musicBtn' ? (musicOn ? 'on' : 'off') : (motionOn ? 'on' : 'off')), 0); return; }
     if (el.matches('#modalClose, #rClose, #lbClose')) s = 'close';
     else if (el.matches('.tab, #prev, #next, #dots *, #rPrev, #rNext, #rNextBtn, #lbPrev, #lbNext')) s = 'page';
