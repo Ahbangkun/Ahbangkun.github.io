@@ -956,10 +956,10 @@ window.CONFIG = {
       <div class="meta"><b>${esc(c.title)}</b><span><i data-lucide="play"></i>${c.views} views</span></div>`;
     b.addEventListener('click', () => openClip(c));
     clips.appendChild(b);
-    fetch(`https://www.tiktok.com/oembed?url=${encodeURIComponent('https://www.tiktok.com/@ahbangkun/video/' + c.id)}`)
-      .then(r => r.ok ? r.json() : null)
-      .then(d => { if (d && d.thumbnail_url) { const img = $('.img', b); img.style.backgroundImage = `url("${d.thumbnail_url}")`; img.innerHTML = ''; } })
-      .catch(() => {});
+    // cover saved in the repo as tiktok/<video id>.jpg; keeps the placeholder if it's missing
+    const cov = new Image();
+    cov.onload = () => { const img = $('.img', b); img.style.backgroundImage = `url("${cov.src}")`; img.innerHTML = ''; };
+    cov.src = `tiktok/${c.id}.jpg`;
   });
   const modal = $('#modal'); let lastFocus;
   function openClip(c) {
