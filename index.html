@@ -244,6 +244,33 @@ h2.title{font-size:clamp(28px,3.6vw,42px);font-weight:900;line-height:1.1;margin
 .skill p{font-size:12px;color:var(--ink-2);margin-top:6px;line-height:1.5}
 .tools{margin-top:16px}
 
+/* Art gallery + lightbox */
+.art-wrap{display:grid;grid-template-columns:1fr 300px;gap:18px;min-height:0}
+.art-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;max-height:min(58vh,520px);overflow-y:auto;padding:2px;border-radius:16px}
+.art-item{position:relative;aspect-ratio:1;border-radius:12px;overflow:hidden;background:var(--paper);border:1px solid var(--line)}
+.art-item img{width:100%;height:100%;object-fit:cover;transition:transform .35s}
+.art-item:hover img{transform:scale(1.05)}
+.anim{display:flex;flex-direction:column;gap:8px;min-height:0}
+.anim-h{display:flex;align-items:center;gap:6px;font-weight:900;font-size:14px}
+.anim-h svg{width:16px;height:16px}
+.anim-list{display:flex;flex-direction:column;gap:8px;max-height:min(52vh,480px);overflow-y:auto}
+.anim-card{display:flex;gap:10px;align-items:center;padding:6px;border-radius:12px;background:var(--paper);border:1px solid var(--line)}
+.anim-card:hover{background:var(--sky)}
+.anim-card .th{position:relative;width:92px;flex:none;aspect-ratio:16/10;border-radius:8px;overflow:hidden;background:var(--bg)}
+.anim-card .th img{width:100%;height:100%;object-fit:cover}
+.anim-card .th svg{position:absolute;inset:0;margin:auto;width:22px;height:22px;color:#fff;filter:drop-shadow(0 1px 3px rgba(0,0,0,.5))}
+.anim-card b{font-size:12.5px;line-height:1.3;display:block}
+.anim-card small{font-size:11px;color:var(--muted);font-weight:700}
+.lightbox{position:fixed;inset:0;z-index:56;background:rgba(40,34,48,.82);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
+.lightbox.open{opacity:1;pointer-events:auto}
+.lightbox figure{max-width:min(90vw,900px);display:flex;flex-direction:column;gap:10px;align-items:center}
+.lightbox img{max-width:100%;max-height:78vh;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.35);background:#fff}
+.lightbox figcaption{color:#fff;font-size:13px;font-weight:700;text-align:center;opacity:.9}
+.lightbox figcaption a{color:#fff;text-decoration:underline}
+.lightbox .lbb{position:absolute;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:rgba(255,252,249,.92);color:var(--ink)}
+.lightbox .lbb svg{width:20px;height:20px}
+#lbClose{top:18px;right:18px} #lbPrev{left:18px;top:50%;margin-top:-22px} #lbNext{right:18px;top:50%;margin-top:-22px}
+
 /* WEBTOON series + reader */
 .series{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 .sr{display:flex;flex-direction:column}
@@ -308,7 +335,9 @@ footer.fine{margin-top:20px;text-align:center}
    RESPONSIVE
 ================================================================ */
 @media (max-width:1000px){
-  .home,.profile,.works,.contact,.series{grid-template-columns:1fr}
+  .home,.profile,.works,.contact,.series,.art-wrap{grid-template-columns:1fr}
+  .art-grid{grid-template-columns:repeat(3,1fr);max-height:none}
+  .anim-list{max-height:none}
   .models-wrap{grid-template-columns:1fr;height:auto}
   .viewer .stage{aspect-ratio:4/3;flex:none}
   .mlist ul{max-height:300px}
@@ -347,8 +376,9 @@ footer.fine{margin-top:20px;text-align:center}
     <a class="tab" href="#models" data-go="2"><i data-lucide="box"></i><span class="lbl">3D</span></a>
     <a class="tab" href="#tiktok" data-go="3"><i data-lucide="clapperboard"></i><span class="lbl">TikTok</span></a>
     <a class="tab" href="#webtoon" data-go="4"><i data-lucide="book-open"></i><span class="lbl">WEBTOON</span></a>
-    <a class="tab" href="#skills" data-go="5"><i data-lucide="sparkles"></i><span class="lbl">Skills</span></a>
-    <a class="tab" href="#contact" data-go="6"><i data-lucide="send"></i><span class="lbl">Contact</span></a>
+    <a class="tab" href="#art" data-go="5"><i data-lucide="palette"></i><span class="lbl">Art</span></a>
+    <a class="tab" href="#skills" data-go="6"><i data-lucide="sparkles"></i><span class="lbl">Skills</span></a>
+    <a class="tab" href="#contact" data-go="7"><i data-lucide="send"></i><span class="lbl">Contact</span></a>
   </nav>
   <div class="hdr-btns">
     <button class="motion-btn" id="musicBtn" title="Play or pause background music" aria-pressed="false"><span id="musicIco"></span><span class="lbl" id="musicLbl"></span></button>
@@ -494,10 +524,30 @@ footer.fine{margin-top:20px;text-align:center}
   </div>
 </section>
 
-<!-- ============================ 06 SKILLS ============================ -->
+<!-- ============================ 06 ART ============================ -->
+<section class="page" id="art" aria-label="Drawings and animation">
+  <div class="page-inner">
+    <div class="eyebrow reveal">06 <span class="jp">イラスト · アニメ</span></div>
+    <h2 class="title reveal">Drawings &amp; Animation</h2>
+    <div class="art-wrap reveal">
+      <div class="art-grid" id="artGrid"></div>
+      <div class="anim">
+        <div class="anim-h"><i data-lucide="film"></i>Animations on X</div>
+        <div class="anim-list" id="animList"></div>
+      </div>
+    </div>
+    <div class="under reveal">
+      <span class="fine">Tap a drawing to see it big.</span>
+      <a class="btn sky js-link" data-link="twitter" target="_blank" rel="noopener"><i data-lucide="twitter"></i>More on X</a>
+      <a class="btn lav js-link" data-link="instagram" target="_blank" rel="noopener"><i data-lucide="instagram"></i>Instagram</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 07 SKILLS ============================ -->
 <section class="page" id="skills" aria-label="Skills">
   <div class="page-inner">
-    <div class="eyebrow reveal">06 <span class="jp">スキル</span></div>
+    <div class="eyebrow reveal">07 <span class="jp">スキル</span></div>
     <h2 class="title reveal">Skills &amp; Tools</h2>
     <div class="skills reveal" id="skillGrid"></div>
     <div class="pills tools reveal" id="tools"></div>
@@ -507,7 +557,7 @@ footer.fine{margin-top:20px;text-align:center}
 <!-- ============================ 06 CONTACT ============================ -->
 <section class="page" id="contact" aria-label="Contact">
   <div class="page-inner">
-    <div class="eyebrow reveal">07 <span class="jp">連絡</span></div>
+    <div class="eyebrow reveal">08 <span class="jp">連絡</span></div>
     <h2 class="title reveal">Say hi &amp; find me</h2>
     <div class="contact">
       <div class="socials reveal" id="socials"></div>
@@ -559,6 +609,12 @@ footer.fine{margin-top:20px;text-align:center}
   </div>
   <div class="rscroll" id="rScroll"><div class="strip" id="rStrip"></div><div class="rend" id="rEnd"></div></div>
 </div>
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Drawing">
+  <button class="lbb" id="lbPrev" aria-label="Previous drawing"><i data-lucide="chevron-left"></i></button>
+  <figure><img id="lbImg" alt=""><figcaption id="lbCap"></figcaption></figure>
+  <button class="lbb" id="lbNext" aria-label="Next drawing"><i data-lucide="chevron-right"></i></button>
+  <button class="lbb" id="lbClose" aria-label="Close"><i data-lucide="x"></i></button>
+</div>
 <div class="toast" id="toast"></div>
 
 <!-- ================================================================
@@ -582,6 +638,41 @@ window.CONFIG = {
   discordId: "480747939212558347",   // opens discord.com/users/<id>
   email: "",          // ← your email (shows the contact form)
   formEndpoint: "",   // ← optional Formspree endpoint
+  // Drawings posted on X. img = the part after https://pbs.twimg.com/media/
+  drawings: [
+    { img:"FeCjsX8VUAEKvqu?format=jpg&name=medium", url:"https://x.com/Ahbangkun/status/1576439855525265408", date:"Oct 2, 2022", tags:"#ArtXel" },
+    { img:"FaHXQEAUUAE1Lal?format=png&name=medium", url:"https://x.com/Ahbangkun/status/1558763661916663809", date:"Aug 14, 2022", tags:"Worship BlueIsekaiHero #WorkofAlt" },
+    { img:"FZNzuWkaAAEf6Hg?format=jpg&name=medium", url:"https://x.com/Ahbangkun/status/1554713594507689984", date:"Aug 3, 2022", tags:"#MagniOpus" },
+    { img:"Ey5183yUUAI_Vby?format=jpg&name=medium", url:"https://x.com/Ahbangkun/status/1382171847169429506", date:"Apr 14, 2021", tags:"#chainsawmanfanart #chainsawman (﹏)" },
+    { img:"EuXKY1DU4AIMmDo?format=jpg&name=medium", url:"https://x.com/Ahbangkun/status/1361716998367891456", date:"Feb 16, 2021", tags:"#gawrt" },
+    { img:"Es90PgnVgAEnKtA?format=jpg&name=medium", url:"https://x.com/Ahbangkun/status/1355429833451347969", date:"Jan 30, 2021", tags:"#シ絵ン" },
+    { img:"Em3FpQyUUAEbntt?format=jpg&name=medium", url:"https://x.com/Ahbangkun/status/1327934785126236161", date:"Nov 15, 2020", tags:"#はあとart #ameliaRT #amechama Siblings." },
+    { img:"ElVzSPHWMAQNtu1?format=jpg&name=medium", url:"https://x.com/Ahbangkun/status/1321088826702483459", date:"Oct 27, 2020", tags:"#ameliART #gawrt" },
+    { img:"EgrggMHUcAE6wbk?format=jpg&name=medium", url:"https://x.com/Ahbangkun/status/1300098322888192000", date:"Aug 30, 2020", tags:"#Fixサー #KuzuArt #絵ブラヒム" },
+    { img:"Eftfs8rUwAEOo4I?format=jpg&name=medium", url:"https://x.com/Ahbangkun/status/1295734555383496706", date:"Aug 18, 2020", tags:"#デラスのお品書き" },
+    { img:"EfmxFayUEAAVuzp?format=jpg&name=medium", url:"https://x.com/Ahbangkun/status/1295261086308941824", date:"Aug 17, 2020", tags:"#ルーナート Mogu-mogu." },
+    { img:"EfmZrtNU4AAADyx?format=jpg&name=medium", url:"https://x.com/Ahbangkun/status/1295235382527668225", date:"Aug 17, 2020", tags:"#pikart Drifto Pika!" },
+    { img:"EfnRelFU0AAAeOC?format=jpg&name=medium", url:"https://x.com/Ahbangkun/status/1295296702589542400", date:"Aug 17, 2020", tags:"#絵ブラヒム" },
+    { img:"Efj2-rPVoAAA5Ze?format=jpg&name=medium", url:"https://x.com/Ahbangkun/status/1295056458254438400", date:"Aug 16, 2020", tags:"#絵ンジュ #デラスのお品書き" },
+    { img:"EfjIGytUwAcf49C?format=jpg&name=medium", url:"https://x.com/Ahbangkun/status/1295004941338083328", date:"Aug 16, 2020", tags:"#らみあ〜と #ねねアルバム #ししらーと #まのあろ絵 #絵まる" },
+    { img:"EfRmwuoUYAMbRz8?format=jpg&name=medium", url:"https://x.com/Ahbangkun/status/1293771996791107584", date:"Aug 13, 2020", tags:"#絵クス絵画 #さ絵ぐさ" },
+    { img:"EfCVMUDUwAAMEFC?format=jpg&name=medium", url:"https://x.com/Ahbangkun/status/1292697142591594496", date:"Aug 10, 2020", tags:"#ぺこらーと #DeathStranding #DeathStrandingPC" },
+    { img:"Eeu0FrxU8AAySYF?format=jpg&name=medium", url:"https://x.com/Ahbangkun/status/1291323732049289218", date:"Aug 6, 2020", tags:"#かな絵" },
+    { img:"Edx6xkTUwAITa5Q?format=jpg&name=medium", url:"https://x.com/Ahbangkun/status/1287038595304288258", date:"Jul 25, 2020", tags:"#ぺこらーと" },
+    { img:"EdoOedrVAAA-K9q?format=jpg&name=medium", url:"https://x.com/Ahbangkun/status/1286356577839063040", date:"Jul 23, 2020", tags:"#絵クス絵画" },
+    { img:"EcFWF1NU8AErClJ?format=jpg&name=medium", url:"https://x.com/Ahbangkun/status/1279398448991580160", date:"Jul 4, 2020", tags:"#お花畑青空大写生大会" },
+    { img:"EcAQIhSUwAIbo34?format=jpg&name=medium", url:"https://x.com/Ahbangkun/status/1279040069693698049", date:"Jul 3, 2020", tags:"HORAYO!! #できたてころね" }
+  ],
+  // Animation clips on X (open on X)
+  animations: [
+    { thumb:"https://pbs.twimg.com/ext_tw_video_thumb/1589333248877830144/pu/img/zpb8iwT0pqB3Fu6g.jpg", url:"https://x.com/Ahbangkun/status/1589333410031763456", date:"Nov 6, 2022", title:"Happy Birthday, Zeta!" },
+    { thumb:"https://pbs.twimg.com/ext_tw_video_thumb/1560181634292658177/pu/img/bqEV5n888qc-n_WJ.jpg", url:"https://x.com/Ahbangkun/status/1560181983090974722", date:"Aug 18, 2022", title:"Let It Rip!!" },
+    { thumb:"https://pbs.twimg.com/ext_tw_video_thumb/1558527477383065601/pu/img/wBA9gVwDV6R4ReCT.jpg", url:"https://x.com/Ahbangkun/status/1558527741573890049", date:"Aug 13, 2022", title:"Magnation Intro but in 3D" },
+    { thumb:"https://pbs.twimg.com/ext_tw_video_thumb/1558063880143704064/pu/img/p3-4OqfS81WCJBV_.jpg", url:"https://x.com/Ahbangkun/status/1558063996149714944", date:"Aug 12, 2022", title:"Vibing to Top Of The World" },
+    { thumb:"https://pbs.twimg.com/ext_tw_video_thumb/1553797764961927168/pu/img/MB1BwYgX2sa6690m.jpg", url:"https://x.com/Ahbangkun/status/1553797962807246849", date:"Jul 31, 2022", title:"Magon Deez Ball" },
+    { thumb:"https://pbs.twimg.com/ext_tw_video_thumb/1552321279792795648/pu/img/1LIRZVyQcyv3gnyL.jpg", url:"https://x.com/Ahbangkun/status/1552321382125514752", date:"Jul 27, 2022", title:"Maglord getting jumpscared by Altare" }
+  ],
+
   // WEBTOON series. Episode images live in the repo's /webtoon folder as <key>-ep<no>-<page>.jpg
   // (pages = how many images). If they're missing, the reader links to WEBTOON instead.
   webtoons: [
@@ -713,6 +804,32 @@ window.CONFIG = {
     const nb = $('#rNextBtn'); if (nb) nb.onclick = () => openEp(si, ei + 1);
     $('#rScroll').scrollTop = 0; reader.classList.add('open'); icons(); $('#rClose').focus();
   }
+  /* ---------- art gallery + lightbox ---------- */
+  const tw = (id, size) => 'https://pbs.twimg.com/media/' + id.replace(/name=\w+/, 'name=' + size);
+  $('#artGrid').innerHTML = C.drawings.map((d, i) =>
+    `<button class="art-item" data-i="${i}" aria-label="Open drawing from ${esc(d.date)}"><img src="${esc(tw(d.img, 'small'))}" alt="Drawing by Ahbangkun, ${esc(d.date)}" loading="lazy"></button>`).join('');
+  $('#animList').innerHTML = C.animations.map(v =>
+    `<a class="anim-card" href="${esc(v.url)}" target="_blank" rel="noopener"><span class="th"><img src="${esc(v.thumb)}" alt="" loading="lazy"><i data-lucide="play"></i></span><span><b>${esc(v.title)}</b><small>${esc(v.date)}</small></span></a>`).join('');
+  const lb = $('#lightbox'); let lbi = 0;
+  const showArt = i => {
+    lbi = (i + C.drawings.length) % C.drawings.length; const d = C.drawings[lbi];
+    $('#lbImg').src = tw(d.img, 'large'); $('#lbImg').alt = `Drawing by Ahbangkun, ${d.date}`;
+    $('#lbCap').innerHTML = `${esc(d.date)} · <a href="${esc(d.url)}" target="_blank" rel="noopener">view on X</a>`;
+    lb.classList.add('open'); $('#lbClose').focus();
+  };
+  const closeArt = () => lb.classList.remove('open');
+  $('#artGrid').addEventListener('click', e => { const b = e.target.closest('.art-item'); if (b) showArt(+b.dataset.i); });
+  $('#lbPrev').addEventListener('click', () => showArt(lbi - 1));
+  $('#lbNext').addEventListener('click', () => showArt(lbi + 1));
+  $('#lbClose').addEventListener('click', closeArt);
+  lb.addEventListener('click', e => { if (e.target === lb) closeArt(); });
+  addEventListener('keydown', e => {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') closeArt();
+    if (e.key === 'ArrowRight') showArt(lbi + 1);
+    if (e.key === 'ArrowLeft') showArt(lbi - 1);
+  });
+
   const closeReader = () => { reader.classList.remove('open'); strip.innerHTML = ''; };
   $('#series').addEventListener('click', ev => { const b = ev.target.closest('button.ep'); if (b) openEp(+b.dataset.s, +b.dataset.e); });
   $('#rClose').addEventListener('click', closeReader);
@@ -870,7 +987,7 @@ window.CONFIG = {
     return false;
   };
   pager.addEventListener('wheel', e => {
-    if (modal.classList.contains('open') || reader.classList.contains('open')) return;
+    if (modal.classList.contains('open') || reader.classList.contains('open') || lb.classList.contains('open')) return;
     const dx = Math.abs(e.deltaX), dy = Math.abs(e.deltaY);
     if (dx > dy) return;                          // trackpad sideways swipe: native
     if (canScroll(e.target, e.deltaY)) return;    // let the page scroll vertically first
@@ -882,7 +999,7 @@ window.CONFIG = {
   }, { passive: false });
 
   addEventListener('keydown', e => {
-    if (/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName) || reader.classList.contains('open')) return;
+    if (/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName) || reader.classList.contains('open') || lb.classList.contains('open')) return;
     if (e.key === 'Escape' && modal.classList.contains('open')) return closeClip();
     if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); go(idx + 1); }
     if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(idx - 1); }
@@ -968,9 +1085,9 @@ window.CONFIG = {
     if (!el || el.disabled) return;
     let s = 'pop';
     if (el.matches('#musicBtn, #motionBtn')) { setTimeout(() => play(el.id === 'musicBtn' ? (musicOn ? 'on' : 'off') : (motionOn ? 'on' : 'off')), 0); return; }
-    if (el.matches('#modalClose, #rClose')) s = 'close';
-    else if (el.matches('.tab, #prev, #next, #dots *, #rPrev, #rNext, #rNextBtn')) s = 'page';
-    else if (el.matches('button.ep') || (el.closest('#tiktok') && el.target !== '_blank' && !el.matches('a[target="_blank"]'))) s = 'open';
+    if (el.matches('#modalClose, #rClose, #lbClose')) s = 'close';
+    else if (el.matches('.tab, #prev, #next, #dots *, #rPrev, #rNext, #rNextBtn, #lbPrev, #lbNext')) s = 'page';
+    else if (el.matches('button.ep, .art-item') || (el.closest('#tiktok') && el.target !== '_blank' && !el.matches('a[target="_blank"]'))) s = 'open';
     play(s);
   }, true);
 
