@@ -10,8 +10,9 @@ renderer.outputColorSpace = THREE.SRGBColorSpace;
 const scene = new THREE.Scene();
 scene.fog = new THREE.Fog(0xeef0f6, 26, 60);
 const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 200);
-const size = () => { renderer.setSize(innerWidth, innerHeight, false); camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); };
-size(); addEventListener('resize', size);
+let zoomK = 1;
+const size = () => { renderer.setSize(innerWidth, innerHeight, false); camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); zoomK = camera.aspect < 1.2 ? Math.min(1.9, 1.35 / camera.aspect) : 1; if (window.__layoutBanners) window.__layoutBanners(); };
+addEventListener('resize', size);
 
 /* ---------- helpers ---------- */
 const cnv = (w, h, draw) => { const c = document.createElement('canvas'); c.width = w; c.height = h; draw(c.getContext('2d'), w, h); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t; };
@@ -133,7 +134,15 @@ const bannerMat = side => new THREE.MeshBasicMaterial({ transparent: true, side:
 const leftB = new THREE.Mesh(bentPlane(9, 2.8, .045), bannerMat()); const rightB = new THREE.Mesh(bentPlane(9, 2.8, .045), bannerMat());
 leftB.userData.home = { p: new THREE.Vector3(-6.6, 4.4, 1.6), r: new THREE.Euler(0, .62, .14) };
 rightB.userData.home = { p: new THREE.Vector3(6.6, 3.7, 1.6), r: new THREE.Euler(0, -.62, -.1) };
-[leftB, rightB].forEach(b => { b.position.copy(b.userData.home.p); b.rotation.copy(b.userData.home.r); b.renderOrder = 5; scene.add(b); });
+const layoutBanners = () => {
+  const port = camera.aspect < 1.2;
+  leftB.userData.home = port ? { p: new THREE.Vector3(0, 7.9, 2.2), r: new THREE.Euler(-.08, 0, .05) } : { p: new THREE.Vector3(-6.6, 4.4, 1.6), r: new THREE.Euler(0, .62, .14) };
+  rightB.userData.home = port ? { p: new THREE.Vector3(0, -.4, 4.2), r: new THREE.Euler(-.25, 0, -.05) } : { p: new THREE.Vector3(6.6, 3.7, 1.6), r: new THREE.Euler(0, -.62, -.1) };
+  [leftB, rightB].forEach(b => { b.position.copy(b.userData.home.p); b.rotation.copy(b.userData.home.r); b.scale.setScalar(port ? .85 : 1); });
+};
+window.__layoutBanners = layoutBanners;
+[leftB, rightB].forEach(b => { b.renderOrder = 5; scene.add(b); });
+size();
 const setBanners = (l, r, rainbow) => {
   [[leftB, l], [rightB, r]].forEach(([b, [big, small]]) => { if (b.material.map) b.material.map.dispose(); b.material.map = bannerTex(big, small, rainbow); b.material.needsUpdate = true; });
 };
@@ -162,7 +171,7 @@ const frameLoop = now => {
     const k = Math.min(1, (now - cine.start) / cine.dur);
     // spin in: from high behind, around and down to the front
     const e = ease(k);
-    camAt(THREE.MathUtils.lerp(-Math.PI * 1.35, 0, e), THREE.MathUtils.lerp(26, 11.5, e), THREE.MathUtils.lerp(13, 3.2, e));
+    camAt(THREE.MathUtils.lerp(-Math.PI * 1.35, 0, e), THREE.MathUtils.lerp(26, 11.5, e) * zoomK, THREE.MathUtils.lerp(13, 3.2, e));
     hero.rotation.y = (1 - e) * Math.PI * 4;
     const hk = THREE.MathUtils.clamp((k - .35) / .4, 0, 1); hero.scale.setScalar(Math.max(.001, back2(hk)));
     const bk = THREE.MathUtils.clamp((k - .55) / .35, 0, 1);
@@ -171,7 +180,7 @@ const frameLoop = now => {
     if (cine.landed && now - cine.start > cine.dur + cine.hold) { const cb = cine.cb; cine = null; canvas.classList.remove('top'); hero.rotation.y = 0; if (cb) cb(); applyMode(); }
   } else {
     const sway = reduced ? 0 : Math.sin(t * .22) * .55;
-    camAt(sway + mx * .12, mode === 'title' ? 12.5 : 14, 3.4 - my * .4 + Math.sin(t * .3) * .15);
+    camAt(sway + mx * .12, (mode === 'title' ? 12.5 : 14) * zoomK, 3.4 - my * .4 + Math.sin(t * .3) * .15);
     hero.rotation.y = Math.sin(t * .5) * .35; hero.scale.setScalar(1);
     [leftB, rightB].forEach(b => { b.position.copy(b.userData.home.p); b.material.opacity = 1; });
   }
