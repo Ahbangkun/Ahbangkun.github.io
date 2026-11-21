@@ -35,11 +35,12 @@
   #aff .lv{font-size:26px;font-weight:900;white-space:nowrap}
 
   /* dialogue box (front) */
-  #dlg{left:36px;right:36px;top:1150px;height:270px;padding:46px 40px 20px 250px}
-  #me{left:26px;top:1000px;height:300px;z-index:3;filter:drop-shadow(0 0 14px rgba(255,46,85,.7));transform-origin:50% 100%;animation:idle 3s ease-in-out infinite}
-  @keyframes idle{50%{transform:translateY(-6px) rotate(-1.5deg)}}
-  #me.pose{animation:pose .5s ease-in-out 3}@keyframes pose{50%{transform:scale(1.1) rotate(6deg)}}
-  #dlg .nm{position:absolute;left:230px;top:-30px;font-family:'Zen Antique';background:var(--rose);color:#fff;font-size:34px;font-weight:900;padding:6px 30px;border-radius:16px;
+  #dlg{left:36px;right:36px;top:1150px;height:270px;padding:46px 40px 20px}
+  #me{left:50%;top:470px;height:720px;margin-left:-260px;width:520px;object-fit:contain;object-position:50% 100%;filter:drop-shadow(0 0 22px rgba(255,46,85,.65));transform-origin:50% 100%;animation:idle 3.2s ease-in-out infinite}
+  @keyframes idle{50%{transform:translateY(-8px) scale(1.01)}}
+  #me.pose{animation:pose .45s ease-in-out 3}@keyframes pose{50%{transform:scale(1.06) rotate(3deg) translateY(-14px)}}
+  #me.talk{animation:talk .18s ease-in-out infinite alternate}@keyframes talk{to{transform:translateY(-5px)}}
+  #dlg .nm{position:absolute;left:34px;top:-30px;font-family:'Zen Antique';background:var(--rose);color:#fff;font-size:34px;font-weight:900;padding:6px 30px;border-radius:16px;
            border:3px solid var(--gold);box-shadow:0 0 16px rgba(255,46,85,.6)}
   #dlg .tx{font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:38px;line-height:1.45;min-height:120px}
   #dlg .nx{position:absolute;right:34px;bottom:20px;color:var(--rose);font-size:30px;animation:bob 1s ease-in-out infinite}
@@ -113,9 +114,9 @@
   <div id="aff" class="abs vn"><span class="lab">封印</span><span class="hearts" id="hearts"></span><div class="track"><div class="fill"></div></div><span class="lv" id="lv"></span></div>
 </div>
 <div id="front" class="layer">
+  <img id="me" class="abs" alt="">
   <div id="veil" class="abs"></div>
   <div id="flash" class="abs"></div>
-  <img id="me" class="abs" alt="">
   <div id="choices" class="abs"></div>
   <div id="ev" class="abs"></div>
   <div id="dlg" class="abs vn"><div class="nm" id="dname"></div><div class="menu">AUTO · SKIP · SAVE · LOG</div><div class="tx" id="tx"></div><div class="nx">▼</div></div>
@@ -137,7 +138,7 @@ function fit(){const W=innerWidth,H=innerHeight,k=Math.min(W/1080,H/1920);
 fit();addEventListener('resize',fit);
 
 const P=new URLSearchParams(location.search),get=(k,d)=>P.has(k)?P.get(k):d,$=id=>document.getElementById(id),R=Math.random,pick=a=>a[Math.floor(R()*a.length)];
-const cfg={part:get('part','both'),scene:get('scene','main'),name:get('name','Ahbangkun'),aff:+get('aff',100),min:+get('min',5),bgx:get('bgx','50'),every:+get('event',35),bpm:+get('bpm',0),poll:get('poll',''),meter:get('meter','1')};
+const cfg={part:get('part','both'),scene:get('scene','main'),name:get('name','Ahbangkun'),aff:+get('aff',100),min:+get('min',5),bgx:get('bgx','50'),every:+get('event',35),sprite:get('sprite','1'),bpm:+get('bpm',0),poll:get('poll',''),meter:get('meter','1')};
 if(cfg.part!=='both')document.body.classList.add(cfg.part);
 const NAME=cfg.name.replace(/^@/,'');
 if(cfg.bpm>0){document.body.classList.add('beat');document.body.style.setProperty('--beat',(60/cfg.bpm)+'s');}
@@ -146,7 +147,7 @@ if(cfg.meter==='0')document.getElementById('aff').style.display='none';
 $('bg').style.backgroundImage=`url("${IMG.room}")`;$('bg').style.backgroundPosition=`${cfg.bgx}% 50%`;
 for(let i=0;i<18;i++){const p=document.createElement('div');p.className='petal';
   p.style.left=(R()*1080)+'px';p.style.setProperty('--dx',(R()*300-150)+'px');p.style.animationDuration=(9+R()*9)+'s';p.style.animationDelay=(-R()*18)+'s';$('petals').appendChild(p);}
-$('nameText').textContent='@'+NAME;$('dname').textContent=NAME;$('me').src=IMG.me;
+$('nameText').textContent='@'+NAME;$('dname').textContent=NAME;$('me').src=IMG.me;if(cfg.sprite==='0')$('me').style.display='none';
 for(let i=0;i<16;i++){const p=document.createElement('div');p.className='ember';p.style.left=(R()*1080)+'px';p.style.setProperty('--dx',(R()*200-100)+'px');p.style.animationDuration=(7+R()*8)+'s';p.style.animationDelay=(-R()*15)+'s';$('petals').appendChild(p);}
 const tick=()=>$('clock').textContent=new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});tick();setInterval(tick,10000);
 
@@ -173,10 +174,10 @@ const LINES=[
  "The bandage stays on. It is NOT because I scraped my arm. It is a seal.",
 ];
 let typing=null;
-function type(t,name=NAME){$('dname').textContent=name;const el=$('tx');clearInterval(typing);el.textContent='';let i=0;
-  typing=setInterval(()=>{el.textContent=t.slice(0,++i);if(i>=t.length)clearInterval(typing)},45);}
+function type(t,name=NAME){$('dname').textContent=name;const el=$('tx');clearInterval(typing);el.textContent='';let i=0;const me=$('me');if(name===NAME)me.classList.add('talk');
+  typing=setInterval(()=>{el.textContent=t.slice(0,++i);if(i>=t.length){clearInterval(typing);me.classList.remove('talk');}},45);}
 let li=0;
-if(cfg.scene==='main'&&cfg.part!=='back'){type(LINES[0]);setInterval(()=>{if(!busy){li=(li+1)%LINES.length;type(LINES[li]);}},9000);}
+if(cfg.scene==='main'&&cfg.part!=='back'){type(get('intro',LINES[0]));}
 
 /* hearts burst */
 function burst(n=14,e='🔥'){for(let i=0;i<n;i++){const h=document.createElement('div');h.className='hb';h.textContent=pick([e,'⚡','✦','🩸']);
