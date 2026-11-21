@@ -41,13 +41,21 @@
 <h2>Quick lines</h2>
 <div class="grid" id="quick"></div>
 <script>
-const P=new URLSearchParams(location.search);const TOPIC=P.get('remote')||'ahbangkun-c74d709687';
+const P=new URLSearchParams(location.search);
+if(P.get('mode')==='chuuni'){document.title='Dark Lord Remote';
+  document.body.style.background='linear-gradient(160deg,#1a0b26,#2a0a1c 60%,#120818)';document.body.style.color='#f3e6ff';
+  document.querySelector('h1').textContent='⛧ Dark Lord Remote';
+  const L={'aff:10':'🔥 power +10 (seal −10)','aff:25':'⚡ power +25','aff:-10':'⛓ re-seal +10','hearts':'✦ dark aura','choice':'📜 contract choice','cg':'📓 forbidden grimoire','rival':'😈 demon king','cat':'🐈‍⬛ familiar','nervous':'🧙 level 1 wizard','happy':'封印解除 RELEASE','bad':'🖤 BAD END','reset':'↺ restore seal'};
+  document.querySelectorAll('button[data-c]').forEach(b=>{const k=b.querySelector('kbd');if(L[b.dataset.c]){b.textContent=L[b.dataset.c];if(k)b.appendChild(k);}});
+  document.querySelectorAll('h2').forEach(h=>{h.textContent={'Affection':'Seal / Power','Events':'Events','Make him say…':'Make the Dark Lord say…','Quick lines':'Quick lines'}[h.textContent]||h.textContent});
+}const TOPIC=P.get('remote')||'ahbangkun-c74d709687';
 document.getElementById('st').textContent=`channel: ${TOPIC} · keys work while this page is focused`;
 function send(c,btn){fetch('https://ntfy.sh/'+encodeURIComponent(TOPIC),{method:'POST',body:c}).catch(()=>{});
   if(btn){btn.classList.add('hit');setTimeout(()=>btn.classList.remove('hit'),150);}}
-document.querySelectorAll('button[data-c]').forEach(b=>b.onclick=()=>send(b.dataset.c,b));
+document.querySelectorAll('button[data-c]').forEach(b=>b.onclick=()=>send(P.get('mode')==='chuuni'&&b.dataset.c==='nervous'?'mage':b.dataset.c,b));
 const Q=["thanks for the gift!! you're my favourite (don't tell the others)","welcome new viewer ♡ you're on my route now","chat is so quiet… are you all blushing?","I-I'm not crying, the anime was just sad","tap ❤️ if you'd pick my route","goodnight chat… stay a bit longer?"];
-const qd=document.getElementById('quick');Q.forEach(t=>{const b=document.createElement('button');b.textContent=t;b.style.fontSize='14px';b.onclick=()=>send('say:'+t,b);qd.appendChild(b);});
+const QC=["your offering has been accepted by the abyss. thank you, mortal.","a new soul enters my domain… welcome.","my right arm… it's reacting to your gift!!","silence. the Organization might be watching.","kukuku… tap ❤️ to weaken my seal.","I must return to the shadows… goodnight, mortals."];
+const qd=document.getElementById('quick');(P.get('mode')==='chuuni'?QC:Q).forEach(t=>{const b=document.createElement('button');b.textContent=t;b.style.fontSize='14px';b.onclick=()=>send('say:'+t,b);qd.appendChild(b);});
 const inp=document.getElementById('say');const ss=()=>{if(inp.value.trim()){send('say:'+inp.value.trim());inp.value='';}};
 document.getElementById('sayb').onclick=ss;inp.addEventListener('keydown',e=>{if(e.key==='Enter')ss();});
 const K={'1':'aff:10','2':'aff:-10','3':'aff:25',' ':'hearts','c':'choice','g':'cg','r':'rival','k':'cat','n':'nervous','h':'happy','b':'bad','0':'reset'};

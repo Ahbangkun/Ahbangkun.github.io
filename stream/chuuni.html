@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Ahbangkun Chuunibyou</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Dela+Gothic+One&family=Zen+Antique&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{width:100%;height:100%;overflow:hidden;background:transparent}
+  body{width:1080px;height:1920px;overflow:hidden;background:transparent;transform-origin:0 0;position:relative;
+       font-family:'Zen Maru Gothic',system-ui,sans-serif;color:#f3e6ff}
+  .layer{position:absolute;inset:0} .abs{position:absolute}
+  body.back #front{display:none} body.front #back{display:none}
+
+  :root{--pink:#c0213f;--pink2:#7a1530;--rose:#ff2e55;--cream:#140b1c;--ink:#f3e6ff;--gold:#e8c27a}
+  #bg{background-size:cover;background-repeat:no-repeat}
+  #tint{background:radial-gradient(ellipse at 50% 46%,rgba(120,0,40,.25),rgba(15,5,30,.82) 70%),linear-gradient(180deg,rgba(40,0,60,.55),rgba(10,0,20,.6))}
+  .petal{position:absolute;top:-40px;width:14px;height:34px;border-radius:50% 50% 50% 50%/80% 80% 20% 20%;background:#1a0f22;box-shadow:0 0 6px rgba(255,46,85,.6);opacity:.9;animation:fall linear infinite}
+  .ember{position:absolute;bottom:-20px;width:8px;height:8px;border-radius:50%;background:#ff4d6d;box-shadow:0 0 12px #ff2e55;animation:rise linear infinite}
+  @keyframes rise{to{transform:translate(var(--dx),-1900px);opacity:0}}
+  @keyframes fall{to{transform:translate(var(--dx),2000px) rotate(720deg)}}
+
+  /* VN-style frosted panels */
+  .vn{background:rgba(14,6,22,.86);border:3px solid var(--rose);border-radius:10px;
+      box-shadow:0 0 0 3px rgba(232,194,122,.55) inset,0 0 26px rgba(255,46,85,.45)}
+  #route{left:44px;top:218px;padding:10px 26px 10px 14px;display:flex;align-items:center;gap:14px;font-size:36px;font-weight:900}
+  #route .tag{background:var(--rose);font-family:'Zen Antique';color:#fff;font-size:22px;padding:6px 14px;border-radius:12px;letter-spacing:1px}
+  #clock{right:44px;top:218px;padding:10px 24px;font-size:32px;font-weight:700}
+  #aff{left:44px;right:44px;top:312px;padding:12px 22px;display:flex;align-items:center;gap:16px}
+  #aff .lab{font-family:'Zen Antique';font-size:30px;white-space:nowrap;color:var(--gold)}
+  #aff .hearts{font-size:30px;letter-spacing:2px;color:var(--gold);white-space:nowrap}
+  #aff .track{flex:1;height:20px;border-radius:3px;background:#2a1020;border:2px solid var(--gold);overflow:hidden}
+  #aff .fill{height:100%;background:repeating-linear-gradient(-60deg,#ff2e55 0 12px,#9b0f2e 12px 24px);transition:width .8s;box-shadow:0 0 12px #ff2e55}
+  #aff .lv{font-size:26px;font-weight:900;white-space:nowrap}
+
+  /* dialogue box (front) */
+  #dlg{left:36px;right:36px;top:1150px;height:270px;padding:46px 40px 20px 250px}
+  #me{left:26px;top:1000px;height:300px;z-index:3;filter:drop-shadow(0 0 14px rgba(255,46,85,.7));transform-origin:50% 100%;animation:idle 3s ease-in-out infinite}
+  @keyframes idle{50%{transform:translateY(-6px) rotate(-1.5deg)}}
+  #me.pose{animation:pose .5s ease-in-out 3}@keyframes pose{50%{transform:scale(1.1) rotate(6deg)}}
+  #dlg .nm{position:absolute;left:230px;top:-30px;font-family:'Zen Antique';background:var(--rose);color:#fff;font-size:34px;font-weight:900;padding:6px 30px;border-radius:16px;
+           border:3px solid var(--gold);box-shadow:0 0 16px rgba(255,46,85,.6)}
+  #dlg .tx{font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:38px;line-height:1.45;min-height:120px}
+  #dlg .nx{position:absolute;right:34px;bottom:20px;color:var(--rose);font-size:30px;animation:bob 1s ease-in-out infinite}
+  @keyframes bob{50%{transform:translateY(8px)}}
+  #dlg .menu{position:absolute;right:30px;top:12px;display:flex;gap:16px;font-size:20px;font-weight:900;color:#a0607a;letter-spacing:1px}
+
+  /* choices */
+  #choices{left:110px;right:110px;top:520px;display:flex;flex-direction:column;gap:22px;opacity:0;transform:translateY(20px);transition:all .4s;pointer-events:none}
+  #choices.show{opacity:1;transform:none}
+  #choices .q{text-align:center;font-family:'Zen Antique';font-size:40px;color:var(--gold);text-shadow:0 0 14px var(--rose)}
+  .ch{padding:20px 30px;font-size:36px;font-weight:900;text-align:center;transition:all .3s}
+  .ch.pick{background:var(--rose);color:#fff;transform:scale(1.06);border-color:var(--gold)}
+  .ch.fade{opacity:.35;transform:scale(.96)}
+
+  /* events */
+  #ev{left:0;right:0;top:470px;text-align:center;opacity:0;transform:scale(.4);transition:all .5s cubic-bezier(.3,1.7,.5,1);pointer-events:none}
+  #ev.show{opacity:1;transform:scale(1)}
+  #ev .ttl{display:inline-block;font-family:'Dela Gothic One';font-size:78px;color:#fff;-webkit-text-stroke:3px #000;paint-order:stroke fill;
+           text-shadow:0 0 18px #ff2e55,0 0 50px #ff2e55,4px 6px 0 #5a0018}
+  #ev img{display:block;margin:16px auto;max-height:380px;max-width:640px;border-radius:20px}
+  #ev .cap{display:inline-block;padding:14px 30px;font-size:40px;font-weight:900}
+  #ev.cg img{border:8px solid var(--gold);box-shadow:0 0 0 4px #000,0 16px 40px rgba(0,0,0,.25);transform:rotate(-2deg)}
+  #ev.bad .ttl{color:#3b3b4f;-webkit-text-stroke:3px #fff;text-shadow:0 6px 0 #222}
+  #veil{inset:0;background:radial-gradient(circle,rgba(255,255,255,.0) 30%,rgba(255,120,180,.55));opacity:0;transition:opacity .5s;pointer-events:none}
+  #veil.on{opacity:1} #veil{background:radial-gradient(circle,rgba(255,0,60,0) 30%,rgba(255,0,60,.45))} #veil.dark{background:radial-gradient(circle,rgba(0,0,0,.2) 30%,rgba(0,0,0,.8))}
+  body.quake{animation:quake .07s linear 16}@keyframes quake{25%{margin-left:-16px;margin-top:8px}75%{margin-left:16px;margin-top:-8px}}
+  #flash{inset:0;background:#fff;opacity:0;pointer-events:none}#flash.on{animation:fl .9s ease-out}@keyframes fl{0%{opacity:.9}100%{opacity:0}}
+  #circle{left:90px;top:430px;width:900px;height:900px;opacity:.75;filter:drop-shadow(0 0 18px #ff2e55)}
+  #circle .r1{transform-origin:450px 450px;animation:spin 40s linear infinite}#circle .r2{transform-origin:450px 450px;animation:spin 25s linear infinite reverse}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  body.release #circle{opacity:1;filter:drop-shadow(0 0 40px #ff2e55) brightness(1.6)}
+  .hb{position:absolute;font-size:60px;animation:hb 1.8s ease-out forwards;pointer-events:none}
+  @keyframes hb{0%{transform:translate(0,0) scale(.3);opacity:1}100%{transform:translate(var(--x),var(--y)) scale(1.3);opacity:0}}
+
+
+  /* beat pulse */
+  body.beat #dlg{animation:pulse var(--beat) ease-out infinite}
+  body.beat #aff .hearts{display:inline-block;animation:hpulse var(--beat) ease-out infinite}
+  body.beat #route{animation:pulse var(--beat) ease-out infinite}
+  body.beat #bg{animation:zoom var(--beat) ease-out infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 4px #fff inset,0 0 0 0 rgba(255,126,179,.9),0 10px 30px rgba(224,69,123,.25)}
+                   60%,100%{box-shadow:0 0 0 4px #fff inset,0 0 0 18px rgba(255,126,179,0),0 10px 30px rgba(224,69,123,.25)}}
+  @keyframes hpulse{0%{transform:scale(1.25)}50%,100%{transform:scale(1)}}
+  @keyframes zoom{0%{transform:scale(1.012)}50%,100%{transform:scale(1)}}
+  #choices .hint{text-align:center;font-size:30px;font-weight:900;color:#fff;text-shadow:0 2px 0 var(--rose)}
+
+  /* full scenes */
+  #scene{display:none;left:70px;right:70px;top:520px;text-align:center;padding:50px 40px}
+  #scene .logo{font-family:'Dela Gothic One',sans-serif;font-size:80px;line-height:1.15;color:#fff;text-shadow:0 0 20px #ff2e55,0 0 50px #ff2e55}
+  #scene .sub{font-size:40px;font-weight:700;margin-top:18px}
+  #scene .menu{margin-top:30px;display:flex;flex-direction:column;gap:14px;font-size:40px;font-weight:900}
+  #scene .menu div:first-child{color:var(--gold)} #scene .menu div:first-child::before{content:'▶ '}
+  #scene .count{font-family:'Dela Gothic One';font-size:84px;color:var(--rose);text-shadow:0 0 20px #ff2e55;margin-top:16px}
+  #scene img{height:240px;margin-top:20px}
+  .spin{display:inline-block;animation:sp 1s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div id="back" class="layer">
+  <div id="bg" class="layer"></div>
+  <div id="tint" class="layer"></div>
+  <div id="petals" class="layer"></div>
+  <svg id="circle" class="abs" viewBox="0 0 900 900"><defs><path id="cp" d="M450,450 m-380,0 a380,380 0 1,1 760,0 a380,380 0 1,1 -760,0"/></defs>
+  <g class="r1" fill="none" stroke="#ff2e55" stroke-width="4"><circle cx="450" cy="450" r="430"/><circle cx="450" cy="450" r="410" stroke-width="2"/>
+   <text fill="#ff6b85" stroke="none" font-size="34" font-family="serif" letter-spacing="10"><textPath href="#cp">✦ ᚠᚢᚦᚨᚱᚲ ✦ 封印 ✦ ᛗᛁᚾᛖ ✦ 漆黒 ✦ ᛞᚨᚱᚲ ✦ 堕天 ✦ ᚹᛁᚠᛁ ✦ 契約 ✦ ᛚᛟᚱᛞ ✦</textPath></text>
+   <circle cx="450" cy="450" r="340"/></g>
+  <g class="r2" fill="none" stroke="#e8c27a" stroke-width="3"><polygon points="450,120 736,615 164,615"/><polygon points="450,780 164,285 736,285"/><circle cx="450" cy="450" r="200"/><circle cx="450" cy="450" r="120" stroke="#ff2e55"/></g></svg>
+  <div id="scene" class="abs vn"></div>
+  <div id="route" class="abs vn"><span class="tag">漆黒の堕天使</span><span id="nameText"></span></div>
+  <div id="clock" class="abs vn">--:--</div>
+  <div id="aff" class="abs vn"><span class="lab">封印</span><span class="hearts" id="hearts"></span><div class="track"><div class="fill"></div></div><span class="lv" id="lv"></span></div>
+</div>
+<div id="front" class="layer">
+  <div id="veil" class="abs"></div>
+  <div id="flash" class="abs"></div>
+  <img id="me" class="abs" alt="">
+  <div id="choices" class="abs"></div>
+  <div id="ev" class="abs"></div>
+  <div id="dlg" class="abs vn"><div class="nm" id="dname"></div><div class="menu">AUTO · SKIP · SAVE · LOG</div><div class="tx" id="tx"></div><div class="nx">▼</div></div>
+</div>
+<script>
+/* Illustrations: いらすとや (irasutoya.com) by Takashi Mifune — free material, used within its terms (under 20 images) */
+const B='https://blogger.googleusercontent.com/img/b/R29vZ2xl/';
+const IMG={
+ room:B+'AVvXsEivQtfkDmT4XxkZqnzig34l58biFKE43rSfOCtrsX3lmPGme_OEAnfOzcq6RjeoLZ-Tf_lkY-CgOJ9Bwygv1NGZeQTSatSXC0qymojIAmnFHuLcbTQKx_V7QpjeTO-aFCtojA8IXiYW0VR8/s1600/bg_room_syosai_book.jpg',
+ me:B+'AVvXsEirYn7CvFqNjqz0duEXZBApvMtnRk2fYGR9DReDKI23UTAl89C_ypYLvJWEZeWTxSFZ-A40_w9gVj68hFILKte3VKj5JXXq7syNLpdixO5PLGkS3FTTTNfaW-yDKWUgi8QsZYuHF5XiLfk/s800/kids_chuunibyou_boy.png',
+ girl:B+'AVvXsEjYzuYJQcy3-O6mupAmtosDwjlrGceE-O8zanDF4bG3aBTextNw1zof8h7VsKYQ4aRMre48TsInEDBgvgkVPeSpF4yvzi1CenwXeHWmqmzHEF-kfhguEeI6X8ubeGUrxrZtO7Ew3QiDckw/s800/kids_chuunibyou_girl.png',
+ note:B+'AVvXsEgA9SNEgU1WJNKi-BFWVXtSCefH_kccEB7lFuHRdrSXlhliJtWn8xaF-jfdx7UEZs8r3Fh26_BJkeDj3rTBvK58Xo8gQG0hRqGKCmkMhqprDLpscdpABNxX1WHUxr0OyTgoIDO5wzAOj6M/s800/note_kurorekishi.png',
+ maou:B+'AVvXsEgkDZFHXugOEho62wp3nY9zo3SYl3qdbYwT_xh0jtLvUcD47vynnptKtmYKzkJLY5i4NFSdKvwgvZTCF1dhPyM-JXAe6ASgprYgpXr6pUsaoM-YCmXIN6gCZxoWDQm9GBlyhTeNyjkqfkZq/s800/fantasy_maou_devil.png',
+ mage:B+'AVvXsEhrwJ8tYaleZ2cJcE-qL-VYNNa9K0NCsIHb3BNJyNPNAa4I90LDiAjSdmoPpe0Hw1sE_7vQNaftZdM-Rim1TB1XKbuA9QK2JKuG00I-yTMCiO-jutTmFG-bbX8C186OG9Uokuba1FIz24fq/s800/mahoutsukai_man.png',
+ cat:B+'AVvXsEhMSxsv2IZwVffkBdcGN-mi5Jnrv-0vU3GocZMBAQ894jE1Rk7jJI-4HJXz-L15NP1l-kv1Jo2xUzBBIqqZBoNxGhOHTuKFjqh_0_EaZ5d-o0sjM8Lem9lrWumfICrxwreNzUPLfgglv66g/s800/pet_tehe_cat.png'
+};
+function fit(){const W=innerWidth,H=innerHeight,k=Math.min(W/1080,H/1920);
+  document.body.style.transform=`translate(${(W-1080*k)/2}px,${(H-1920*k)/2}px) scale(${k})`;}
+fit();addEventListener('resize',fit);
+
+const P=new URLSearchParams(location.search),get=(k,d)=>P.has(k)?P.get(k):d,$=id=>document.getElementById(id),R=Math.random,pick=a=>a[Math.floor(R()*a.length)];
+const cfg={part:get('part','both'),scene:get('scene','main'),name:get('name','Ahbangkun'),aff:+get('aff',100),min:+get('min',5),bgx:get('bgx','50'),every:+get('event',35),bpm:+get('bpm',0),poll:get('poll',''),meter:get('meter','1')};
+if(cfg.part!=='both')document.body.classList.add(cfg.part);
+const NAME=cfg.name.replace(/^@/,'');
+if(cfg.bpm>0){document.body.classList.add('beat');document.body.style.setProperty('--beat',(60/cfg.bpm)+'s');}
+if(cfg.meter==='0')document.getElementById('aff').style.display='none';
+
+$('bg').style.backgroundImage=`url("${IMG.room}")`;$('bg').style.backgroundPosition=`${cfg.bgx}% 50%`;
+for(let i=0;i<18;i++){const p=document.createElement('div');p.className='petal';
+  p.style.left=(R()*1080)+'px';p.style.setProperty('--dx',(R()*300-150)+'px');p.style.animationDuration=(9+R()*9)+'s';p.style.animationDelay=(-R()*18)+'s';$('petals').appendChild(p);}
+$('nameText').textContent='@'+NAME;$('dname').textContent=NAME;$('me').src=IMG.me;
+for(let i=0;i<16;i++){const p=document.createElement('div');p.className='ember';p.style.left=(R()*1080)+'px';p.style.setProperty('--dx',(R()*200-100)+'px');p.style.animationDuration=(7+R()*8)+'s';p.style.animationDelay=(-R()*15)+'s';$('petals').appendChild(p);}
+const tick=()=>$('clock').textContent=new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});tick();setInterval(tick,10000);
+
+/* affection meter */
+let aff=cfg.aff;
+const LV=[[0,'RELEASED'],[20,'critical!!'],[40,'cracking'],[60,'unstable'],[80,'leaking'],[100,'sealed']];
+function setAff(){aff=Math.max(0,Math.min(100,aff));$('aff').querySelector('.fill').style.width=aff+'%';
+  const n=Math.round(aff/20);$('hearts').textContent='⛓'.repeat(n)+'✧'.repeat(5-n);
+  $('lv').textContent=[...LV].reverse().find(l=>aff>=l[0])[1];}
+setAff();
+
+/* typewriter dialogue */
+const LINES=[
+ "Kukuku… you've wandered into my domain. Welcome, mortal.",
+ "My right arm… it's throbbing again. Do NOT tap ❤️, the seal can't take it!",
+ "This is not a stream. It is a ritual. Act accordingly.",
+ "The Organization is watching. Speak only in emojis.",
+ "*adjusts eyepatch I do not medically need*",
+ "Behold my forbidden technique: sleeping before 3AM. Too dangerous.",
+ "You dare follow me? …bold. I respect that. (please do)",
+ "My true power is sealed. So is my wallet.",
+ "In my past life I was a demon lord. In this life I am… live on TikTok.",
+ "Silence, chat. My familiar is sleeping.",
+ "The bandage stays on. It is NOT because I scraped my arm. It is a seal.",
+];
+let typing=null;
+function type(t,name=NAME){$('dname').textContent=name;const el=$('tx');clearInterval(typing);el.textContent='';let i=0;
+  typing=setInterval(()=>{el.textContent=t.slice(0,++i);if(i>=t.length)clearInterval(typing)},45);}
+let li=0;
+if(cfg.scene==='main'&&cfg.part!=='back'){type(LINES[0]);setInterval(()=>{if(!busy){li=(li+1)%LINES.length;type(LINES[li]);}},9000);}
+
+/* hearts burst */
+function burst(n=14,e='🔥'){for(let i=0;i<n;i++){const h=document.createElement('div');h.className='hb';h.textContent=pick([e,'⚡','✦','🩸']);
+  h.style.left=(500+R()*80)+'px';h.style.top=(900+R()*80)+'px';h.style.setProperty('--x',(R()*700-350)+'px');h.style.setProperty('--y',(-R()*600-100)+'px');
+  $('front').appendChild(h);setTimeout(()=>h.remove(),1900);}}
+let busy=false;
+function event(html,cls='',ms=4500,veil=''){busy=true;const e=$('ev');e.className='abs '+cls;e.innerHTML=html;void e.offsetWidth;e.classList.add('show');
+  if(veil){$('veil').className='abs on '+(veil==='dark'?'dark':'');}
+  setTimeout(()=>{e.classList.remove('show');$('veil').className='abs';busy=false;},ms);}
+
+/* choice menu: one option gets "picked" by fate */
+const CHOICES=[
+ {q:'A dark voice offers you a contract…',o:[['⛧ Accept the contract (follow)',-25,'"Fool… your fate is sealed. Welcome, my servant."'],['❤ Weaken his seal (tap like)',-10,'"Nngh—! My arm… it reacts to your likes!!"'],['📞 Call his mom','BAD','Mom walked in. The ritual is over.']]},
+ {q:'He reveals his TRUE NAME. You:',o:[['kneel 🙇',-20,'"Good. You may now address me… by my username."'],['"that\'s cringe"',10,'"Cringe is merely power you cannot comprehend."'],['post his notebook online','BAD','His 黒歴史 notebook went viral.']]},
+ {q:'⚠ The Organization approaches!',o:[['shield him with a gift 🌹',-30,'"Your offering… has been accepted by the abyss."'],['run away',-5,'"Wise. Even I fear the Organization. (my landlord)"'],['switch off the Wi-Fi','BAD','The Dark Lord has been disconnected.']]},
+];
+function pollChoice(){if(busy)return;busy=true;const [q,...opts]=cfg.poll.split('|');const box=$('choices');
+  box.innerHTML=`<div class="q">${q||'What should he do?'}</div>`+opts.map(o=>`<div class="ch vn">${o}</div>`).join('')+`<div class="hint">vote in the poll ♡ send the gift to choose!</div>`;
+  box.classList.add('show');type(pick(['mortals… decide my fate. vote in the poll.','your offerings shall choose. the abyss is watching.','the poll decides. I trust you… mostly.']));
+  setTimeout(()=>{box.classList.remove('show');busy=false;},12000);}
+function choice(){if(cfg.poll)return pollChoice();if(busy)return;busy=true;const c=pick(CHOICES),box=$('choices');
+  box.innerHTML=`<div class="q">${c.q}</div>`+c.o.map(o=>`<div class="ch vn">${o[0]}</div>`).join('');box.classList.add('show');
+  type('( the abyss awaits your answer… )','???');
+  const w=[.42,.4,.18],r=R();const k=r<w[0]?0:r<w[0]+w[1]?1:2;
+  setTimeout(()=>{[...box.querySelectorAll('.ch')].forEach((el,i)=>el.classList.add(i===k?'pick':'fade'));},2600);
+  setTimeout(()=>{box.classList.remove('show');const o=c.o[k];
+    if(o[1]==='BAD'){busy=false;badEnd(o[2]);}
+    else{aff+=o[1];setAff();if(o[1]<0)burst();busy=false;type(o[2]);$('me').classList.remove('pose');void $('me').offsetWidth;$('me').classList.add('pose');
+      event(`<div class="ttl">封印 ${o[1]>0?'+':''}${o[1]}%</div>`,'',2600,'pink');}
+    if(aff<=0)setTimeout(happy,3000);
+  },4400);}
+function happy(){document.body.classList.add('release','quake');$('flash').classList.remove('on');void $('flash').offsetWidth;$('flash').classList.add('on');
+  setTimeout(()=>document.body.classList.remove('quake'),1200);
+  event(`<div class="ttl">封印解除!!</div><img src="${IMG.me}" alt=""><span class="cap vn">THE SEAL IS BROKEN<br><small>…nothing happened. as expected.</small></span>`,'',6000,'pink');
+  burst(34);type('BEHOLD MY TRUE POWER—! …hm. maybe it needs to buffer.');
+  setTimeout(()=>{document.body.classList.remove('release');aff=100;setAff();type('…the seal has restored itself. we never speak of this.')},6500);}
+function badEnd(t){event(`<div class="ttl">BAD END</div><img src="${IMG.note}" alt=""><span class="cap vn">${t||'The dark lord has logged off.'}<br><small>▶ continue? tap ❤️</small></span>`,'bad',5200,'dark');
+  type('…that never happened. clear your memory, mortal.');}
+const RANDOM=[
+ ()=>{event(`<div class="ttl">禁断の書 ACQUIRED</div><img src="${IMG.note}" alt=""><span class="cap vn">the Forbidden Grimoire<br><small>(his black-history notebook from age 14)</small></span>`,'cg',4800,'pink');type('DO NOT READ PAGE 7. that is an order.')},
+ ()=>{event(`<div class="ttl">⚠ DEMON KING APPEARS</div><img src="${IMG.maou}" alt=""><span class="cap vn">"nice eyepatch, kid"<br><small>critical damage: −9999 dignity</small></span>`,'',5000,'pink');type('…he is my rival. we went to the same school.')},
+ ()=>{event(`<img src="${IMG.cat}" alt=""><span class="cap vn">my familiar has awakened 🐈‍⬛</span>`,'',3800);type('my familiar. it obeys only me. (it does not)')},
+ ()=>{event(`<div class="ttl">⚠ RIVAL CHUUNI</div><img src="${IMG.girl}" alt=""><span class="cap vn">"my left eye is MORE sealed than yours"</span>`,'',4600,'pink');type('impossible… her seal is stronger than mine?!')},
+ ()=>{event(`<img src="${IMG.mage}" alt=""><span class="cap vn">a Level 1 Wizard challenges you<br><small>(he is 30 and has a day job)</small></span>`,'',4200);type('kukuku… a worthy opponent. finally.')},
+];
+if(cfg.scene==='main'&&cfg.part!=='back'){
+  setTimeout(choice,6000);
+  setInterval(()=>{if(busy)return;R()<.55?choice():pick(RANDOM)();},cfg.every*1000);
+}
+document.addEventListener('keydown',e=>{const k=e.key.toLowerCase();if(k==='c')choice();if(k==='h')happy();if(k==='e')pick(RANDOM)();});
+
+/* ===== remote control: listens on a private ntfy.sh channel ===== */
+const TOPIC=get('remote','ahbangkun-c74d709687');
+function cmd(c){c=(c||'').trim();if(!c)return;
+  if(c.startsWith('say:')){type(c.slice(4));return;}
+  if(c.startsWith('aff:')){const n=-(+c.slice(4));aff+=n;setAff();if(n<0)burst();event(`<div class="ttl">封印 ${n>0?'+':''}${n}%</div>`,'',2400,'pink');if(aff<=0)setTimeout(happy,2600);return;}
+  busy=false;
+  ({choice:()=>choice(),happy:()=>happy(),
+    cg:()=>RANDOM[0](),rival:()=>RANDOM[1](),cat:()=>RANDOM[2](),nervous:()=>RANDOM[3](),
+    bad:()=>badEnd(pick(['Mom walked in. The ritual is over.','The Dark Lord has been disconnected.','His notebook went viral.'])),mage:()=>RANDOM[4](),
+    hearts:()=>burst(30),reset:()=>{aff=100;setAff();}}[c]||(()=>{}))();}
+if(cfg.part!=='back'&&cfg.scene==='main'&&TOPIC!=='0'){
+  try{const es=new EventSource('https://ntfy.sh/'+encodeURIComponent(TOPIC)+'/sse');
+    es.onmessage=e=>{try{const d=JSON.parse(e.data);if(d.event==='message')cmd(d.message)}catch(_){}};}catch(_){}}
+document.addEventListener('keydown',e=>{const m={'1':'aff:10','2':'aff:-10','b':'bad','r':'rival','g':'cg','k':'cat','n':'nervous'}[e.key.toLowerCase()];if(m)cmd(m)});
+
+/* full scenes */
+if(cfg.scene!=='main'){
+  const s=$('scene');s.style.display='block';$('aff').style.display='none';
+  if(cfg.scene==='starting'){
+    s.innerHTML=`<div class="logo">儀式 開始<br>THE RITUAL</div><div class="sub">the seal weakens in…</div><div class="count" id="cd"></div><div class="menu"><div>Awaken</div><div>Continue</div><div>Hide from Mom</div></div>`;
+    const end=Date.now()+cfg.min*60000;const up=()=>{const r=Math.max(0,end-Date.now());
+      $('cd').textContent=r?`${String(Math.floor(r/60000)).padStart(2,'0')}:${String(Math.floor(r/1000)%60).padStart(2,'0')}`:'AWAKENING…';};up();setInterval(up,500);
+  } else if(cfg.scene==='brb'){
+    s.innerHTML=`<div class="logo">recharging<br>mana<span class="spin">✦</span></div><div class="sub">the Dark Lord is eating instant noodles.<br>do not disturb.</div><img src="${IMG.me}" alt="">`;
+  } else {
+    s.innerHTML=`<div class="logo">封印 完了</div><div class="sub">the seal holds… for now.<br>farewell, mortals. the abyss remembers you.</div><img src="${IMG.me}" alt="">`;
+  }
+}
+</script>
+</body>
+</html>
