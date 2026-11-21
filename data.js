@@ -81,8 +81,8 @@ window.CONFIG = {
 
   socials: [
     { key:"tiktok",     name:"TikTok",     sub:"@ahbangkun · 65.8K followers",          icon:"music-2",        c:"var(--pink)" },
-    { key:"youtube",    name:"YouTube",    sub:"@ahbangkun665 · I post when I'm free",  icon:"youtube",        c:"var(--peach)" },
-    { key:"instagram",  name:"Instagram",  sub:"@ahbangkun · random stuff I did",       icon:"instagram",      c:"var(--lav)" },
+    { key:"youtube",    name:"YouTube",    sub:"@ahbangkun665 · 3D, art & gaming",       icon:"youtube",        c:"var(--peach)" },
+    { key:"instagram",  name:"Instagram",  sub:"@ahbangkun · art, 3D & gaming clips",    icon:"instagram",      c:"var(--lav)" },
     { key:"twitter",    name:"X (Twitter)", sub:"@Ahbangkun",                            icon:"twitter",        c:"var(--sky)" },
     { key:"discord",    name:"Discord",    sub:"ahbangkun · open profile",               icon:"message-circle", c:"var(--sky)" },
     { key:"sketchfab",  name:"Sketchfab",  sub:"82 3D models · most free to download",  icon:"box",            c:"var(--mint)" },
@@ -129,6 +129,8 @@ window.CONFIG = {
     { name:"Comics & Storyboarding",jp:"漫画",             icon:"panels-top-left", c:"var(--mint)",  desc:"Three WEBTOON Canvas series.", back:"Three WEBTOON series you can read right here.", to:"webtoon", toLabel:"Read my WEBTOON" },
     { name:"Fan Art",               jp:"ファンアート",     icon:"heart",           c:"var(--lav)",   desc:"Anime, VTuber and tokusatsu fan art.", back:"Anime, VTuber and tokusatsu fan art.", to:"art", toLabel:"Open the gallery" },
     { name:"Coding",                jp:"コーディング",     icon:"code-xml",        c:"var(--sky)",   desc:"Basic, still learning.", back:"You're looking at it! I built this site." },
+    { name:"Gaming",                jp:"ゲーム",           icon:"gamepad-2",       c:"var(--mint)",  desc:"PUBG, GTA, Valheim and Project Zomboid clips.", back:"Gaming videos on my YouTube and game clips on Instagram, often with friends." },
+    { name:"Video Editing",         jp:"動画編集",         icon:"clapperboard",    c:"var(--peach)", desc:"Montages, trailers and edits.", back:"My montages and edits are on YouTube and Instagram." },
     { name:"Japanese",              jp:"日本語",           icon:"languages",       c:"var(--pink)",  desc:"Beginner. よろしく!", back:"Hover the Japanese words on this site to learn them with me ✦" }
   ],
   tools: ["Blender", "Sketchfab", "WEBTOON Canvas", "TikTok", "YouTube", "X"],

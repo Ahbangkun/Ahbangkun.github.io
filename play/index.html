@@ -231,7 +231,7 @@ svg.lucide{width:18px;height:18px;stroke-width:2.2}
 .an small{font-size:11px;color:var(--muted)}
 
 /* ---------- talents ---------- */
-.talents{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;overflow-y:auto;align-content:start;height:100%;padding-right:6px}
+.talents{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;overflow-y:auto;align-content:start;height:100%;padding-right:6px}
 .tal{position:relative;padding:20px 18px;--cut:16px;background:var(--panel);text-align:left;min-height:170px;display:flex;flex-direction:column;gap:6px;transition:transform .25s}
 .tal:hover{transform:translateY(-4px)}
 .tal .node{width:50px;height:50px;transform:rotate(45deg);display:grid;place-items:center;background:var(--tc);margin:4px 0 12px 6px;box-shadow:0 0 24px var(--tc)}
@@ -455,9 +455,9 @@ svg.lucide{width:18px;height:18px;stroke-width:2.2}
       <h2>AHBANGKUN</h2><div class="handle">@ahbangkun</div><div class="stars">★★★★★</div>
     </div>
     <div class="a-info">
-      <div class="a-tags"><span class="tag">Class · 3D Artist</span><span class="tag pink">Origin · Sarawak, MY</span><span class="tag cyan">Main tool · Blender</span><span class="tag violet">Learning · 日本語</span></div>
+      <div class="a-tags"><span class="tag">Class · 3D Artist</span><span class="tag pink">Origin · Sarawak, MY</span><span class="tag cyan">Main tool · Blender</span><span class="tag violet">Learning · 日本語</span><span class="tag">Side quest · Gaming</span></div>
       <div class="a-quote">“I do 3D Blender stuff~ 🇲🇾”</div>
-      <p class="a-bio">Digital creator from Sarawak, Malaysia. Builds Kamen Rider, Ultraman and Super Sentai belts, weapons and props in Blender, shares them on TikTok, YouTube and Sketchfab, and makes comics with three WEBTOON Canvas series. Loves 3D modeling, drawing, and 2D and 3D animation. Codes a little and is learning Japanese as a beginner.</p>
+      <p class="a-bio">Digital creator from Sarawak, Malaysia. Builds Kamen Rider, Ultraman and Super Sentai belts, weapons and props in Blender, shares them on TikTok, YouTube and Sketchfab, and makes comics with three WEBTOON Canvas series. Loves 3D modeling, drawing, and 2D and 3D animation, and posts art and gaming videos on YouTube and Instagram, from PUBG montages to Valheim and Project Zomboid with friends. Codes a little and is learning Japanese as a beginner.</p>
       <div class="h3">STATS</div>
       <div class="statgrid">
         <div class="stat panel cut"><b>65.8K</b><span>TikTok followers</span></div>
@@ -806,7 +806,7 @@ svg.lucide{width:18px;height:18px;stroke-width:2.2}
   /* ---------- talents ---------- */
   const TC = ['var(--volt)', 'var(--cyan)', 'var(--pink)', 'var(--r5)', 'var(--r4)', 'var(--volt)', 'var(--cyan)', 'var(--pink)'];
   const TMAP = { models: 'arsenal', tiktok: 'broadcast', art: 'gallery', webtoon: 'story' };
-  $('#tgrid').innerHTML = C.skills.map((s, i) => `<a class="tal cut" ${s.to ? `href="#${TMAP[s.to] || 'lobby'}"` : 'href="#talents"'} style="--tc:${TC[i % TC.length]}"><span class="node"><i data-lucide="${s.icon}"></i></span><b>${esc(s.name)}</b><span class="jp">${s.jp}</span><p>${esc(s.desc)}</p>${s.to ? `<span class="go">${esc(s.toLabel)} <i data-lucide="arrow-right"></i></span>` : `<p style="color:var(--volt-ink)">${esc(s.back || '')}</p>`}</a>`).join('');
+  $('#tgrid').innerHTML = C.skills.map((s, i) => `<a class="tal cut" ${s.to ? `href="#${TMAP[s.to] || 'lobby'}"` : 'href="#talents"'} style="--tc:${TC[i % TC.length]}"><span class="node"><i data-lucide="${s.icon}"></i></span><b>${esc(s.name)}</b><span class="jp">${s.jp}</span><p>${esc(s.desc)}</p>${s.to ? `<span class="go">${esc(s.toLabel)} <i data-lucide="arrow-right"></i></span>` : (s.back && !/Hover/.test(s.back) ? `<p style="color:var(--volt-ink)">${esc(s.back)}</p>` : '')}</a>`).join('');
 
   /* ---------- comms ---------- */
   const FC = { tiktok: 'var(--pink)', youtube: '#ff6b6b', instagram: 'var(--r4)', twitter: 'var(--cyan)', discord: '#8ea1ff', sketchfab: 'var(--volt)', commission: 'var(--r5)', webtoonProfile: '#4fe3a0', artstation: 'var(--cyan)' };
