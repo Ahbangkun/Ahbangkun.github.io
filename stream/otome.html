@@ -205,6 +205,21 @@ if(cfg.scene==='main'&&cfg.part!=='back'){
 }
 document.addEventListener('keydown',e=>{const k=e.key.toLowerCase();if(k==='c')choice();if(k==='h')happy();if(k==='e')pick(RANDOM)();});
 
+/* ===== remote control: listens on a private ntfy.sh channel ===== */
+const TOPIC=get('remote','ahbangkun-c74d709687');
+function cmd(c){c=(c||'').trim();if(!c)return;
+  if(c.startsWith('say:')){type(c.slice(4));return;}
+  if(c.startsWith('aff:')){const n=+c.slice(4);aff+=n;setAff();if(n>0)burst();event(`<div class="ttl">好感度 ${n>0?'+':''}${n} ♡</div>`,'',2400,'pink');if(aff>=100)setTimeout(happy,2600);return;}
+  busy=false;
+  ({choice:()=>choice(),happy:()=>happy(),
+    cg:()=>RANDOM[0](),rival:()=>RANDOM[1](),cat:()=>RANDOM[2](),nervous:()=>RANDOM[3](),
+    bad:()=>{event(`<div class="ttl">BAD END</div><img src="${IMG.dumped}" alt=""><span class="cap vn">he went live without you… 💔<br><small>▶ load save? tap ❤️</small></span>`,'bad',5200,'dark');type('...you left. (just kidding, come back)');},
+    hearts:()=>burst(30),reset:()=>{aff=cfg.aff;setAff();}}[c]||(()=>{}))();}
+if(cfg.part!=='back'&&cfg.scene==='main'&&TOPIC!=='0'){
+  try{const es=new EventSource('https://ntfy.sh/'+encodeURIComponent(TOPIC)+'/sse');
+    es.onmessage=e=>{try{const d=JSON.parse(e.data);if(d.event==='message')cmd(d.message)}catch(_){}};}catch(_){}}
+document.addEventListener('keydown',e=>{const m={'1':'aff:10','2':'aff:-10','b':'bad','r':'rival','g':'cg','k':'cat','n':'nervous'}[e.key.toLowerCase()];if(m)cmd(m)});
+
 /* full scenes */
 if(cfg.scene!=='main'){
   const s=$('scene');s.style.display='block';$('aff').style.display='none';
