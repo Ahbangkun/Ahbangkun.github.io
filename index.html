@@ -305,9 +305,28 @@ h2.title{font-size:clamp(28px,3.6vw,42px);font-weight:900;line-height:1.1;margin
 .skill p{font-size:12px;color:var(--ink-2);margin-top:6px;line-height:1.5}
 .tools{margin-top:16px}
 
+/* Videos page */
+.vtabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.vt{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:var(--paper);border:1px solid var(--line);font-size:13px;font-weight:700;color:var(--ink-2)}
+.vt svg{width:15px;height:15px}
+.vt.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.vgrid{display:grid;grid-auto-rows:max-content;align-content:start;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;max-height:min(52vh,470px);overflow-y:auto;padding:2px 4px 4px 2px}
+.vc{position:relative;display:flex;flex-direction:column;text-align:left;border-radius:14px;overflow:hidden;background:var(--paper);border:1px solid var(--line);box-shadow:var(--shadow);transition:transform .25s,box-shadow .25s}
+.vc:hover{transform:translateY(-4px);box-shadow:0 14px 34px rgba(127,111,201,.2)}
+.vc .th{position:relative;aspect-ratio:16/9;background:#e9e4ee center/cover}
+.vc .th.tall{background-size:contain;background-repeat:no-repeat;background-color:#2b2735}
+.vc .pl{position:absolute;inset:0;margin:auto;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.88);color:var(--ink)}
+.vc .pl svg{width:18px;height:18px}
+.vc .src{position:absolute;top:8px;left:8px;padding:3px 8px;border-radius:999px;font-size:10px;font-weight:800;letter-spacing:.06em;background:rgba(255,255,255,.9);color:var(--ink)}
+.vc .src.yt{color:#d4314a} .vc .src.ig{color:#8a4fd8}
+.vc b{display:block;padding:9px 11px 11px;font-size:13px;line-height:1.3}
+.modal .box.wide{width:min(960px,92vw);height:auto;aspect-ratio:16/9}
+.modal .box.ig{width:min(400px,92vw);height:min(760px,86vh);background:#fff}
+.art-item .from{position:absolute;bottom:6px;right:6px;padding:2px 6px;border-radius:999px;font-size:9px;font-weight:800;background:rgba(255,255,255,.9);color:var(--ink-2)}
+
 /* Art gallery + lightbox */
 .art-wrap{display:grid;grid-template-columns:1fr 300px;gap:18px;min-height:0}
-.art-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;max-height:min(58vh,520px);overflow-y:auto;padding:2px;border-radius:16px}
+.art-grid{display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:max-content;align-content:start;gap:8px;max-height:min(58vh,520px);overflow-y:auto;padding:2px;border-radius:16px}
 .art-item{position:relative;aspect-ratio:1;border-radius:12px;overflow:hidden;background:var(--paper);border:1px solid var(--line)}
 .art-item img{width:100%;height:100%;object-fit:cover;transition:transform .35s}
 .art-item:hover img{transform:scale(1.05)}
@@ -397,6 +416,7 @@ footer.fine{margin-top:20px;text-align:center}
 ================================================================ */
 @media (max-width:1000px){
   .home,.profile,.works,.contact,.series,.art-wrap{grid-template-columns:1fr}
+  .vgrid{max-height:none}
   .art-grid{grid-template-columns:repeat(3,1fr);max-height:none}
   .anim-list{max-height:none}
   .models-wrap{grid-template-columns:1fr;height:auto}
@@ -462,8 +482,9 @@ h2.title{font-weight:300;letter-spacing:-.01em}
     <a class="tab" href="#tiktok" data-go="3"><i data-lucide="clapperboard"></i><span class="lbl">TikTok</span></a>
     <a class="tab" href="#webtoon" data-go="4"><i data-lucide="book-open"></i><span class="lbl">WEBTOON</span></a>
     <a class="tab" href="#art" data-go="5"><i data-lucide="palette"></i><span class="lbl">Art</span></a>
-    <a class="tab" href="#skills" data-go="6"><i data-lucide="sparkles"></i><span class="lbl">Skills</span></a>
-    <a class="tab" href="#contact" data-go="7"><i data-lucide="send"></i><span class="lbl">Contact</span></a>
+    <a class="tab" href="#videos" data-go="6"><i data-lucide="clapperboard"></i><span class="lbl">Videos</span></a>
+    <a class="tab" href="#skills" data-go="7"><i data-lucide="sparkles"></i><span class="lbl">Skills</span></a>
+    <a class="tab" href="#contact" data-go="8"><i data-lucide="send"></i><span class="lbl">Contact</span></a>
   </nav>
   <div class="hdr-btns">
     <a class="motion-btn game-btn" href="play/" title="Game mode: a gacha-style version of this site"><i data-lucide="gamepad-2"></i><span class="lbl">Game mode</span></a>
@@ -638,10 +659,29 @@ h2.title{font-weight:300;letter-spacing:-.01em}
   </div>
 </section>
 
-<!-- ============================ 07 SKILLS ============================ -->
+<!-- ============================ 07 VIDEOS ============================ -->
+<section class="page" id="videos" aria-label="Videos">
+  <div class="page-inner">
+    <div class="eyebrow reveal">07 <span class="jp">動画</span></div>
+    <h2 class="title reveal">Videos</h2>
+    <div class="vtabs reveal" id="vtabs" role="tablist">
+      <button class="vt on" data-cat="gaming" role="tab"><i data-lucide="gamepad-2"></i>Gaming</button>
+      <button class="vt" data-cat="3d" role="tab"><i data-lucide="box"></i>3D &amp; Making-of</button>
+      <button class="vt" data-cat="art" role="tab"><i data-lucide="brush"></i>Art</button>
+    </div>
+    <div class="vgrid reveal" id="vgrid"></div>
+    <div class="under reveal">
+      <span class="fine">Tap a video to play it here.</span>
+      <a class="btn peach js-link" data-link="youtube" target="_blank" rel="noopener"><i data-lucide="youtube"></i>YouTube</a>
+      <a class="btn lav js-link" data-link="instagram" target="_blank" rel="noopener"><i data-lucide="instagram"></i>Instagram</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 08 SKILLS ============================ -->
 <section class="page" id="skills" aria-label="Skills">
   <div class="page-inner">
-    <div class="eyebrow reveal">07 <span class="jp">スキル</span></div>
+    <div class="eyebrow reveal">08 <span class="jp">スキル</span></div>
     <h2 class="title reveal">Skills &amp; Tools</h2>
     <div class="skills reveal" id="skillGrid"></div>
     <div class="pills tools reveal" id="tools"></div>
@@ -651,7 +691,7 @@ h2.title{font-weight:300;letter-spacing:-.01em}
 <!-- ============================ 06 CONTACT ============================ -->
 <section class="page" id="contact" aria-label="Contact">
   <div class="page-inner">
-    <div class="eyebrow reveal">08 <span class="jp">連絡</span></div>
+    <div class="eyebrow reveal">09 <span class="jp">連絡</span></div>
     <h2 class="title reveal">Say hi &amp; find me</h2>
     <div class="contact">
       <div class="socials reveal" id="socials"></div>
@@ -717,7 +757,7 @@ h2.title{font-weight:300;letter-spacing:-.01em}
 <!-- ================================================================
      CONTENT CONFIG: edit everything here
 ================================================================ -->
-<script src="data.js?v=6d298ecd"></script>
+<script src="data.js?v=de8f506a"></script>
 
 <!-- ================================================================
      UI SCRIPT
@@ -773,15 +813,17 @@ h2.title{font-weight:300;letter-spacing:-.01em}
   }
   /* ---------- art gallery + lightbox ---------- */
   const tw = (id, size) => 'https://pbs.twimg.com/media/' + id.replace(/name=\w+/, 'name=' + size);
-  $('#artGrid').innerHTML = C.drawings.map((d, i) =>
-    `<button class="art-item" data-i="${i}" aria-label="Open drawing from ${esc(d.date)}"><img src="${esc(tw(d.img, 'small'))}" alt="Drawing by Ahbangkun, ${esc(d.date)}" loading="lazy"></button>`).join('');
+  const ART = [...C.drawings.map(d => ({ ...d, from: 'X', small: tw(d.img, 'small'), big: tw(d.img, 'large') })),
+               ...(C.igDrawings || []).map(d => ({ ...d, from: 'IG', small: d.file, big: d.file }))];
+  $('#artGrid').innerHTML = ART.map((d, i) =>
+    `<button class="art-item" data-i="${i}" aria-label="Open drawing from ${esc(d.date)}"><img src="${esc(d.small)}" alt="Drawing by Ahbangkun, ${esc(d.date)}" loading="lazy"><span class="from">${d.from}</span></button>`).join('');
   $('#animList').innerHTML = C.animations.map(v =>
     `<a class="anim-card" href="${esc(v.url)}" target="_blank" rel="noopener"><span class="th"><img src="${esc(v.thumb)}" alt="" loading="lazy"><i data-lucide="play"></i></span><span><b>${esc(v.title)}</b><small>${esc(v.date)}</small></span></a>`).join('');
   const lb = $('#lightbox'); let lbi = 0;
   const showArt = i => {
-    lbi = (i + C.drawings.length) % C.drawings.length; const d = C.drawings[lbi];
-    $('#lbImg').src = tw(d.img, 'large'); $('#lbImg').alt = `Drawing by Ahbangkun, ${d.date}`;
-    $('#lbCap').innerHTML = `${esc(d.date)} · <a href="${esc(d.url)}" target="_blank" rel="noopener">view on X</a>`;
+    lbi = (i + ART.length) % ART.length; const d = ART[lbi];
+    $('#lbImg').src = d.big; $('#lbImg').alt = `Drawing by Ahbangkun, ${d.date}`;
+    $('#lbCap').innerHTML = `${esc(d.date)} · <a href="${esc(d.url)}" target="_blank" rel="noopener">view on ${d.from === 'IG' ? 'Instagram' : 'X'}</a>`;
     lb.classList.add('open'); $('#lbClose').focus();
   };
   const closeArt = () => lb.classList.remove('open');
@@ -911,12 +953,32 @@ h2.title{font-weight:300;letter-spacing:-.01em}
   const modal = $('#modal'); let lastFocus;
   function openClip(c) {
     lastFocus = document.activeElement;
+    $('#modalBox').classList.remove('wide', 'ig');
     $('#modalBox').innerHTML = `<iframe title="${esc(c.title)}" src="https://www.tiktok.com/embed/v2/${c.id}" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
     modal.classList.add('open'); $('#modalClose').focus();
   }
   const closeClip = () => { modal.classList.remove('open'); $('#modalBox').innerHTML = ''; lastFocus && lastFocus.focus(); };
   $('#modalClose').addEventListener('click', closeClip);
   modal.addEventListener('click', e => { if (e.target === modal) closeClip(); });
+
+  /* ---------- videos (YouTube + Instagram) ---------- */
+  const vThumb = v => v.src === 'yt' ? `https://i.ytimg.com/vi/${v.id}/hqdefault.jpg` : `ig/ig-${v.id}.jpg`;
+  const showVids = cat => {
+    $$('#vtabs .vt').forEach(b => { b.classList.toggle('on', b.dataset.cat === cat); b.setAttribute('aria-selected', b.dataset.cat === cat); });
+    $('#vgrid').innerHTML = C.videos.map((v, i) => v.cat === cat ? `<button class="vc" data-i="${i}"><span class="th${v.tall ? ' tall' : ''}" style="background-image:url('${vThumb(v)}')"><span class="src ${v.src}">${v.src === 'yt' ? 'YOUTUBE' : 'INSTAGRAM'}</span><span class="pl"><i data-lucide="play"></i></span></span><b>${esc(v.title)}</b></button>` : '').join('');
+    icons();
+  };
+  function openVideo(v) {
+    lastFocus = document.activeElement;
+    const box = $('#modalBox'); box.classList.toggle('wide', v.src === 'yt' && !v.tall); box.classList.toggle('ig', v.src === 'ig');
+    box.innerHTML = v.src === 'yt'
+      ? `<iframe title="${esc(v.title)}" src="https://www.youtube-nocookie.com/embed/${v.id}?autoplay=1&rel=0" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>`
+      : `<iframe title="${esc(v.title)}" src="https://www.instagram.com/p/${v.id}/embed/" allow="autoplay; encrypted-media; fullscreen" allowfullscreen scrolling="no"></iframe>`;
+    modal.classList.add('open'); $('#modalClose').focus();
+  }
+  $('#vtabs').addEventListener('click', e => { const b = e.target.closest('.vt'); if (b) showVids(b.dataset.cat); });
+  $('#vgrid').addEventListener('click', e => { const b = e.target.closest('.vc'); if (b) openVideo(C.videos[+b.dataset.i]); });
+  showVids('gaming');
 
   /* ---------- skills ---------- */
   $('#skillGrid').innerHTML = C.skills.map((s, i) => `<button class="skill-flip" data-i="${i}" aria-pressed="false" aria-label="${esc(s.name)}: flip card">
@@ -1030,7 +1092,7 @@ h2.title{font-weight:300;letter-spacing:-.01em}
     'スキル':'sukiru · skills', '連絡':'renraku · contact', '造形師':'zōkeishi · sculptor, model maker', '営業中':'eigyō-chū · open for business',
     '準備中':'junbi-chū · getting ready (closed)', '3Dモデリング':'3D moderingu · 3D modeling', '3Dアニメーション':'3D animēshon · 3D animation',
     '2Dアニメーション':'2D animēshon · 2D animation', '漫画':'manga · comics', 'ファンアート':'fan āto · fan art', 'コーディング':'kōdingu · coding',
-    '日本語':'nihongo · Japanese', 'ゲーム':'gēmu · games', '動画編集':'dōga henshū · video editing', '作品':'sakuhin · works'
+    '日本語':'nihongo · Japanese', '動画':'dōga · videos', 'ゲーム':'gēmu · games', '動画編集':'dōga henshū · video editing', '作品':'sakuhin · works'
   };
   const tipFor = txt => txt.split('·').map(s => s.trim()).map(s => JP[s]).filter(Boolean).join('  /  ');
   const addTips = () => $$('.jpw, .eyebrow .jp, .skill .jp, .idcard .kanji, .shop-sign em').forEach(el => {
@@ -1140,7 +1202,7 @@ h2.title{font-weight:300;letter-spacing:-.01em}
     if (el.matches('#musicBtn, #motionBtn')) { setTimeout(() => play(el.id === 'musicBtn' ? (musicOn ? 'on' : 'off') : (motionOn ? 'on' : 'off')), 0); return; }
     if (el.matches('#modalClose, #rClose, #lbClose')) s = 'close';
     else if (el.matches('.tab, #prev, #next, #dots *, #rPrev, #rNext, #rNextBtn, #lbPrev, #lbNext')) s = 'page';
-    else if (el.matches('button.ep, .art-item') || (el.closest('#tiktok') && el.target !== '_blank' && !el.matches('a[target="_blank"]'))) s = 'open';
+    else if (el.matches('button.ep, .art-item, .vc') || (el.closest('#tiktok') && el.target !== '_blank' && !el.matches('a[target="_blank"]'))) s = 'open';
     play(s);
   }, true);
 

@@ -195,7 +195,14 @@ svg.lucide{width:18px;height:18px;stroke-width:2.2}
 .ainfo .nums span{font-size:10px;letter-spacing:.2em;color:var(--muted)}
 
 /* ---------- broadcast ---------- */
-.bgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px;overflow-y:auto;height:100%;padding:4px 6px 4px 0;align-content:start}
+.bgrid{display:grid;grid-auto-rows:max-content;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px;overflow-y:auto;height:100%;padding:4px 6px 4px 0;align-content:start}
+.btabs{display:flex;gap:8px;margin:-6px 0 14px;flex-wrap:wrap}
+.bt{padding:8px 16px;font-family:var(--disp);font-size:20px;letter-spacing:.08em;background:rgba(21,22,29,.06);clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%)}
+.bt.on{background:var(--volt);color:#111}
+.vcard.wide{aspect-ratio:16/10}
+.vcard .srcb{top:12px;left:12px;font-size:10px;font-weight:700;letter-spacing:.14em;padding:3px 8px;background:rgba(255,255,255,.9);color:#111}
+.vbox.wide{width:min(960px,92vw);aspect-ratio:16/9;height:auto}
+.vbox.ig{width:min(400px,92vw);aspect-ratio:auto;height:min(760px,86vh);background:#fff}
 .vcard{position:relative;aspect-ratio:9/14;background:#1a1b24 center/cover;--cut:14px;text-align:left;overflow:hidden;transition:transform .25s}
 .vcard:hover{transform:translateY(-6px)}
 .vcard::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(10,11,16,.95),rgba(10,11,16,.1) 55%)}
@@ -204,6 +211,7 @@ svg.lucide{width:18px;height:18px;stroke-width:2.2}
 .vcard .pl{top:12px;right:12px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.18);display:grid;place-items:center;backdrop-filter:blur(4px)}
 .vcard .mt{left:12px;right:12px;bottom:12px}
 .vcard .mt b{display:block;font-size:14px;line-height:1.25}
+.bgrid.wide{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
 .vcard .mt span{font-size:12px;color:var(--pink);font-weight:700}
 
 /* ---------- story ---------- */
@@ -220,7 +228,7 @@ svg.lucide{width:18px;height:18px;stroke-width:2.2}
 
 /* ---------- gallery ---------- */
 .gal{display:grid;grid-template-columns:1fr 300px;gap:20px;height:100%;min-height:0}
-.ggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;overflow-y:auto;align-content:start;padding-right:6px}
+.ggrid{display:grid;grid-auto-rows:max-content;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;overflow-y:auto;align-content:start;padding-right:6px}
 .gi{aspect-ratio:1;background:#1a1b24 center/cover;clip-path:polygon(0 0,100% 0,100% 82%,82% 100%,0 100%);transition:transform .25s,filter .25s}
 .gi:hover{transform:scale(1.04);filter:brightness(1.1)}
 .anims{display:flex;flex-direction:column;gap:8px;overflow-y:auto;min-height:0}
@@ -455,7 +463,7 @@ svg.lucide{width:18px;height:18px;stroke-width:2.2}
       <h2>AHBANGKUN</h2><div class="handle">@ahbangkun</div><div class="stars">★★★★★</div>
     </div>
     <div class="a-info">
-      <div class="a-tags"><span class="tag">Class · 3D Artist</span><span class="tag pink">Origin · Sarawak, MY</span><span class="tag cyan">Main tool · Blender</span><span class="tag violet">Learning · 日本語</span><span class="tag">Side quest · Gaming</span></div>
+      <div class="a-tags"><span class="tag">Class · 3D Artist</span><span class="tag pink">Origin · Sarawak, MY</span><span class="tag cyan">Main tool · Blender</span><span class="tag violet">Learning · 日本語</span><a class="tag" href="#broadcast" onclick="setTimeout(()=>document.querySelector('.bt[data-cat=gaming]').click(),350)">Side quest · Gaming ▸</a></div>
       <div class="a-quote">“I do 3D Blender stuff~ 🇲🇾”</div>
       <p class="a-bio">Digital creator from Sarawak, Malaysia. Builds Kamen Rider, Ultraman and Super Sentai belts, weapons and props in Blender, shares them on TikTok, YouTube and Sketchfab, and makes comics with three WEBTOON Canvas series. Loves 3D modeling, drawing, and 2D and 3D animation, and posts art and gaming videos on YouTube and Instagram, from PUBG montages to Valheim and Project Zomboid with friends. Codes a little and is learning Japanese as a beginner.</p>
       <div class="h3">STATS</div>
@@ -491,6 +499,7 @@ svg.lucide{width:18px;height:18px;stroke-width:2.2}
 <section class="screen" id="broadcast" aria-label="TikTok videos">
   <div class="screen-head"><a class="back" href="#lobby"><i data-lucide="chevron-left"></i>BACK</a><h1 class="screen-title"><small>人気動画 · TIKTOK</small>BROADCASTS</h1>
     <a class="btn pink" style="margin-left:auto" id="tLink" target="_blank" rel="noopener"><i data-lucide="music-2"></i>@ahbangkun</a></div>
+  <div class="btabs" id="btabs"><button class="bt on" data-cat="tiktok">TIKTOK</button><button class="bt" data-cat="gaming">GAMING</button><button class="bt" data-cat="3d">3D &amp; MAKING-OF</button><button class="bt" data-cat="art">ART</button></div>
   <div class="screen-body"><div class="bgrid" id="bgrid"></div></div>
 </section>
 
@@ -564,7 +573,7 @@ svg.lucide{width:18px;height:18px;stroke-width:2.2}
 <div class="scan"></div>
 <div class="toast" id="toast"></div>
 
-<script src="../data.js?v=6d298ecd"></script>
+<script src="../data.js?v=de8f506a"></script>
 <script>
 (() => {
   const C = window.CONFIG, B = '../';
@@ -694,9 +703,9 @@ svg.lucide{width:18px;height:18px;stroke-width:2.2}
   const MENU = [
     { id: 'agent', t: 'AGENT', jp: 'プロフィール', ic: 'user-round', n: '' },
     { id: 'arsenal', t: 'ARSENAL', jp: '3Dモデル', ic: 'box', n: C.modelCount },
-    { id: 'broadcast', t: 'BROADCASTS', jp: '人気動画', ic: 'clapperboard', n: C.clips.length },
+    { id: 'broadcast', t: 'BROADCASTS', jp: '動画 · TIKTOK · YOUTUBE', ic: 'clapperboard', n: C.clips.length + C.videos.length },
     { id: 'story', t: 'STORY MODE', jp: 'ウェブトゥーン', ic: 'book-open', n: C.webtoons.length },
-    { id: 'gallery', t: 'GALLERY', jp: 'イラスト · アニメ', ic: 'palette', n: C.drawings.length + C.animations.length },
+    { id: 'gallery', t: 'GALLERY', jp: 'イラスト · アニメ', ic: 'palette', n: C.drawings.length + (C.igDrawings || []).length + C.animations.length },
     { id: 'talents', t: 'TALENTS', jp: 'スキル', ic: 'sparkles', n: C.skills.length },
     { id: 'comms', t: 'COMMS', jp: '連絡', ic: 'send', n: '' }
   ];
@@ -764,9 +773,26 @@ svg.lucide{width:18px;height:18px;stroke-width:2.2}
 
   /* ---------- broadcasts (TikTok) ---------- */
   $('#tLink').href = C.links.tiktok;
-  const playClip = c => { $('#vbox').innerHTML = `<iframe src="https://www.tiktok.com/embed/v2/${c.id}" allow="autoplay; fullscreen; encrypted-media" allowfullscreen title="${esc(c.title)}"></iframe>`; openOv('vid'); };
-  $('#bgrid').innerHTML = C.clips.map((c, i) => `<button class="vcard cut" data-i="${i}" style="background-image:url('${B}tiktok/${c.id}.jpg')"><span class="rk">#${i + 1}</span><span class="pl"><i data-lucide="play"></i></span><span class="mt"><b>${esc(c.title)}</b><span>${c.views} views</span></span></button>`).join('');
-  $('#bgrid').addEventListener('click', e => { const b = e.target.closest('.vcard'); if (b) playClip(C.clips[+b.dataset.i]); });
+  const playClip = c => { $('#vbox').classList.remove('wide', 'ig'); $('#vbox').innerHTML = `<iframe src="https://www.tiktok.com/embed/v2/${c.id}" allow="autoplay; fullscreen; encrypted-media" allowfullscreen title="${esc(c.title)}"></iframe>`; openOv('vid'); };
+  const vThumb = v => v.src === 'yt' ? `https://i.ytimg.com/vi/${v.id}/hqdefault.jpg` : `${B}ig/ig-${v.id}.jpg`;
+  const playVideo = v => {
+    const box = $('#vbox'); box.classList.toggle('wide', v.src === 'yt' && !v.tall); box.classList.toggle('ig', v.src === 'ig');
+    box.innerHTML = v.src === 'yt'
+      ? `<iframe src="https://www.youtube-nocookie.com/embed/${v.id}?autoplay=1&rel=0" allow="autoplay; fullscreen; encrypted-media" allowfullscreen title="${esc(v.title)}"></iframe>`
+      : `<iframe src="https://www.instagram.com/p/${v.id}/embed/" allow="autoplay; fullscreen; encrypted-media" allowfullscreen scrolling="no" title="${esc(v.title)}"></iframe>`;
+    openOv('vid');
+  };
+  const showBc = cat => {
+    $$('#btabs .bt').forEach(b => b.classList.toggle('on', b.dataset.cat === cat));
+    const g = $('#bgrid'); g.classList.toggle('wide', cat !== 'tiktok');
+    g.innerHTML = cat === 'tiktok'
+      ? C.clips.map((c, i) => `<button class="vcard cut" data-k="c${i}" style="background-image:url('${B}tiktok/${c.id}.jpg')"><span class="rk">#${i + 1}</span><span class="pl"><i data-lucide="play"></i></span><span class="mt"><b>${esc(c.title)}</b><span>${c.views} views</span></span></button>`).join('')
+      : C.videos.map((v, i) => v.cat === cat ? `<button class="vcard cut wide" data-k="v${i}" style="background-image:url('${vThumb(v)}')"><span class="srcb">${v.src === 'yt' ? 'YOUTUBE' : 'INSTAGRAM'}</span><span class="pl"><i data-lucide="play"></i></span><span class="mt"><b>${esc(v.title)}</b></span></button>` : '').join('');
+    icons();
+  };
+  $('#btabs').addEventListener('click', e => { const b = e.target.closest('.bt'); if (b) showBc(b.dataset.cat); });
+  $('#bgrid').addEventListener('click', e => { const b = e.target.closest('.vcard'); if (!b) return; const k = b.dataset.k; if (k[0] === 'c') playClip(C.clips[+k.slice(1)]); else playVideo(C.videos[+k.slice(1)]); });
+  showBc('tiktok');
 
   /* ---------- story (WEBTOON) ---------- */
   $('#wLink').href = C.links.webtoonProfile;
@@ -795,17 +821,19 @@ svg.lucide{width:18px;height:18px;stroke-width:2.2}
   /* ---------- gallery ---------- */
   $('#xLink').href = C.links.twitter;
   const tw = (id, size) => 'https://pbs.twimg.com/media/' + id.replace(/name=\w+/, 'name=' + size);
-  $('#ggrid').innerHTML = C.drawings.map((d, i) => `<button class="gi" data-i="${i}" style="background-image:url('${tw(d.img, 'small')}')" aria-label="Drawing from ${esc(d.date)}"></button>`).join('');
+  const ART = [...C.drawings.map(d => ({ ...d, from: 'X', small: tw(d.img, 'small'), big: tw(d.img, 'large') })),
+               ...(C.igDrawings || []).map(d => ({ ...d, from: 'Instagram', small: B + d.file, big: B + d.file }))];
+  $('#ggrid').innerHTML = ART.map((d, i) => `<button class="gi" data-i="${i}" style="background-image:url('${d.small}')" aria-label="Drawing from ${esc(d.date)}"></button>`).join('');
   $('#anims').innerHTML = C.animations.map(v => `<a class="an" href="${esc(v.url)}" target="_blank" rel="noopener"><span class="th" style="background-image:url('${esc(v.thumb)}')"></span><span><b>${esc(v.title)}</b><small>${esc(v.date)} · on X</small></span></a>`).join('');
   let li = 0;
-  const showArt = i => { li = (i + C.drawings.length) % C.drawings.length; const d = C.drawings[li]; $('#lbImg').src = tw(d.img, 'large'); $('#lbImg').alt = `Drawing by Ahbangkun, ${d.date}`; $('#lbCap').innerHTML = `${esc(d.date)} · <a href="${esc(d.url)}" target="_blank" rel="noopener">view on X</a>`; openOv('lb'); };
+  const showArt = i => { li = (i + ART.length) % ART.length; const d = ART[li]; $('#lbImg').src = d.big; $('#lbImg').alt = `Drawing by Ahbangkun, ${d.date}`; $('#lbCap').innerHTML = `${esc(d.date)} · <a href="${esc(d.url)}" target="_blank" rel="noopener">view on ${d.from}</a>`; openOv('lb'); };
   $('#ggrid').addEventListener('click', e => { const b = e.target.closest('.gi'); if (b) showArt(+b.dataset.i); });
   $('#lbPrev').addEventListener('click', () => showArt(li - 1)); $('#lbNext').addEventListener('click', () => showArt(li + 1));
   addEventListener('keydown', e => { if (!$('#lb').classList.contains('on')) return; if (e.key === 'ArrowLeft') showArt(li - 1); if (e.key === 'ArrowRight') showArt(li + 1); });
 
   /* ---------- talents ---------- */
   const TC = ['var(--volt)', 'var(--cyan)', 'var(--pink)', 'var(--r5)', 'var(--r4)', 'var(--volt)', 'var(--cyan)', 'var(--pink)'];
-  const TMAP = { models: 'arsenal', tiktok: 'broadcast', art: 'gallery', webtoon: 'story' };
+  const TMAP = { models: 'arsenal', tiktok: 'broadcast', art: 'gallery', webtoon: 'story', videos: 'broadcast' };
   $('#tgrid').innerHTML = C.skills.map((s, i) => `<a class="tal cut" ${s.to ? `href="#${TMAP[s.to] || 'lobby'}"` : 'href="#talents"'} style="--tc:${TC[i % TC.length]}"><span class="node"><i data-lucide="${s.icon}"></i></span><b>${esc(s.name)}</b><span class="jp">${s.jp}</span><p>${esc(s.desc)}</p>${s.to ? `<span class="go">${esc(s.toLabel)} <i data-lucide="arrow-right"></i></span>` : (s.back && !/Hover/.test(s.back) ? `<p style="color:var(--volt-ink)">${esc(s.back)}</p>` : '')}</a>`).join('');
 
   /* ---------- comms ---------- */
@@ -828,6 +856,8 @@ svg.lucide{width:18px;height:18px;stroke-width:2.2}
     ...C.models.slice(1).map(m => ({ r: rarModel(m), ty: '3D MODEL', t: m.title, model: m, open: () => { closeOv($('#pull')); location.hash = 'arsenal'; selModel(m, false); } })),
     ...C.webtoons.map((s, si) => ({ r: 5, ty: 'WEBTOON', t: s.title, img: B + s.cover, open: () => openEp(si, 0) })),
     ...C.drawings.map((d, i) => ({ r: i < 3 ? 4 : 3, ty: 'FAN ART', t: d.date, img: tw(d.img, 'small'), open: () => showArt(i) })),
+    ...(C.igDrawings || []).map((d, i) => ({ r: 3, ty: 'DRAWING', t: d.date, img: B + d.file, open: () => showArt(C.drawings.length + i) })),
+    ...C.videos.map(v => ({ r: v.cat === 'gaming' ? (v.src === 'ig' ? 4 : 3) : 4, ty: v.cat === 'gaming' ? 'GAMING' : v.cat === '3d' ? '3D VIDEO' : 'ART VIDEO', t: v.title, img: vThumb(v), open: () => playVideo(v) })),
     ...C.animations.map(v => ({ r: 4, ty: 'ANIMATION', t: v.title, img: v.thumb, open: () => window.open(v.url, '_blank', 'noopener') }))
   ];
   const tier = r => POOL.filter(p => p.r === r);

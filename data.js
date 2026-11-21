@@ -42,6 +42,53 @@ window.CONFIG = {
     { img:"EcFWF1NU8AErClJ?format=jpg&name=medium", url:"https://x.com/Ahbangkun/status/1279398448991580160", date:"Jul 4, 2020", tags:"#お花畑青空大写生大会" },
     { img:"EcAQIhSUwAIbo34?format=jpg&name=medium", url:"https://x.com/Ahbangkun/status/1279040069693698049", date:"Jul 3, 2020", tags:"HORAYO!! #できたてころね" }
   ],
+  // Drawings posted on Instagram (copies saved in the repo's /ig folder)
+  igDrawings: [
+    { file:"ig/ig-CH71xkOA3il.jpg", url:"https://www.instagram.com/p/CH71xkOA3il/", date:"Nov 23, 2020" },
+    { file:"ig/ig-CG4IOAHAeL2.jpg", url:"https://www.instagram.com/p/CG4IOAHAeL2/", date:"Oct 28, 2020" },
+    { file:"ig/ig-CE_8nzKg7Hc.jpg", url:"https://www.instagram.com/p/CE_8nzKg7Hc/", date:"Sep 11, 2020" },
+    { file:"ig/ig-CEcJKlEApA0.jpg", url:"https://www.instagram.com/p/CEcJKlEApA0/", date:"Aug 28, 2020" },
+    { file:"ig/ig-CEHATg_Asi6.jpg", url:"https://www.instagram.com/p/CEHATg_Asi6/", date:"Aug 20, 2020" },
+    { file:"ig/ig-CBIuEQdg6vx.jpg", url:"https://www.instagram.com/p/CBIuEQdg6vx/", date:"Jun 7, 2020" },
+    { file:"ig/ig-B7npCltgB1O.jpg", url:"https://www.instagram.com/p/B7npCltgB1O/", date:"Jan 22, 2020" },
+    { file:"ig/ig-B1jJp5Ogf6X.jpg", url:"https://www.instagram.com/p/B1jJp5Ogf6X/", date:"Aug 24, 2019" },
+    { file:"ig/ig-B1icHZAA7D1.jpg", url:"https://www.instagram.com/p/B1icHZAA7D1/", date:"Aug 24, 2019" },
+    { file:"ig/ig-B1EMB5YAfVs.jpg", url:"https://www.instagram.com/p/B1EMB5YAfVs/", date:"Aug 12, 2019" },
+    { file:"ig/ig-B0d8e3sl4-m.jpg", url:"https://www.instagram.com/p/B0d8e3sl4-m/", date:"Jul 28, 2019" },
+    { file:"ig/ig-B0Yf8WNg3Pe.jpg", url:"https://www.instagram.com/p/B0Yf8WNg3Pe/", date:"Jul 26, 2019" },
+    { file:"ig/ig-B0AbacRAZnG.jpg", url:"https://www.instagram.com/p/B0AbacRAZnG/", date:"Jul 17, 2019" },
+    { file:"ig/ig-Bz-6GXoAouq.jpg", url:"https://www.instagram.com/p/Bz-6GXoAouq/", date:"Jul 16, 2019" },
+    { file:"ig/ig-BzhP-ciA6vX.jpg", url:"https://www.instagram.com/p/BzhP-ciA6vX/", date:"Jul 5, 2019" }
+  ],
+  // Videos from YouTube ("yt", id = video id) and Instagram ("ig", id = post code; cover saved as ig/ig-<id>.jpg).
+  // cat: gaming | 3d | art. tall: vertical video.
+  videos: [
+    { src:"yt", id:"9SGuCj_mNVc", title:"PUBG Funny Montage #1", cat:"gaming", tall:false },
+    { src:"yt", id:"ZscUSS8xWLk", title:"PUBG Mobile Montage #2 (Arcade mode)", cat:"gaming", tall:false },
+    { src:"yt", id:"ang7FaIjD0o", title:"PUBG Mobile Montage #3", cat:"gaming", tall:false },
+    { src:"yt", id:"7MinP5jv9FY", title:"Metro Exodus PUBG", cat:"gaming", tall:false },
+    { src:"yt", id:"UYzBBXhU-IQ", title:"Apeks Legend PUBG", cat:"gaming", tall:false },
+    { src:"yt", id:"eE0kXbcwFwo", title:"Grand Theft Auto V (Dumb Version)", cat:"gaming", tall:false },
+    { src:"yt", id:"WaNVHXD0Q9I", title:"How to download GTA San Andreas Multiplayer", cat:"gaming", tall:false },
+    { src:"ig", id:"DSXme42D-i7", title:"Valheim Journey \u00b7 Montage #2", cat:"gaming", tall:false },
+    { src:"ig", id:"DSXmUxPj2Nw", title:"Valheim Journey \u00b7 Montage #1", cat:"gaming", tall:false },
+    { src:"ig", id:"DSXOyj0EYnl", title:"Project Zomboid with friends \u00b7 Ep 2", cat:"gaming", tall:false },
+    { src:"ig", id:"DSXOsyjEZTo", title:"Project Zomboid with friends \u00b7 Ep 1", cat:"gaming", tall:false },
+    { src:"ig", id:"DSXmMapD5xe", title:"Dying Light Random", cat:"gaming", tall:true },
+    { src:"ig", id:"CXTBCw3BWdP", title:"Forza Horizon 5 \u00b7 Mazda RX-7", cat:"gaming", tall:true },
+    { src:"ig", id:"CXSbaHaBZu8", title:"Forza Horizon 5 \u00b7 Drifting up a mountain touge", cat:"gaming", tall:true },
+    { src:"ig", id:"C_ISpexy_cA", title:"Flight in VRChat", cat:"gaming", tall:true },
+    { src:"yt", id:"r1J84cJGc4Y", title:"How I modeled Kamen Rider Ryuki \u00b7 Part 1", cat:"3d", tall:false },
+    { src:"yt", id:"oKqQIvRibk0", title:"How I modeled Kamen Rider Ryuki \u00b7 Part 2", cat:"3d", tall:false },
+    { src:"yt", id:"N3NiDde1iZQ", title:"Kamen Rider Zeztz Catastrom form", cat:"3d", tall:true },
+    { src:"yt", id:"uHMK3av5dwg", title:"King Kyoryured", cat:"3d", tall:true },
+    { src:"yt", id:"WJk5ga0WFFQ", title:"Ultraman Teo \u00b7 Monster POV", cat:"3d", tall:true },
+    { src:"yt", id:"07UAVYrf9-A", title:"Kamen Rider Faiz", cat:"3d", tall:true },
+    { src:"yt", id:"DEEMhCJV7yQ", title:"Kamen Rider Rogue", cat:"3d", tall:true },
+    { src:"yt", id:"rT4yo2I7NR0", title:"Kamen Rider My-th", cat:"3d", tall:true },
+    { src:"ig", id:"CNq6ZU7h3cv", title:"First Photoshop reel \u00b7 Chainsaw Man", cat:"art", tall:true },
+    { src:"ig", id:"B-mqCG3AkmF", title:"My first attempt at 2D animation", cat:"art", tall:false }
+  ],
   // Animation clips on X (open on X)
   animations: [
     { thumb:"https://pbs.twimg.com/ext_tw_video_thumb/1589333248877830144/pu/img/zpb8iwT0pqB3Fu6g.jpg", url:"https://x.com/Ahbangkun/status/1589333410031763456", date:"Nov 6, 2022", title:"Happy Birthday, Zeta!" },
@@ -129,8 +176,8 @@ window.CONFIG = {
     { name:"Comics & Storyboarding",jp:"漫画",             icon:"panels-top-left", c:"var(--mint)",  desc:"Three WEBTOON Canvas series.", back:"Three WEBTOON series you can read right here.", to:"webtoon", toLabel:"Read my WEBTOON" },
     { name:"Fan Art",               jp:"ファンアート",     icon:"heart",           c:"var(--lav)",   desc:"Anime, VTuber and tokusatsu fan art.", back:"Anime, VTuber and tokusatsu fan art.", to:"art", toLabel:"Open the gallery" },
     { name:"Coding",                jp:"コーディング",     icon:"code-xml",        c:"var(--sky)",   desc:"Basic, still learning.", back:"You're looking at it! I built this site." },
-    { name:"Gaming",                jp:"ゲーム",           icon:"gamepad-2",       c:"var(--mint)",  desc:"PUBG, GTA, Valheim and Project Zomboid clips.", back:"Gaming videos on my YouTube and game clips on Instagram, often with friends." },
-    { name:"Video Editing",         jp:"動画編集",         icon:"clapperboard",    c:"var(--peach)", desc:"Montages, trailers and edits.", back:"My montages and edits are on YouTube and Instagram." },
+    { name:"Gaming",                jp:"ゲーム",           icon:"gamepad-2",       c:"var(--mint)",  desc:"PUBG, GTA, Valheim and Project Zomboid clips.", back:"Gaming videos on my YouTube and game clips on Instagram, often with friends.", to:"videos", toLabel:"Watch them" },
+    { name:"Video Editing",         jp:"動画編集",         icon:"clapperboard",    c:"var(--peach)", desc:"Montages, trailers and edits.", back:"My montages and edits are on YouTube and Instagram.", to:"videos", toLabel:"See my videos" },
     { name:"Japanese",              jp:"日本語",           icon:"languages",       c:"var(--pink)",  desc:"Beginner. よろしく!", back:"Hover the Japanese words on this site to learn them with me ✦" }
   ],
   tools: ["Blender", "Sketchfab", "WEBTOON Canvas", "TikTok", "YouTube", "X"],
