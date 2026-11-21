@@ -8,7 +8,7 @@ const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true 
 renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 const scene = new THREE.Scene();
-scene.fog = new THREE.Fog(0xeef0f6, 26, 60);
+scene.fog = new THREE.Fog(0x0b0b0c, 24, 55);
 const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 200);
 let zoomK = 1;
 const size = () => { renderer.setSize(innerWidth, innerHeight, false); camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); zoomK = camera.aspect < 1.2 ? Math.min(1.9, 1.35 / camera.aspect) : 1; if (window.__layoutBanners) window.__layoutBanners(); };
@@ -17,38 +17,38 @@ addEventListener('resize', size);
 /* ---------- helpers ---------- */
 const cnv = (w, h, draw) => { const c = document.createElement('canvas'); c.width = w; c.height = h; draw(c.getContext('2d'), w, h); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t; };
 const std = (color, opts = {}) => new THREE.MeshStandardMaterial({ color, roughness: .55, metalness: .15, ...opts });
-const LIME = 0xd9ff3c, PINK = 0xff4f9e, CYAN = 0x38e1ff;
+const LIME = 0xdcfe1c, PINK = 0xff7a1a, CYAN = 0xdcfe1c;
 
 /* ---------- lights ---------- */
-scene.add(new THREE.HemisphereLight(0xffffff, 0xc9cde0, 1.4));
-const key = new THREE.DirectionalLight(0xffffff, 1.6); key.position.set(4, 12, 10); scene.add(key);
+scene.add(new THREE.HemisphereLight(0x9a9aa3, 0x111113, .9));
+const key = new THREE.DirectionalLight(0xffffff, 1.1); key.position.set(4, 12, 10); scene.add(key);
 const pl1 = new THREE.PointLight(LIME, 30, 30); pl1.position.set(-6, 5, 3); scene.add(pl1);
 const pl2 = new THREE.PointLight(PINK, 30, 30); pl2.position.set(6, 5, 3); scene.add(pl2);
 const spot = new THREE.SpotLight(0xffffff, 120, 30, .5, .5); spot.position.set(0, 12, 3); spot.target.position.set(0, 1, 0); scene.add(spot, spot.target);
 
 /* ---------- floor + stepped stage ---------- */
 const gridTex = cnv(1024, 1024, (g, w, h) => {
-  g.fillStyle = '#f2f3f8'; g.fillRect(0, 0, w, h);
-  g.strokeStyle = 'rgba(21,22,29,.10)'; g.lineWidth = 2;
+  g.fillStyle = '#141416'; g.fillRect(0, 0, w, h);
+  g.strokeStyle = 'rgba(220,254,28,.16)'; g.lineWidth = 2;
   for (let i = 0; i <= 16; i++) { g.beginPath(); g.moveTo(i * w / 16, 0); g.lineTo(i * w / 16, h); g.stroke(); g.beginPath(); g.moveTo(0, i * h / 16); g.lineTo(w, i * h / 16); g.stroke(); }
 });
 gridTex.wrapS = gridTex.wrapT = THREE.RepeatWrapping; gridTex.repeat.set(4, 4);
 const floor = new THREE.Mesh(new THREE.PlaneGeometry(80, 80), new THREE.MeshStandardMaterial({ map: gridTex, roughness: .9 }));
 floor.rotation.x = -Math.PI / 2; scene.add(floor);
-const steps = [[4.6, .22, 0xe4e6ee], [3.8, .5, 0xf7f8fb], [3.0, .8, 0xffffff]];
+const steps = [[4.6, .22, 0x1c1c1f], [3.8, .5, 0x2a2a2e], [3.0, .8, 0x3a3a3f]];
 steps.forEach(([r, h, c]) => { const m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, h, 6), std(c)); m.position.y = h / 2; m.rotation.y = Math.PI / 6; scene.add(m); });
 const ring = new THREE.Mesh(new THREE.TorusGeometry(3.02, .05, 8, 6), new THREE.MeshBasicMaterial({ color: LIME }));
 ring.rotation.x = Math.PI / 2; ring.rotation.z = Math.PI / 6; ring.position.y = .81; scene.add(ring);
 
 /* ---------- speaker stacks ---------- */
 const spkTex = cnv(256, 256, (g, w, h) => {
-  g.fillStyle = '#e9ebf2'; g.fillRect(0, 0, w, h); g.strokeStyle = '#c8ccd9'; g.lineWidth = 6; g.strokeRect(6, 6, w - 12, h - 12);
+  g.fillStyle = '#1a1a1c'; g.fillRect(0, 0, w, h); g.strokeStyle = '#dcfe1c'; g.lineWidth = 6; g.strokeRect(6, 6, w - 12, h - 12);
   [[w / 2, h * .62, 70], [w / 2, h * .22, 30]].forEach(([x, y, r]) => {
     const gr = g.createRadialGradient(x, y, 4, x, y, r); gr.addColorStop(0, '#3a3d4d'); gr.addColorStop(.55, '#22242f'); gr.addColorStop(1, '#4b4f62');
     g.fillStyle = gr; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); g.strokeStyle = '#9aa0b6'; g.lineWidth = 4; g.stroke();
   });
 });
-const spkMat = [std(0xdfe2ea), std(0xdfe2ea), std(0xdfe2ea), std(0xdfe2ea), new THREE.MeshStandardMaterial({ map: spkTex, roughness: .6 }), std(0xdfe2ea)];
+const spkMat = [std(0x1d1d20), std(0x1d1d20), std(0x1d1d20), std(0x1d1d20), new THREE.MeshStandardMaterial({ map: spkTex, roughness: .6 }), std(0x1d1d20)];
 const speakers = new THREE.Group();
 [[-1, 1], [1, -1]].forEach(([side, rot]) => {
   for (let i = 0; i < 3; i++) for (let j = 0; j < 2; j++) {
@@ -60,16 +60,16 @@ scene.add(speakers);
 
 /* ---------- back wall with logo posters ---------- */
 const wallTex = cnv(1024, 512, (g, w, h) => {
-  g.fillStyle = '#e7e9f1'; g.fillRect(0, 0, w, h); g.strokeStyle = 'rgba(21,22,29,.07)'; g.lineWidth = 2;
+  g.fillStyle = '#101012'; g.fillRect(0, 0, w, h); g.strokeStyle = 'rgba(255,255,255,.05)'; g.lineWidth = 2;
   for (let x = 0; x < w; x += 32) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, h); g.stroke(); }
-  g.fillStyle = 'rgba(217,255,60,.85)'; g.fillRect(0, h - 26, w, 10); g.fillStyle = 'rgba(255,79,158,.7)'; g.fillRect(0, 16, w, 6);
+  for (let x = -h; x < w; x += 40) { g.fillStyle = (x / 40 | 0) % 2 ? '#dcfe1c' : '#111'; g.beginPath(); g.moveTo(x, h); g.lineTo(x + 20, h); g.lineTo(x + 50, h - 30); g.lineTo(x + 30, h - 30); g.fill(); } g.fillStyle = 'rgba(255,122,26,.85)'; g.fillRect(0, 16, w, 6);
 });
 const wall = new THREE.Mesh(new THREE.PlaneGeometry(30, 15), new THREE.MeshStandardMaterial({ map: wallTex, roughness: .9 }));
 wall.position.set(0, 7.5, -7.5); scene.add(wall);
 const posters = [];
 const avatarTex = new THREE.TextureLoader().load(window.AVATAR || ''); avatarTex.colorSpace = THREE.SRGBColorSpace;
 [-1, 1].forEach(s => {
-  const bg = new THREE.Mesh(new THREE.PlaneGeometry(3.4, 4.6), new THREE.MeshBasicMaterial({ color: s < 0 ? 0xd9ff3c : 0xff8cc2 }));
+  const bg = new THREE.Mesh(new THREE.PlaneGeometry(3.4, 4.6), new THREE.MeshBasicMaterial({ color: s < 0 ? 0xdcfe1c : 0xff7a1a }));
   bg.position.set(s * 3.4, 6.2, -7.4);
   const lg = new THREE.Mesh(new THREE.CircleGeometry(1.25, 48), new THREE.MeshBasicMaterial({ map: avatarTex }));
   lg.position.set(s * 3.4, 6.4, -7.38); scene.add(bg, lg); posters.push(bg);
@@ -77,12 +77,12 @@ const avatarTex = new THREE.TextureLoader().load(window.AVATAR || ''); avatarTex
 
 /* ---------- overhead truss + light beams ---------- */
 const truss = new THREE.Group();
-const bar = (w, h, d, x, y, z) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), std(0x2a2c38, { metalness: .6, roughness: .35 })); m.position.set(x, y, z); truss.add(m); };
+const bar = (w, h, d, x, y, z) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), std(0x48484e, { metalness: .7, roughness: .3 })); m.position.set(x, y, z); truss.add(m); };
 bar(10, .25, .25, 0, 9, -3); bar(10, .25, .25, 0, 9, 3); bar(.25, .25, 6, -5, 9, 0); bar(.25, .25, 6, 5, 9, 0);
 const strip = new THREE.Mesh(new THREE.BoxGeometry(9.4, .06, .06), new THREE.MeshBasicMaterial({ color: LIME })); strip.position.set(0, 8.85, 3); truss.add(strip);
 scene.add(truss);
 const beams = [];
-const beamMat = c => new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: .13, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide });
+const beamMat = c => new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: .16, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide });
 [[-4, LIME], [-1.4, CYAN], [1.4, PINK], [4, LIME]].forEach(([x, c], i) => {
   const g = new THREE.ConeGeometry(1.6, 9, 24, 1, true); g.translate(0, -4.5, 0);
   const m = new THREE.Mesh(g, beamMat(c)); m.position.set(x, 9, 0); m.userData.ph = i * 1.7; scene.add(m); beams.push(m);
