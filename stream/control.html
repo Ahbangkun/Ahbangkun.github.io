@@ -28,6 +28,9 @@
 <h2>Events</h2>
 <div class="grid">
  <button data-c="choice">💬 choice menu<kbd>key C</kbd></button>
+ <button data-c="pick:1">➊ pick option 1<kbd>key Q</kbd></button>
+ <button data-c="pick:2">➋ pick option 2<kbd>key W</kbd></button>
+ <button data-c="pick:3">➌ pick option 3<kbd>key E</kbd></button>
  <button data-c="cg">✦ CG unlocked<kbd>key G</kbd></button>
  <button data-c="rival">⚠ rival appeared<kbd>key R</kbd></button>
  <button data-c="cat">🐱 cat ships it<kbd>key K</kbd></button>
@@ -58,7 +61,7 @@ const QC=["your offering has been accepted by the abyss. thank you, mortal.","a 
 const qd=document.getElementById('quick');(P.get('mode')==='chuuni'?QC:Q).forEach(t=>{const b=document.createElement('button');b.textContent=t;b.style.fontSize='14px';b.onclick=()=>send('say:'+t,b);qd.appendChild(b);});
 const inp=document.getElementById('say');const ss=()=>{if(inp.value.trim()){send('say:'+inp.value.trim());inp.value='';}};
 document.getElementById('sayb').onclick=ss;inp.addEventListener('keydown',e=>{if(e.key==='Enter')ss();});
-const K={'1':'aff:10','2':'aff:-10','3':'aff:25',' ':'hearts','c':'choice','g':'cg','r':'rival','k':'cat','n':'nervous','h':'happy','b':'bad','0':'reset'};
+const K={'1':'aff:10','2':'aff:-10','3':'aff:25',' ':'hearts','c':'choice','g':'cg','r':'rival','k':'cat','n':'nervous','h':'happy','b':'bad','0':'reset','q':'pick:1','w':'pick:2','e':'pick:3'};
 document.addEventListener('keydown',e=>{if(e.target===inp)return;const c=K[e.key.toLowerCase()];if(c){e.preventDefault();
   send(c,document.querySelector(`button[data-c="${c}"]`));}});
 </script></body></html>

@@ -138,7 +138,7 @@ function fit(){const W=innerWidth,H=innerHeight,k=Math.min(W/1080,H/1920);
 fit();addEventListener('resize',fit);
 
 const P=new URLSearchParams(location.search),get=(k,d)=>P.has(k)?P.get(k):d,$=id=>document.getElementById(id),R=Math.random,pick=a=>a[Math.floor(R()*a.length)];
-const cfg={part:get('part','both'),scene:get('scene','main'),name:get('name','Ahbangkun'),aff:+get('aff',100),min:+get('min',5),bgx:get('bgx','50'),every:+get('event',35),sprite:get('sprite','1'),bpm:+get('bpm',0),poll:get('poll',''),meter:get('meter','1')};
+const cfg={part:get('part','both'),scene:get('scene','main'),name:get('name','Ahbangkun'),aff:+get('aff',100),min:+get('min',5),bgx:get('bgx','50'),every:+get('event',0),sprite:get('sprite','1'),bpm:+get('bpm',0),poll:get('poll',''),meter:get('meter','1')};
 if(cfg.part!=='both')document.body.classList.add(cfg.part);
 const NAME=cfg.name.replace(/^@/,'');
 if(cfg.bpm>0){document.body.classList.add('beat');document.body.style.setProperty('--beat',(60/cfg.bpm)+'s');}
@@ -198,17 +198,19 @@ function pollChoice(){if(busy)return;busy=true;const [q,...opts]=cfg.poll.split(
   box.innerHTML=`<div class="q">${q||'What should he do?'}</div>`+opts.map(o=>`<div class="ch vn">${o}</div>`).join('')+`<div class="hint">vote in the poll ♡ send the gift to choose!</div>`;
   box.classList.add('show');type(pick(['mortals… decide my fate. vote in the poll.','your offerings shall choose. the abyss is watching.','the poll decides. I trust you… mostly.']));
   setTimeout(()=>{box.classList.remove('show');busy=false;},12000);}
-function choice(){if(cfg.poll)return pollChoice();if(busy)return;busy=true;const c=pick(CHOICES),box=$('choices');
-  box.innerHTML=`<div class="q">${c.q}</div>`+c.o.map(o=>`<div class="ch vn">${o[0]}</div>`).join('');box.classList.add('show');
+let pending=null,pendTimer=null;
+function choice(){if(cfg.poll)return pollChoice();if(pending)return;busy=true;const c=pick(CHOICES),box=$('choices');pending=c;
+  box.innerHTML=`<div class="q">${c.q}</div>`+c.o.map((o,i)=>`<div class="ch vn">${i+1}. ${o[0]}</div>`).join('');box.classList.add('show');
   type('( the abyss awaits your answer… )','???');
-  const w=[.42,.4,.18],r=R();const k=r<w[0]?0:r<w[0]+w[1]?1:2;
-  setTimeout(()=>{[...box.querySelectorAll('.ch')].forEach((el,i)=>el.classList.add(i===k?'pick':'fade'));},2600);
-  setTimeout(()=>{box.classList.remove('show');const o=c.o[k];
-    if(o[1]==='BAD'){busy=false;badEnd(o[2]);}
-    else{aff+=o[1];setAff();if(o[1]<0)burst();busy=false;type(o[2]);$('me').classList.remove('pose');void $('me').offsetWidth;$('me').classList.add('pose');
+  clearTimeout(pendTimer);pendTimer=setTimeout(()=>{if(pending){box.classList.remove('show');pending=null;busy=false;}},90000);}
+function choose(k){const c=pending,box=$('choices');if(!c||!c.o[k])return;pending=null;clearTimeout(pendTimer);
+  [...box.querySelectorAll('.ch')].forEach((el,i)=>el.classList.add(i===k?'pick':'fade'));
+  setTimeout(()=>{box.classList.remove('show');const o=c.o[k];busy=false;
+    if(o[1]==='BAD'){badEnd(o[2]);}
+    else{aff+=o[1];setAff();if(o[1]<0)burst();type(o[2]);$('me').classList.remove('pose');void $('me').offsetWidth;$('me').classList.add('pose');
       event(`<div class="ttl">封印 ${o[1]>0?'+':''}${o[1]}%</div>`,'',2600,'pink');}
     if(aff<=0)setTimeout(happy,3000);
-  },4400);}
+  },1500);}
 function happy(){document.body.classList.add('release','quake');$('flash').classList.remove('on');void $('flash').offsetWidth;$('flash').classList.add('on');
   setTimeout(()=>document.body.classList.remove('quake'),1200);
   event(`<div class="ttl">封印解除!!</div><img src="${IMG.me}" alt=""><span class="cap vn">THE SEAL IS BROKEN<br><small>…nothing happened. as expected.</small></span>`,'',6000,'pink');
@@ -224,8 +226,7 @@ const RANDOM=[
  ()=>{event(`<img src="${IMG.mage}" alt=""><span class="cap vn">a Level 1 Wizard challenges you<br><small>(he is 30 and has a day job)</small></span>`,'',4200);type('kukuku… a worthy opponent. finally.')},
 ];
 if(cfg.scene==='main'&&cfg.part!=='back'){
-  setTimeout(choice,6000);
-  setInterval(()=>{if(busy)return;R()<.55?choice():pick(RANDOM)();},cfg.every*1000);
+  if(cfg.every>0)setInterval(()=>{if(busy)return;R()<.55?choice():pick(RANDOM)();},cfg.every*1000);
 }
 document.addEventListener('keydown',e=>{const k=e.key.toLowerCase();if(k==='c')choice();if(k==='h')happy();if(k==='e')pick(RANDOM)();});
 
@@ -233,6 +234,7 @@ document.addEventListener('keydown',e=>{const k=e.key.toLowerCase();if(k==='c')c
 const TOPIC=get('remote','ahbangkun-c74d709687');
 function cmd(c){c=(c||'').trim();if(!c)return;
   if(c.startsWith('say:')){type(c.slice(4));return;}
+  if(c.startsWith('pick:')){choose(+c.slice(5)-1);return;}
   if(c.startsWith('aff:')){const n=-(+c.slice(4));aff+=n;setAff();if(n<0)burst();event(`<div class="ttl">封印 ${n>0?'+':''}${n}%</div>`,'',2400,'pink');if(aff<=0)setTimeout(happy,2600);return;}
   busy=false;
   ({choice:()=>choice(),happy:()=>happy(),
