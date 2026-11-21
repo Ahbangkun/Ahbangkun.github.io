@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Fun TikTok Overlay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Bungee&display=swap" rel="stylesheet">
+<style>
+  /* ============ THEMES ============ */
+  :root{ --a:#ff4fa3; --b:#8a5cff; --c:#ffd23f; --d:#2ee6c5; --ink:#2b1145; --paper:#fff7fb; --bg1:#ffb3d9; --bg2:#c9b5ff; --bg3:#fff1a8; }
+  body.neon  { --a:#ff2bd6; --b:#00e5ff; --c:#c6ff00; --d:#7b2bff; --ink:#0b0420; --paper:#120a2e; --bg1:#1a0b3d; --bg2:#06233a; --bg3:#2a0a33; }
+  body.sunset{ --a:#ff6b35; --b:#ff3d7f; --c:#ffd166; --d:#7b5cff; --ink:#3a1020; --paper:#fff6ee; --bg1:#ffb08a; --bg2:#ff8fb1; --bg3:#ffe0a3; }
+  body.mint  { --a:#22c993; --b:#4a7dff; --c:#ffe14d; --d:#ff7aa8; --ink:#0f2e2a; --paper:#f3fffb; --bg1:#a8f0d8; --bg2:#b9d3ff; --bg3:#fff3b0; }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:1080px;height:1920px;overflow:hidden;background:transparent}
+  body{font-family:'Fredoka',system-ui,sans-serif;color:var(--ink);position:relative}
+  body.neon{color:#fff}
+
+  /* ============ BACKGROUND (with camera hole) ============ */
+  #bg{position:absolute;inset:0;overflow:hidden;
+      background:
+        radial-gradient(circle at 15% 20%, var(--bg1) 0 28%, transparent 29%),
+        radial-gradient(circle at 90% 70%, var(--bg2) 0 30%, transparent 31%),
+        linear-gradient(160deg, var(--bg3), var(--bg1) 50%, var(--bg2));}
+  #bg::before{content:"";position:absolute;inset:-50%;
+      background-image:radial-gradient(circle, rgba(255,255,255,.55) 3px, transparent 4px);
+      background-size:54px 54px;animation:drift 30s linear infinite;opacity:.6}
+  body.neon #bg::before{background-image:radial-gradient(circle, rgba(255,255,255,.15) 2px, transparent 3px)}
+  .blob{position:absolute;border-radius:50%;filter:blur(2px);opacity:.55;animation:float 14s ease-in-out infinite}
+  @keyframes drift{to{transform:translate(54px,54px)}}
+  @keyframes float{50%{transform:translate(40px,-60px) scale(1.12)}}
+
+  /* ============ CAMERA FRAME ============ */
+  #frame{position:absolute;border-radius:48px;border:14px solid var(--paper);
+      box-shadow:0 0 0 8px var(--a), 0 0 0 16px var(--ink), 14px 18px 0 16px var(--b);}
+  body.neon #frame{border-color:#0b0420;box-shadow:0 0 0 6px var(--a),0 0 40px 10px var(--a),0 0 0 14px var(--b),0 0 70px 18px var(--b)}
+  .corner{position:absolute;font-size:92px;animation:wiggle 2.4s ease-in-out infinite;filter:drop-shadow(4px 6px 0 rgba(0,0,0,.25))}
+  @keyframes wiggle{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(12deg) scale(1.08)}}
+
+  /* ============ TOP BAR ============ */
+  .pill{position:absolute;display:flex;align-items:center;gap:16px;background:var(--paper);
+      border:6px solid var(--ink);border-radius:999px;padding:14px 34px;font-weight:700;font-size:44px;
+      box-shadow:8px 10px 0 var(--ink)}
+  body.neon .pill{border-color:var(--b);box-shadow:0 0 24px var(--b)}
+  #name{left:60px}
+  #name .dot{width:26px;height:26px;border-radius:50%;background:#ff2d55;box-shadow:0 0 0 6px rgba(255,45,85,.3);animation:pulse 1.2s infinite}
+  @keyframes pulse{50%{box-shadow:0 0 0 16px rgba(255,45,85,0)}}
+  #clock{right:60px;font-family:'Bungee',sans-serif;font-size:40px}
+
+  /* ============ GOAL BAR ============ */
+  #goal{position:absolute;left:60px;right:60px;height:92px;background:var(--paper);border:6px solid var(--ink);
+      border-radius:999px;overflow:hidden;box-shadow:8px 10px 0 var(--ink)}
+  body.neon #goal{border-color:var(--a);box-shadow:0 0 24px var(--a)}
+  #goal .fill{position:absolute;inset:0 auto 0 0;border-radius:999px;transition:width 1s;
+      background:repeating-linear-gradient(-45deg,var(--a) 0 30px,var(--b) 30px 60px);background-size:85px 85px;animation:stripes 1.4s linear infinite}
+  @keyframes stripes{to{background-position:85px 0}}
+  #goal .label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:14px;
+      font-weight:700;font-size:40px;color:#fff;-webkit-text-stroke:2px var(--ink);paint-order:stroke fill;text-shadow:3px 3px 0 var(--ink)}
+
+  /* ============ TICKER RIBBON ============ */
+  #ticker{position:absolute;left:30px;right:30px;height:96px;background:var(--c);border:6px solid var(--ink);
+      border-radius:28px;transform:rotate(-2.2deg);overflow:hidden;box-shadow:8px 10px 0 var(--ink);
+      display:flex;align-items:center;justify-content:center}
+  body.neon #ticker{background:#0b0420;border-color:var(--c);box-shadow:0 0 30px var(--c);color:var(--c)}
+  #ticker span{font-family:'Bungee',sans-serif;font-size:42px;white-space:nowrap;transition:transform .5s cubic-bezier(.5,1.8,.5,1),opacity .3s}
+  #ticker span.out{transform:translateY(-120px);opacity:0}
+  #ticker span.in{transform:translateY(120px);opacity:0}
+
+  /* ============ FLOATING EMOJI ============ */
+  .floaty{position:absolute;font-size:70px;pointer-events:none;animation:rise 6s ease-in forwards}
+  @keyframes rise{0%{transform:translateY(0) scale(.4);opacity:0}10%{opacity:1;transform:translateY(-60px) scale(1)}
+      100%{transform:translateY(-900px) translateX(var(--sway)) rotate(var(--rot));opacity:0}}
+
+  /* ============ FULL-SCREEN SCENES ============ */
+  #scene{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:50px;text-align:center;padding:0 80px}
+  .big{font-family:'Bungee',sans-serif;font-size:150px;line-height:1.05;white-space:nowrap;color:var(--paper);
+      -webkit-text-stroke:8px var(--ink);paint-order:stroke fill;text-shadow:12px 14px 0 var(--b);animation:bounce 1.6s ease-in-out infinite}
+  body.neon .big{color:#fff;-webkit-text-stroke:0;text-shadow:0 0 20px var(--a),0 0 50px var(--a),0 0 90px var(--b)}
+  .big span{display:inline-block;animation:hop 1.4s ease-in-out infinite}
+  @keyframes hop{50%{transform:translateY(-30px) rotate(-4deg)}}
+  .sub{font-size:58px;font-weight:700;background:var(--paper);border:6px solid var(--ink);border-radius:36px;padding:22px 44px;box-shadow:10px 12px 0 var(--ink)}
+  body.neon .sub{border-color:var(--b);box-shadow:0 0 30px var(--b)}
+  #countdown{font-family:'Bungee',sans-serif;font-size:130px;color:var(--a);-webkit-text-stroke:6px var(--ink);paint-order:stroke fill}
+  body.neon #countdown{color:var(--c);-webkit-text-stroke:0;text-shadow:0 0 30px var(--c)}
+  .emojirow{font-size:110px;letter-spacing:30px}
+  .emojirow span{display:inline-block;animation:wiggle 2s ease-in-out infinite}
+
+
+  /* ============ GACHA THEME ============ */
+  body.gacha{ --a:#ffd76a; --b:#b46bff; --c:#ffe9a8; --d:#5ee7ff; --ink:#1a0b3d; --paper:#24124f; --bg1:#3a1a7a; --bg2:#12205e; --bg3:#0b0726; color:#fff }
+  body.gacha #bg{background:radial-gradient(ellipse at 50% 45%, #4a228f 0%, #1c0d4a 45%, #08051c 100%)}
+  body.gacha #bg::before{background-image:radial-gradient(circle, rgba(255,240,200,.9) 1.5px, transparent 2.5px),radial-gradient(circle, rgba(180,140,255,.7) 1px, transparent 2px);
+      background-size:90px 90px,47px 47px;background-position:0 0,20px 30px;opacity:.7;animation:drift 60s linear infinite}
+  body.gacha .blob{display:none}
+  .ring{position:absolute;border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%)}
+  .ring.r1{width:1500px;height:1500px;border:6px dashed rgba(255,215,106,.25);animation:spin 80s linear infinite}
+  .ring.r2{width:1180px;height:1180px;border:3px solid rgba(180,107,255,.35);box-shadow:0 0 60px rgba(180,107,255,.25) inset;animation:spin 50s linear infinite reverse}
+  .ring.r3{width:900px;height:900px;background:repeating-conic-gradient(rgba(255,215,106,.18) 0 4deg, transparent 4deg 15deg);
+      -webkit-mask:radial-gradient(circle, transparent 60%, #000 61%, #000 70%, transparent 71%);animation:spin 40s linear infinite}
+  .runes{position:absolute;left:50%;top:50%;width:1340px;height:1340px;margin:-670px 0 0 -670px;animation:spin 70s linear infinite}
+  .runes span{position:absolute;left:50%;top:0;font-size:40px;color:rgba(255,215,106,.55);transform-origin:0 670px;text-shadow:0 0 12px #ffd76a}
+  @keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+  .runes{animation-name:spin2} @keyframes spin2{to{transform:rotate(360deg)}}
+  .twinkle{position:absolute;color:#fff6d0;animation:tw 2.6s ease-in-out infinite;text-shadow:0 0 10px #ffd76a}
+  @keyframes tw{0%,100%{opacity:.15;transform:scale(.6)}50%{opacity:1;transform:scale(1.2) rotate(20deg)}}
+
+  body.gacha #frame{border:none;box-shadow:0 0 50px 6px rgba(255,215,106,.55),0 0 120px 20px rgba(180,107,255,.35)}
+  body.gacha #frame::before{content:"";position:absolute;inset:0;border-radius:48px;padding:16px;
+      background:linear-gradient(90deg,#ffd76a,#fff3c4,#ff8be0,#8fd3ff,#b46bff,#ffd76a,#fff3c4,#ff8be0);background-size:300% 100%;
+      animation:shimmer 4s linear infinite;
+      -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+  body.gacha #frame::after{content:"";position:absolute;inset:24px;border-radius:34px;border:3px solid rgba(255,246,208,.8)}
+  @keyframes shimmer{to{background-position:300% 0}}
+  .rarity{position:absolute;font-family:'Bungee',sans-serif;font-size:34px;letter-spacing:6px;color:#ffd76a;
+      background:#1a0b3d;border:4px solid #ffd76a;border-radius:16px;padding:6px 22px;box-shadow:0 0 24px rgba(255,215,106,.7)}
+  .rarity b{background:linear-gradient(90deg,#ff8be0,#ffd76a,#8fd3ff,#b46bff);-webkit-background-clip:text;color:transparent;background-size:200%;animation:shimmer 3s linear infinite}
+
+  body.gacha .pill{background:linear-gradient(180deg,#3a1d80,#1a0b3d);border:5px solid #ffd76a;color:#fff6d0;box-shadow:0 0 22px rgba(255,215,106,.6)}
+  body.gacha #name .dot{display:none}
+  body.gacha #name::before{content:"SSR";font-family:'Bungee';font-size:30px;padding:2px 14px;border-radius:12px;color:#1a0b3d;
+      background:linear-gradient(90deg,#ff8be0,#ffd76a,#8fd3ff);background-size:200%;animation:shimmer 3s linear infinite}
+  body.gacha #goal{background:#1a0b3d;border:5px solid #ffd76a;box-shadow:0 0 24px rgba(255,215,106,.6)}
+  body.gacha #goal .fill{background:linear-gradient(90deg,#b46bff,#ff8be0,#ffd76a);background-size:200% 100%;animation:shimmer 3s linear infinite}
+  body.gacha #goal .label{-webkit-text-stroke:0;text-shadow:0 2px 6px #000}
+  body.gacha #ticker{background:linear-gradient(90deg,#2a1466,#4a228f,#2a1466);border:5px solid #ffd76a;color:#fff6d0;box-shadow:0 0 30px rgba(255,215,106,.6)}
+  body.gacha .big{color:#fff6d0;-webkit-text-stroke:0;text-shadow:0 0 20px #ffd76a,0 0 60px #b46bff,6px 8px 0 #5a2ab0}
+  body.gacha .sub{background:#1a0b3d;border:5px solid #ffd76a;color:#fff6d0;box-shadow:0 0 30px rgba(255,215,106,.6)}
+  body.gacha #countdown{color:#ffd76a;-webkit-text-stroke:0;text-shadow:0 0 30px #ffd76a}
+
+  /* ============ CAPSULE PULL ============ */
+  #pull{position:absolute;left:0;width:1080px;height:520px;pointer-events:none;display:none;z-index:50}
+  #pull.go{display:block}
+  .cap{position:absolute;left:440px;top:0;width:200px;height:200px;animation:drop 1.1s cubic-bezier(.3,1.6,.5,1) both}
+  .cap i{position:absolute;left:0;width:200px;height:100px;border:7px solid #1a0b3d}
+  .cap .top{top:0;border-radius:100px 100px 0 0;border-bottom-width:4px}
+  .cap .bot{top:100px;border-radius:0 0 100px 100px;background:#fff6d0;border-top-width:4px}
+  .cap .top::after{content:"";position:absolute;left:36px;top:18px;width:46px;height:26px;border-radius:50%;background:rgba(255,255,255,.7);transform:rotate(-25deg)}
+  #pull.shake .cap{animation:shake .5s ease-in-out 3}
+  #pull.open .cap .top{transition:transform .5s ease-in;transform:translate(-160px,-160px) rotate(-60deg);opacity:0}
+  #pull.open .cap .bot{transition:transform .5s ease-in;transform:translate(160px,160px) rotate(60deg);opacity:0}
+  .beam{position:absolute;left:540px;top:100px;width:10px;height:10px;border-radius:50%;opacity:0}
+  #pull.open .beam{animation:burst 1.4s ease-out forwards}
+  .result{position:absolute;left:0;right:0;top:20px;text-align:center;opacity:0;transform:scale(.3)}
+  #pull.open .result{transition:all .6s cubic-bezier(.3,1.8,.5,1) .25s;opacity:1;transform:scale(1)}
+  .result .tier{font-family:'Bungee',sans-serif;font-size:170px;line-height:1}
+  .result .stars{font-size:64px;letter-spacing:8px;color:#ffd76a;text-shadow:0 0 16px #ffd76a}
+  .result .what{display:inline-block;margin-top:14px;font-size:46px;font-weight:700;color:#fff6d0;background:rgba(26,11,61,.9);border:5px solid #ffd76a;border-radius:24px;padding:12px 34px}
+  @keyframes drop{from{transform:translateY(-500px) rotate(-200deg)}to{transform:translateY(120px)}}
+  @keyframes shake{0%,100%{transform:translateY(120px) rotate(0)}25%{transform:translateY(120px) rotate(-14deg)}75%{transform:translateY(120px) rotate(14deg)}}
+  @keyframes burst{0%{opacity:1;box-shadow:0 0 0 0 var(--glow)}100%{opacity:0;box-shadow:0 0 300px 260px var(--glow)}}
+
+
+  /* ============ CARD MODE (no webcam: avatar sits on a gacha card) ============ */
+  #card{position:absolute;border-radius:48px;overflow:hidden;display:none;
+      background:radial-gradient(circle at 50% 55%, #fff3c4 0%, #ffd76a 12%, #b46bff 38%, #2a1466 70%, #12082e 100%)}
+  #card .rays{position:absolute;left:50%;top:55%;width:2000px;height:2000px;margin:-1000px 0 0 -1000px;
+      background:repeating-conic-gradient(rgba(255,246,208,.28) 0 6deg, transparent 6deg 18deg);animation:spin2 30s linear infinite}
+  #card .ssr{position:absolute;left:0;right:0;bottom:70px;text-align:center;font-family:'Bungee',sans-serif;font-size:220px;
+      color:rgba(255,246,208,.16);letter-spacing:10px}
+  #card .sparkle{position:absolute;color:#fff6d0;text-shadow:0 0 14px #ffd76a;animation:tw 2.2s ease-in-out infinite}
+
+  /* ============ SAFE-ZONE GUIDE (?guide=1) ============ */
+  .zone{position:absolute;background:rgba(255,0,0,.28);border:4px dashed red;color:#fff;font:700 30px system-ui;
+      display:none;align-items:center;justify-content:center;text-align:center;z-index:99}
+  body.guide .zone{display:flex}
+</style>
+</head>
+<body>
+  <div id="bg"></div>
+  <div id="layout">
+    <div id="card"><div class="rays"></div><div class="ssr">SSR</div></div>
+    <div id="frame"></div>
+    <div class="pill" id="name"><div class="dot"></div><span id="nameText"></span></div>
+    <div class="pill" id="clock">00:00</div>
+    <div id="goal"><div class="fill"></div><div class="label"></div></div>
+    <div id="ticker"><span></span></div>
+  </div>
+  <div id="scene"></div>
+  <div id="pull"><div class="beam"></div><div class="cap"><i class="top"></i><i class="bot"></i></div><div class="result"></div></div>
+
+  <!-- Areas TikTok's own app UI usually covers on viewers' phones -->
+  <div class="zone" style="left:0;top:0;width:1080px;height:200px">TikTok header (profile · viewers)</div>
+  <div class="zone" style="left:0;top:1450px;width:880px;height:470px">TikTok comments + gift bar</div>
+  <div class="zone" style="left:900px;top:1100px;width:180px;height:820px">Buttons</div>
+
+<script>
+const P = new URLSearchParams(location.search);
+const get = (k, d) => P.has(k) ? P.get(k) : d;
+
+const G = (P.get('theme')||'gacha')==='gacha';
+const cfg = {
+  scene:  get('scene', 'main'),          // main | starting | brb | ending
+  theme:  get('theme', 'gacha'),         // gacha | candy | neon | sunset | mint
+  name:   get('name', '@Ahbangkun'),
+  bg:     get('bg', '1') !== '0',        // 0 = transparent background (game/IRL behind)
+  // camera frame position (px on the 1080x1920 canvas)
+  fx: +get('fx', 90), fy: +get('fy', 490), fw: +get('fw', 900), fh: +get('fh', 900),
+  // goal bar
+  goal:   get('goal', G?'Pity counter':'Follower goal'),  // set goal=0 to hide (e.g. use a TikFinity goal widget instead)
+  cur:    +get('cur', 37), target: +get('target', 100),
+  // ticker messages, separated by |
+  msgs:   get('msg', G?'Tap ❤️ = +1 pull ✨|Follow to raise my pity 📈|New here? Type 1 to roll in 🎰|Share = guaranteed SSR 🌈|Gifts summon chaos 💎':'Tap ❤️ to boost the stream!|Follow for daily lives ✨|Type 1 if you are new 👋|Share with a friend 🫶').split('|'),
+  emoji:  get('emoji', G?'⭐,✨,💎,🌟,🔮,💫':'💖,✨,⭐,🎀,🌈,🍓').split(','),
+  corners:get('corners', G?'💎,🌟,🔮,✨':'🌸,⭐,🍭,💫').split(','),
+  mins:   +get('min', 5),                // countdown minutes for 'starting'
+  floaty: get('floaty', '1') !== '0',
+  pullEvery: +get('pull', 45),
+  card:   get('card', '0') === '1',       // 1 = fill the frame with a gacha card (no webcam / avatar mode)          // seconds between capsule pulls, 0 = off
+};
+
+document.body.classList.add(cfg.theme);
+if (get('guide','0') === '1') document.body.classList.add('guide');
+if (!cfg.bg) document.getElementById('bg').style.display = 'none';
+
+/* Decorative blobs */
+const bg = document.getElementById('bg');
+[['var(--a)',420,-80,1300],['var(--b)',360,760,180],['var(--d)',300,700,1600],['var(--c)',260,-60,520]].forEach(([c,s,x,y],i)=>{
+  const b=document.createElement('div');b.className='blob';
+  Object.assign(b.style,{background:c,width:s+'px',height:s+'px',left:x+'px',top:y+'px',animationDelay:(-i*3)+'s'});
+  bg.appendChild(b);
+});
+
+function px(n){return n+'px'}
+
+/* Gacha background: summoning circle, runes, twinkles */
+if (cfg.theme==='gacha'){
+  bg.insertAdjacentHTML('beforeend','<div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div><div class="runes"></div>');
+  const runes=bg.querySelector('.runes'), glyph='✦✧★☆✶✷✸❂✺✹';
+  for(let k=0;k<24;k++){const sp=document.createElement('span');sp.textContent=glyph[k%glyph.length];sp.style.transform=`rotate(${k*15}deg)`;runes.appendChild(sp);}
+  for(let k=0;k<40;k++){const t=document.createElement('div');t.className='twinkle';t.textContent=Math.random()<.5?'✦':'✧';
+    Object.assign(t.style,{left:px(Math.random()*1060),top:px(Math.random()*1900),fontSize:px(14+Math.random()*30),animationDelay:(-Math.random()*3)+'s'});bg.appendChild(t);}
+}
+
+
+if (cfg.scene === 'main') {
+  const {fx,fy,fw,fh} = cfg;
+  // Punch a rounded hole in the background so the camera underneath shows through
+  const r=48, hole=`M${fx+r},${fy} H${fx+fw-r} A${r},${r} 0 0 1 ${fx+fw},${fy+r} V${fy+fh-r} A${r},${r} 0 0 1 ${fx+fw-r},${fy+fh} H${fx+r} A${r},${r} 0 0 1 ${fx},${fy+fh-r} V${fy+r} A${r},${r} 0 0 1 ${fx+r},${fy} Z`;
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='1080' height='1920'><path fill-rule='evenodd' fill='black' d='M0,0 H1080 V1920 H0 Z ${hole}'/></svg>`;
+  const mask = `url("data:image/svg+xml;utf8,${encodeURIComponent(svg)}")`;
+  bg.style.webkitMaskImage = mask; bg.style.maskImage = mask;
+  bg.style.webkitMaskSize = bg.style.maskSize = '1080px 1920px';
+
+  if (cfg.card){
+    const cd=document.getElementById('card'); cd.style.display='block';
+    Object.assign(cd.style,{left:px(fx),top:px(fy),width:px(fw),height:px(fh)});
+    for(let k=0;k<14;k++){const sp=document.createElement('div');sp.className='sparkle';sp.textContent=k%2?'✦':'✧';
+      Object.assign(sp.style,{left:px(30+Math.random()*(fw-60)),top:px(30+Math.random()*(fh-60)),fontSize:px(20+Math.random()*34),animationDelay:(-Math.random()*2)+'s'});cd.appendChild(sp);}
+  }
+  Object.assign(document.getElementById('frame').style,{left:px(fx-14),top:px(fy-14),width:px(fw+28),height:px(fh+28)});
+  // Corner stickers
+  [[fx-50,fy-60],[fx+fw-50,fy-60],[fx-50,fy+fh-40],[fx+fw-50,fy+fh-40]].forEach(([x,y],i)=>{
+    const c=document.createElement('div');c.className='corner';c.textContent=cfg.corners[i%cfg.corners.length];
+    Object.assign(c.style,{left:px(x),top:px(y),animationDelay:(i*.4)+'s'});
+    document.getElementById('layout').appendChild(c);
+  });
+
+  if (cfg.theme==='gacha'){
+    const r=document.createElement('div');r.className='rarity';r.innerHTML='★★★★★ <b>LIMITED</b>';
+    Object.assign(r.style,{left:'50%',top:px(fy-36),transform:'translateX(-50%)'});document.getElementById('layout').appendChild(r);
+  }
+  // Top bar sits just below TikTok's header zone
+  const topY = 220;
+  document.getElementById('nameText').textContent = cfg.name;
+  document.getElementById('name').style.top = px(topY);
+  document.getElementById('clock').style.top = px(topY);
+  const tick=()=>{const d=new Date();document.getElementById('clock').textContent=d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})};
+  tick(); setInterval(tick, 10000);
+
+  // Goal bar between top bar and camera
+  const goal=document.getElementById('goal');
+  if (cfg.goal === '0') goal.style.display='none';
+  else {
+    goal.style.top = px(topY + 110);
+    const pct=Math.max(0,Math.min(100,cfg.cur/cfg.target*100));
+    goal.querySelector('.fill').style.width = Math.max(pct,8)+'%';
+    goal.querySelector('.label').textContent = `${cfg.goal}: ${cfg.cur} / ${cfg.target}`;
+  }
+
+  // Ticker ribbon across the bottom edge of the camera frame
+  const t=document.getElementById('ticker'); t.style.top=px(fy+fh-30);
+  const span=t.querySelector('span'); let i=0; span.textContent=cfg.msgs[0];
+  setInterval(()=>{
+    span.classList.add('out');
+    setTimeout(()=>{ i=(i+1)%cfg.msgs.length; span.textContent=cfg.msgs[i]; span.classList.remove('out'); span.classList.add('in');
+      requestAnimationFrame(()=>requestAnimationFrame(()=>span.classList.remove('in'))); },400);
+  }, 6000);
+} else {
+  document.getElementById('layout').style.display='none';
+  const s=document.getElementById('scene'); s.style.display='flex';
+  const word = t => [...t].map((ch,k)=>ch===' '?' ':`<span style="animation-delay:${k*.08}s">${ch}</span>`).join('');
+  const row = `<div class="emojirow">${cfg.emoji.slice(0,4).map((e,k)=>`<span style="animation-delay:${k*.3}s">${e}</span>`).join('')}</div>`;
+  if (cfg.scene==='starting'){
+    s.innerHTML = G ? `${row}<div class="big">${word('SUMMONING')}<br>${word('STREAM...')}</div><div id="countdown"></div><div class="sub">${get('sub','rolling the banner — live soon!')} 🎰</div>` : `${row}<div class="big">${word('STARTING')}<br>${word('SOON')}</div><div id="countdown"></div><div class="sub">${get('sub','grab a snack, we go live soon!')} 🍿</div>`;
+    const end=Date.now()+cfg.mins*60000, cd=document.getElementById('countdown');
+    const up=()=>{const r=Math.max(0,end-Date.now());const m=Math.floor(r/60000),sec=Math.floor(r/1000)%60;
+      cd.textContent = r>0 ? `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}` : 'ANY SEC NOW!'};
+    up(); setInterval(up,500);
+  } else if (cfg.scene==='brb'){
+    s.innerHTML = G ? `${row}<div class="big">${word('BRB!')}</div><div class="sub">${get('sub','farming more pulls… back soon!')} 💎</div>` : `${row}<div class="big">${word('BRB!')}</div><div class="sub">${get('sub','be right back — don’t go anywhere!')} 💨</div>`;
+  } else {
+    s.innerHTML = G ? `${row}<div class="big">${word('THANKS FOR')}<br>${word('PULLING!')}</div><div class="sub">${get('sub','you were all SSR tonight')} 🌟<br>${cfg.name}</div>` : `${row}<div class="big">${word('THANK')}<br>${word('YOU!')}</div><div class="sub">${get('sub','see you next live')} 💖<br>${cfg.name}</div>`;
+  }
+
+  const fit=()=>{const b=s.querySelector('.big'); if(!b)return; let fs=150; b.style.fontSize=fs+'px';
+    while(b.scrollWidth>960 && fs>60){fs-=4; b.style.fontSize=fs+'px';}};
+  fit(); document.fonts && document.fonts.ready.then(fit);
+}
+
+
+/* Capsule pull: drops in over the top of the camera, cracks open, reveals a rarity */
+const TIERS=[
+  {t:'R',  w:55, stars:'★★★',   col:'#8fd3ff', glow:'rgba(143,211,255,.8)', cap:'#5ea8ff', msg:['Thanks for watching!','Drink some water 💧','Hi chat 👋']},
+  {t:'SR', w:32, stars:'★★★★',  col:'#d29bff', glow:'rgba(180,107,255,.85)',cap:'#b46bff', msg:['Follow = +1 luck 🍀','You are SR tier, chat 💜','Tap tap tap ❤️']},
+  {t:'SSR',w:13, stars:'★★★★★', col:'#ffd76a', glow:'rgba(255,215,106,.95)',cap:'#ffd76a', msg:['JACKPOT VIEWER ✨','Pity broken!! 🌈','You are the SSR 💎']},
+];
+function roll(){let r=Math.random()*100;for(const x of TIERS){if((r-=x.w)<0)return x}return TIERS[0]}
+function doPull(){
+  const el=document.getElementById('pull'); const x=roll();
+  el.className=''; void el.offsetWidth;
+  el.style.top = px(cfg.scene==='main' ? cfg.fy+30 : 1080);
+  el.querySelector('.top').style.background = x.cap;
+  el.querySelector('.beam').style.setProperty('--glow', x.glow);
+  const tierStyle = x.t==='SSR'
+    ? 'background:linear-gradient(90deg,#ff8be0,#ffd76a,#8fd3ff,#b46bff);background-size:200%;-webkit-background-clip:text;color:transparent;animation:shimmer 2s linear infinite;filter:drop-shadow(0 0 20px #ffd76a)'
+    : `color:${x.col};text-shadow:0 0 30px ${x.col},6px 8px 0 #1a0b3d`;
+  el.querySelector('.result').innerHTML = `<div class="tier" style="${tierStyle}">${x.t}</div><div class="stars">${x.stars}</div><div class="what">${x.msg[Math.floor(Math.random()*x.msg.length)]}</div>`;
+  el.classList.add('go');
+  setTimeout(()=>el.classList.add('shake'),1100);
+  setTimeout(()=>{el.classList.remove('shake');el.classList.add('open')},2700);
+  setTimeout(()=>el.className='',6500);
+}
+window.pull = doPull;  // you can also trigger it manually (OBS: Interact → press P)
+document.addEventListener('keydown',e=>{if(e.key==='p'||e.key==='P')doPull()});
+if (cfg.theme==='gacha' && cfg.pullEvery>0 && cfg.scene!=='ending'){ setTimeout(doPull,4000); setInterval(doPull,cfg.pullEvery*1000); }
+
+/* Floating emoji rising from the bottom */
+if (cfg.floaty) setInterval(()=>{
+  const f=document.createElement('div'); f.className='floaty';
+  f.textContent=cfg.emoji[Math.floor(Math.random()*cfg.emoji.length)];
+  f.style.left=px(60+Math.random()*900); f.style.top=px(1700);
+  f.style.setProperty('--sway',(Math.random()*200-100)+'px'); f.style.setProperty('--rot',(Math.random()*80-40)+'deg');
+  document.body.appendChild(f); setTimeout(()=>f.remove(),6200);
+}, 1800);
+</script>
+</body>
+</html>
