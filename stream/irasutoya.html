@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Ahbangkun Gacha Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{width:100%;height:100%;overflow:hidden;background:transparent}
+  body{width:1080px;height:1920px;overflow:hidden;background:transparent;transform-origin:0 0;position:relative;
+       font-family:'Zen Maru Gothic',system-ui,sans-serif;color:#3b2f2f}
+  .layer{position:absolute;inset:0}
+  .abs{position:absolute}
+  body.back #front{display:none} body.front #back{display:none}
+
+  /* background art: cover the tall canvas */
+  #bg{background-size:cover;background-repeat:no-repeat}
+  #shade{background:linear-gradient(180deg,rgba(255,255,255,.0) 0%,rgba(255,255,255,0) 60%,rgba(255,240,230,.25) 100%)}
+
+  /* clean UI: white pills, thin border, soft shadow */
+  .pill{background:#fff;border:4px solid #3b2f2f;border-radius:999px;box-shadow:0 6px 0 #3b2f2f}
+  #name{left:44px;top:222px;padding:12px 30px 12px 16px;font-size:40px;font-weight:900;display:flex;align-items:center;gap:14px}
+  #name .live{background:#ff5c7a;color:#fff;font-size:24px;padding:6px 14px;border-radius:999px;letter-spacing:2px}
+  #clock{right:44px;top:222px;padding:12px 26px;font-size:34px;font-weight:700}
+  #pity{left:44px;right:44px;top:322px;height:64px;display:flex;align-items:center;gap:14px;padding:0 14px 0 10px}
+  #pity img{height:54px}
+  #pity .track{flex:1;height:22px;border-radius:999px;background:#f1e8e2;border:3px solid #3b2f2f;overflow:hidden}
+  #pity .fill{height:100%;background:repeating-linear-gradient(-45deg,#ff8fb1 0 14px,#ffb3c8 14px 28px);background-size:40px 40px;animation:st 1.2s linear infinite}
+  @keyframes st{to{background-position:40px 0}}
+  #pity .txt{font-size:28px;font-weight:900;white-space:nowrap}
+
+  /* front: gacha machine + pull */
+  #machine{right:20px;top:1080px;width:270px;transform-origin:50% 100%}
+  #machine.spin{animation:shake .12s linear 8}
+  @keyframes shake{25%{transform:rotate(-3deg)}75%{transform:rotate(3deg)}}
+  #cap{right:110px;top:1330px;width:90px;opacity:0}
+  #cap.drop{animation:drop 1s cubic-bezier(.3,1.6,.5,1) forwards}
+  @keyframes drop{0%{opacity:1;transform:translate(0,-60px) scale(.6)}100%{opacity:1;transform:translate(-180px,-260px) scale(1.3) rotate(-20deg)}}
+  #pop{left:50%;top:430px;transform:translate(-50%,40px) scale(.7);opacity:0;transition:all .45s cubic-bezier(.3,1.6,.5,1);
+       background:#fff;border:5px solid #3b2f2f;border-radius:40px;box-shadow:0 10px 0 #3b2f2f;padding:20px 34px 20px 20px;
+       display:flex;align-items:center;gap:20px;white-space:nowrap}
+  #pop.show{transform:translate(-50%,0) scale(1);opacity:1}
+  #pop img{height:150px}
+  #pop .tier{display:inline-block;font-size:40px;font-weight:900;color:#fff;padding:2px 18px;border-radius:14px;margin-bottom:6px}
+  #pop .msg{font-size:38px;font-weight:900}
+  #pop .stars{font-size:30px;color:#ffb400;letter-spacing:2px}
+
+  /* full scenes */
+  #scene{display:none;left:0;right:0;top:620px;text-align:center}
+  #scene .card{display:inline-block;background:#fff;border:6px solid #3b2f2f;border-radius:48px;box-shadow:0 12px 0 #3b2f2f;padding:40px 60px}
+  #scene .big{font-size:110px;font-weight:900;line-height:1.1}
+  #scene .sub{font-size:44px;font-weight:700;margin-top:14px}
+  #scene .count{font-size:90px;font-weight:900;color:#ff5c7a;margin-top:10px}
+  #scene img{height:260px;margin-top:20px}
+</style>
+</head>
+<body>
+<div id="back" class="layer">
+  <div id="bg" class="layer"></div>
+  <div id="shade" class="layer"></div>
+  <div id="scene" class="abs"></div>
+  <div id="name" class="abs pill"><span class="live">LIVE</span><span id="nameText"></span></div>
+  <div id="clock" class="abs pill">--:--</div>
+  <div id="pity" class="abs pill"><img id="pityIcon" alt=""><div class="track"><div class="fill"></div></div><span class="txt"></span></div>
+</div>
+<div id="front" class="layer">
+  <img id="machine" class="abs" alt="">
+  <img id="cap" class="abs" alt="">
+  <div id="pop" class="abs"></div>
+</div>
+<script>
+/* Illustrations: いらすとや (irasutoya.com) by Takashi Mifune — free material, used within its terms */
+const IMG={
+  room:'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEivQtfkDmT4XxkZqnzig34l58biFKE43rSfOCtrsX3lmPGme_OEAnfOzcq6RjeoLZ-Tf_lkY-CgOJ9Bwygv1NGZeQTSatSXC0qymojIAmnFHuLcbTQKx_V7QpjeTO-aFCtojA8IXiYW0VR8/s1600/bg_room_syosai_book.jpg',
+  machine:'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiA9oZIa94RWLeH8WVKe6g10__VWdjDBBN2iIL3AxxMPRRmgAzMszD8etOHHZPibikgju9pNpU54Vab6WEPrpTxWkS0iehMID593TOXsghhhnJ-m_suciJvRZ1TA3FPd5AN5dWVgUoSGu4D/s800/gachagacha.png',
+  capsule:'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhK-wS6gtjFdvYhwRoBJ3EQGFeJjhhYceS_pHHJZChQyJtYzLy4TQvfLLSLMZWBRC8zBRwpRd6JpHwW4zaQixG3wRrMNtXJDosBwa8SnKIB_uJGjo2VtNHlkapDAp6ogD6blPTZT3Em_XAH/s800/capsule_toy_close1_red.png',
+  open:'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjlCtugNyD44cpyI7Yz9KLE2UtXCJ4CriKKpmg_mvCOee144twRvudc6T1tusc0IwTzWe6XicJ7FQyQFn4DHn6ENShKXQAZfV2b22is8yqnxZqEJZ6-3cWQQOtBmmvJqzVvmptnaJlp2g8N/s800/capsule_toy_open1_red.png',
+  win:'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEipvoVJHNbDBU0_rt3E-Y6BxO661h7DE8YnOCUZYeTFuZUK8iO7gvXwc3DbhbQtb2w-aZ41ZlyDWIpn-YQ_0EngJvx11GRxTzKhu0h9KtdAGsUd294uowKfWQHna_8tPDhs7Qd3cANEto5u/s800/gachagacha_atari_man.png',
+  lose:'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj0a637b1DIzgNpix2mK59MTMQNV7bdJKM_vpuhpadj8IrtNtLMPmeCbHvHukB-GFMLsvbX515sbniTNWgMMCCDwt6VWM5TXqQbg13To6rde1ywdaTmyDOQA4DvRGRnC42u0LwSrCrd7Bhu/s800/gachagacha_hazure_man.png'
+};
+function fit(){const W=innerWidth,H=innerHeight,k=Math.min(W/1080,H/1920);
+  document.body.style.transform=`translate(${(W-1080*k)/2}px,${(H-1920*k)/2}px) scale(${k})`;}
+fit(); addEventListener('resize',fit);
+
+const P=new URLSearchParams(location.search),get=(k,d)=>P.has(k)?P.get(k):d,$=id=>document.getElementById(id),R=Math.random;
+const cfg={part:get('part','both'),scene:get('scene','main'),name:get('name','@Ahbangkun'),cur:+get('cur',37),target:+get('target',100),
+  pull:+get('pull',45),min:+get('min',5),bgx:get('bgx','50')};
+if(cfg.part!=='both')document.body.classList.add(cfg.part);
+
+$('bg').style.backgroundImage=`url("${IMG.room}")`; $('bg').style.backgroundPosition=`${cfg.bgx}% 50%`;
+$('machine').src=IMG.machine; $('cap').src=IMG.capsule; $('pityIcon').src=IMG.capsule;
+$('nameText').textContent=cfg.name;
+const tick=()=>$('clock').textContent=new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});tick();setInterval(tick,10000);
+if(get('goal','1')==='0')$('pity').style.display='none';
+$('pity').querySelector('.fill').style.width=Math.max(6,Math.min(100,cfg.cur/cfg.target*100))+'%';
+$('pity').querySelector('.txt').textContent=`天井 ${cfg.cur}/${cfg.target}`;
+
+if(cfg.scene!=='main'){
+  const s=$('scene');s.style.display='block';$('pity').style.display='none';
+  const T={starting:['まもなく開始','starting soon ~',IMG.machine],brb:['ちょっと休憩','brb ~',IMG.capsule],ending:['ありがとう!','see you next live ♡',IMG.win]}[cfg.scene]||['hi','',IMG.capsule];
+  s.innerHTML=`<div class="card"><div class="big">${T[0]}</div><div class="sub">${get('sub',T[1])}</div>${cfg.scene==='starting'?'<div class="count" id="cd"></div>':''}<img src="${T[2]}" alt=""></div>`;
+  if(cfg.scene==='starting'){const end=Date.now()+cfg.min*60000;const up=()=>{const r=Math.max(0,end-Date.now());
+    $('cd').textContent=r?`${String(Math.floor(r/60000)).padStart(2,'0')}:${String(Math.floor(r/1000)%60).padStart(2,'0')}`:'もうすぐ!';};up();setInterval(up,500);}
+}
+
+const TIERS=[{t:'R',w:55,c:'#7fb6ff',s:'★★★',img:IMG.lose,m:['はずれ… thanks for watching','miss! stay hydrated 💧','R… hi chat']},
+             {t:'SR',w:32,c:'#b48cff',s:'★★★★',img:IMG.open,m:['SR! follow = +1 luck','nice pull ♡','SR chat spotted']},
+             {t:'SSR',w:13,c:'#ffb400',s:'★★★★★',img:IMG.win,m:['SSR!! jackpot viewer','天井 broken!!','大当たり!!']}];
+function roll(){let r=R()*100;for(const x of TIERS){if((r-=x.w)<0)return x}return TIERS[0]}
+function pull(){const m=$('machine'),c=$('cap'),p=$('pop'),x=roll();
+  m.classList.remove('spin');c.classList.remove('drop');void m.offsetWidth;m.classList.add('spin');
+  setTimeout(()=>c.classList.add('drop'),900);
+  setTimeout(()=>{p.innerHTML=`<img src="${x.img}" alt=""><div><span class="tier" style="background:${x.c}">${x.t}</span> <span class="stars">${x.s}</span><div class="msg">${x.m[Math.floor(R()*x.m.length)]}</div></div>`;p.classList.add('show')},1900);
+  setTimeout(()=>{p.classList.remove('show');c.classList.remove('drop')},6500);}
+document.addEventListener('keydown',e=>{if(e.key.toLowerCase()==='p')pull()});
+if(cfg.pull>0&&cfg.part!=='back'&&cfg.scene==='main'){setTimeout(pull,2500);setInterval(pull,cfg.pull*1000);}
+</script>
+</body>
+</html>
