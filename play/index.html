@@ -405,10 +405,25 @@ svg.lucide{width:18px;height:18px;stroke-width:2.2}
 @keyframes sssShow{0%{opacity:0;transform:scale(1.6)}12%{opacity:1;transform:scale(1)}75%{opacity:1;transform:scale(1.04)}100%{opacity:0;transform:scale(1.1)}}
 .pity{font-size:12px;letter-spacing:.12em;color:var(--muted)}
 .pity b{color:var(--ink)}
+
+/* ---------- 3D stage ---------- */
+#stage3d{position:fixed;inset:0;width:100vw;height:100vh;z-index:1;display:block;opacity:0;pointer-events:none;transition:opacity .6s,filter .6s}
+#stage3d.on{opacity:1}
+#stage3d.dim{opacity:.28;filter:blur(3px) saturate(.8)}
+#stage3d.top{z-index:56;opacity:1;filter:none;pointer-events:auto;cursor:pointer;transition:none}
+body.has-stage #title .t-logo{visibility:hidden;height:0;margin:0;border:0}
+body.has-stage #title{justify-content:flex-end;padding-bottom:9vh}
+body.has-stage #title .t-name{text-shadow:0 4px 0 #fff,0 0 30px rgba(255,255,255,.9)}
+#pull.cine{background:transparent!important;backdrop-filter:none}
+#pull.cine #pullRes,#pull.cine .x{opacity:0;pointer-events:none}
+.skip-hint{position:fixed;right:22px;bottom:20px;z-index:57;font:700 12px/1 var(--mono,monospace);letter-spacing:.2em;color:#15161d;background:rgba(255,255,255,.8);padding:8px 12px;border-radius:4px;opacity:0;pointer-events:none;transition:opacity .3s}
+.skip-hint.on{opacity:1}
 </style>
 </head>
 <body>
 <canvas id="gl" aria-hidden="true"></canvas>
+<canvas id="stage3d" aria-hidden="true"></canvas>
+<div class="skip-hint" id="skipHint">TAP TO SKIP ▸▸</div>
 <div class="halftone"></div>
 
 <!-- HUD -->
@@ -573,6 +588,7 @@ svg.lucide{width:18px;height:18px;stroke-width:2.2}
 <div class="scan"></div>
 <div class="toast" id="toast"></div>
 
+<script type="module" src="stage.js?v=1"></script>
 <script src="../data.js?v=de8f506a"></script>
 <script>
 (() => {
@@ -633,7 +649,7 @@ svg.lucide{width:18px;height:18px;stroke-width:2.2}
   audio.addEventListener('ended', () => musicOn && playTrack(track + 1, true).catch(() => {}));
   const showMusic = () => { $('#musicBtn').classList.toggle('off', !musicOn); $('#musicBtn').innerHTML = `<i data-lucide="${musicOn ? 'music' : 'volume-x'}"></i>`; icons(); };
   $('#musicBtn').addEventListener('click', () => { musicOn = !musicOn; store.set('ahbp-music', musicOn ? '1' : '0'); showMusic(); if (musicOn) playTrack(track, true).catch(() => toast('Music couldn’t load')); else audio.pause(); });
-  const showFx = () => { $('#fxBtn').classList.toggle('off', !fxOn); };
+  const showFx = () => { $('#fxBtn').classList.toggle('off', !fxOn); try { syncStage(); } catch (e) {} };
   $('#fxBtn').addEventListener('click', () => { fxOn = !fxOn; store.set('ahbp-fx', fxOn ? '1' : '0'); showFx(); toast(fxOn ? 'Effects on' : 'Effects off'); });
   document.addEventListener('visibilitychange', () => { if (document.hidden) audio.pause(); else if (musicOn && loaded >= 0 && started) audio.play().catch(() => {}); });
 
@@ -680,11 +696,17 @@ svg.lucide{width:18px;height:18px;stroke-width:2.2}
   const show = (name, instant) => {
     if (!SCREENS.includes(name)) name = 'lobby';
     if (name === cur) return;
-    const swap = () => { $$('.screen').forEach(s => s.classList.toggle('on', s.id === name)); $('#hud').classList.toggle('hide', name === 'title'); cur = name; if (name === 'lobby') startBanner(); else stopBanner(); };
+    const swap = () => { $$('.screen').forEach(s => s.classList.toggle('on', s.id === name)); $('#hud').classList.toggle('hide', name === 'title'); cur = name; syncStage(); if (name === 'lobby') startBanner(); else stopBanner(); };
     if (instant || reduced) return swap();
     const w = $('#wipe'); w.classList.remove('go'); void w.offsetWidth; w.classList.add('go'); sfx('whoosh'); setTimeout(() => shake(.45), 280);
     setTimeout(swap, 300);
   };
+  function syncStage() {
+    const S = window.STAGE; if (!S) return;
+    const m = !fxOn ? 'off' : cur === 'title' ? 'title' : cur === 'lobby' ? 'lobby' : 'off';
+    S.mode(m); document.body.classList.toggle('has-stage', m !== 'off');
+  }
+  document.addEventListener('stage-ready', syncStage);
   const route = () => { const h = location.hash.slice(1); if (!started) return; show(h || 'lobby'); };
   addEventListener('hashchange', route);
   const startGame = () => {
@@ -884,10 +906,21 @@ svg.lucide{width:18px;height:18px;stroke-width:2.2}
     flash.style.setProperty('--flc', best === 6 ? 'radial-gradient(circle,#fff 10%,#ffd1f3 35%,#c9f6ff 60%,#f4ffc9 85%)' : best === 5 ? '#fff4d6' : '#fff');
     if (!fast) { beam.classList.remove('go'); void beam.offsetWidth; beam.classList.add('go'); sfx('pull'); shake(.3); }
     const cards = $$('#results .rc');
-    setTimeout(() => {
+    const runCards = () => {
       if (!fast) { flash.classList.remove('go'); void flash.offsetWidth; flash.classList.add('go'); shake(best >= 5 ? 1 : best === 4 ? .65 : .4); if (best === 6) sfx('pull'); }
       cards.forEach((c, i) => setTimeout(() => c.classList.add('in'), fast ? 0 : i * 70));
       cards.forEach((c, i) => setTimeout(() => { c.classList.add('flip'); sfx(res[i].r === 6 ? 'sss' : res[i].r === 5 ? 'r5' : res[i].r === 4 ? 'r4' : 'flip'); if (res[i].r === 6) shake(1); else if (res[i].r === 5) shake(.55); else if (res[i].r === 4) shake(.18); if (i === cards.length - 1) { $('#pullAfter').classList.add('on'); pulling = false; if (best === 6) { const o = $('#sssShow'); o.classList.remove('on'); void o.offsetWidth; o.classList.add('on'); shake(1); sfx('sss'); } } }, (fast ? 150 : 700) + i * (fast ? 40 : 180)));
+    };
+    const top = res.find(x => x.r === best);
+    const cineOK = !fast && best >= 5 && window.STAGE && window.STAGE.ready;
+    setTimeout(() => {
+      if (!cineOK) return runCards();
+      const pv = $('#pull'), hint = $('#skipHint');
+      flash.classList.remove('go'); void flash.offsetWidth; flash.classList.add('go'); shake(.7);
+      pv.classList.add('cine'); hint.classList.add('on'); sfx('whoosh');
+      window.STAGE.reveal({ img: top.img || (top.model && top.model.thumb) || window.AVATAR, rank: best },
+        () => { pv.classList.remove('cine'); hint.classList.remove('on'); runCards(); },
+        () => { sfx(best === 6 ? 'sss' : 'r5'); shake(1); });
     }, fast ? 0 : 900);
   };
   $('#pullOpen').addEventListener('click', () => { resetPull(); openOv('pull'); });
