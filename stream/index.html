@@ -13,7 +13,8 @@
   body.mint  { --a:#22c993; --b:#4a7dff; --c:#ffe14d; --d:#ff7aa8; --ink:#0f2e2a; --paper:#f3fffb; --bg1:#a8f0d8; --bg2:#b9d3ff; --bg3:#fff3b0; }
 
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{width:1080px;height:1920px;overflow:hidden;background:transparent}
+  html{width:100%;height:100%;overflow:hidden;background:transparent}
+  body{width:1080px;height:1920px;overflow:hidden;background:transparent;transform-origin:0 0}
   body{font-family:'Fredoka',system-ui,sans-serif;color:var(--ink);position:relative}
   body.neon{color:#fff}
 
@@ -185,6 +186,12 @@
   <div class="zone" style="left:900px;top:1100px;width:180px;height:820px">Buttons</div>
 
 <script>
+
+/* Auto-scale the 1080x1920 layout to whatever size the source window is */
+function fitStage(){const W=innerWidth,H=innerHeight,k=Math.min(W/1080,H/1920);
+  document.body.style.transform=`translate(${(W-1080*k)/2}px,${(H-1920*k)/2}px) scale(${k})`;}
+fitStage(); addEventListener('resize',fitStage);
+
 const P = new URLSearchParams(location.search);
 const get = (k, d) => P.has(k) ? P.get(k) : d;
 
