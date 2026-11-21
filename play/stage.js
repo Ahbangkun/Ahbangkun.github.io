@@ -174,6 +174,7 @@ const frameLoop = now => {
     camAt(THREE.MathUtils.lerp(-Math.PI * 1.35, 0, e), THREE.MathUtils.lerp(26, 11.5, e) * zoomK, THREE.MathUtils.lerp(13, 3.2, e));
     hero.rotation.y = (1 - e) * Math.PI * 4;
     const hk = THREE.MathUtils.clamp((k - .35) / .4, 0, 1); hero.scale.setScalar(Math.max(.001, back2(hk)));
+    rightB.visible = true;
     const bk = THREE.MathUtils.clamp((k - .55) / .35, 0, 1);
     [leftB, rightB].forEach((b, i) => { const s = i ? 1 : -1, h = b.userData.home; b.position.set(h.p.x + s * (1 - ease(bk)) * 14, h.p.y, h.p.z); b.material.opacity = bk; });
     if (k >= 1 && !cine.landed) { cine.landed = true; shakeAmt = 1; cine.onLand && cine.onLand(); }
@@ -183,6 +184,7 @@ const frameLoop = now => {
     camAt(sway + mx * .12, (mode === 'title' ? 12.5 : 14) * zoomK, 3.4 - my * .4 + Math.sin(t * .3) * .15);
     hero.rotation.y = Math.sin(t * .5) * .35; hero.scale.setScalar(1);
     [leftB, rightB].forEach(b => { b.position.copy(b.userData.home.p); b.material.opacity = 1; });
+    rightB.visible = !(mode === 'title' && camera.aspect < 1.2);
   }
   if (shakeAmt > 0) { camera.position.x += (Math.random() - .5) * shakeAmt * .5; camera.position.y += (Math.random() - .5) * shakeAmt * .5; camera.rotation.z += (Math.random() - .5) * shakeAmt * .04; shakeAmt = Math.max(0, shakeAmt - dt * 1.8); }
   renderer.render(scene, camera);
