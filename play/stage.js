@@ -130,14 +130,14 @@ const bannerTex = (big, small, rainbow) => cnv(2048, 640, (g, w, h) => {
   drawLine(small, '900 120px "Noto Sans JP", "Chakra Petch", sans-serif', 560, '#d9ff3c');
 });
 const bentPlane = (w, h, bend) => { const g = new THREE.PlaneGeometry(w, h, 40, 4); const p = g.attributes.position; for (let i = 0; i < p.count; i++) { const x = p.getX(i); p.setZ(i, x * x * bend); } g.computeVertexNormals(); return g; };
-const bannerMat = side => new THREE.MeshBasicMaterial({ transparent: true, side: THREE.DoubleSide, depthWrite: false });
+const bannerMat = side => new THREE.MeshBasicMaterial({ transparent: true, side: THREE.DoubleSide, depthWrite: false, depthTest: false });
 const leftB = new THREE.Mesh(bentPlane(9, 2.8, .045), bannerMat()); const rightB = new THREE.Mesh(bentPlane(9, 2.8, .045), bannerMat());
 leftB.userData.home = { p: new THREE.Vector3(-6.6, 4.4, 1.6), r: new THREE.Euler(0, .62, .14) };
 rightB.userData.home = { p: new THREE.Vector3(6.6, 3.7, 1.6), r: new THREE.Euler(0, -.62, -.1) };
 const layoutBanners = () => {
   const port = camera.aspect < 1.2;
   leftB.userData.home = port ? { p: new THREE.Vector3(0, 7.9, 2.2), r: new THREE.Euler(-.08, 0, .05) } : { p: new THREE.Vector3(-6.6, 4.4, 1.6), r: new THREE.Euler(0, .62, .14) };
-  rightB.userData.home = port ? { p: new THREE.Vector3(0, -.4, 4.2), r: new THREE.Euler(-.25, 0, -.05) } : { p: new THREE.Vector3(6.6, 3.7, 1.6), r: new THREE.Euler(0, -.62, -.1) };
+  rightB.userData.home = port ? { p: new THREE.Vector3(0, -.2, 5.2), r: new THREE.Euler(-.25, 0, -.05) } : { p: new THREE.Vector3(6.6, 3.7, 1.6), r: new THREE.Euler(0, -.62, -.1) };
   [leftB, rightB].forEach(b => { b.position.copy(b.userData.home.p); b.rotation.copy(b.userData.home.r); b.scale.setScalar(port ? .85 : 1); });
 };
 window.__layoutBanners = layoutBanners;
